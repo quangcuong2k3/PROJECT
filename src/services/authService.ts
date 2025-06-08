@@ -1,0 +1,296 @@
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  User,
+  updateProfile,
+} from 'firebase/auth';
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import {auth, firestore} from '../../firebaseconfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  address?: string;
+  profileImageUrl?: string;
+  favoriteItems: string[];
+  cartItems: any[];
+  orderHistory: string[];
+  preferences: {
+    notifications: boolean;
+    theme: 'light' | 'dark';
+    defaultPaymentMethod?: string;
+  };
+  createdAt: any;
+  updatedAt: any;
+}
+
+class AuthService {
+  // Register new user with email and password
+  async registerUser(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<{success: boolean; user?: User; error?: string}> {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+
+      // Update user profile with display name
+      await updateProfile(user, {
+        displayName: `${firstName} ${lastName}`,
+      });
+
+      // Create user profile in Firestore
+      const userProfile: UserProfile = {
+        uid: user.uid,
+        email: user.email!,
+        displayName: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
+        favoriteItems: [],
+        cartItems: [],
+        orderHistory: [],
+        preferences: {
+          notifications: true,
+          theme: 'dark',
+        },
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      await setDoc(doc(firestore, 'users', user.uid), userProfile);
+
+      // Cache user session
+      await AsyncStorage.setItem('userToken', user.uid);
+      await AsyncStorage.setItem('userEmail', user.email!);
+
+      return {success: true, user};
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Login user with email and password
+  async loginUser(
+    email: string,
+    password: string,
+  ): Promise<{success: boolean; user?: User; error?: string}> {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+
+      // Cache user session
+      await AsyncStorage.setItem('userToken', user.uid);
+      await AsyncStorage.setItem('userEmail', user.email!);
+
+      // Update last login timestamp
+      await updateDoc(doc(firestore, 'users', user.uid), {
+        lastLoginAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      return {success: true, user};
+    } catch (error: any) {
+      console.error('Login error:', error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Logout user
+  async logoutUser(): Promise<{success: boolean; error?: string}> {
+    try {
+      await signOut(auth);
+      // Clear cached session
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('userProfile');
+
+      return {success: true};
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Send password reset email
+  async sendPasswordReset(
+    email: string,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return {success: true};
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Get current user
+  getCurrentUser(): User | null {
+    return auth.currentUser;
+  }
+
+  // Get user profile from Firestore
+  async getUserProfile(uid: string): Promise<UserProfile | null> {
+    try {
+      const userDoc = await getDoc(doc(firestore, 'users', uid));
+      if (userDoc.exists()) {
+        return userDoc.data() as UserProfile;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return null;
+    }
+  }
+
+  // Update user profile
+  async updateUserProfile(
+    uid: string,
+    updates: Partial<UserProfile>,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      await updateDoc(doc(firestore, 'users', uid), {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      });
+      return {success: true};
+    } catch (error: any) {
+      console.error('Error updating user profile:', error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Check if user session exists
+  async checkUserSession(): Promise<{
+    isAuthenticated: boolean;
+    userToken?: string;
+    userEmail?: string;
+  }> {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const userEmail = await AsyncStorage.getItem('userEmail');
+
+      if (userToken && userEmail) {
+        return {
+          isAuthenticated: true,
+          userToken,
+          userEmail,
+        };
+      }
+      return {isAuthenticated: false};
+    } catch (error) {
+      console.error('Error checking user session:', error);
+      return {isAuthenticated: false};
+    }
+  }
+
+  // Listen to auth state changes
+  onAuthStateChanged(callback: (user: User | null) => void) {
+    return onAuthStateChanged(auth, callback);
+  }
+
+  // Add item to user favorites
+  async addToFavorites(
+    uid: string,
+    itemId: string,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      const userProfile = await this.getUserProfile(uid);
+      if (!userProfile) {
+        return {success: false, error: 'User profile not found'};
+      }
+
+      const updatedFavorites = [...userProfile.favoriteItems];
+      if (!updatedFavorites.includes(itemId)) {
+        updatedFavorites.push(itemId);
+        await this.updateUserProfile(uid, {favoriteItems: updatedFavorites});
+      }
+
+      return {success: true};
+    } catch (error: any) {
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Remove item from user favorites
+  async removeFromFavorites(
+    uid: string,
+    itemId: string,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      const userProfile = await this.getUserProfile(uid);
+      if (!userProfile) {
+        return {success: false, error: 'User profile not found'};
+      }
+
+      const updatedFavorites = userProfile.favoriteItems.filter(
+        id => id !== itemId,
+      );
+      await this.updateUserProfile(uid, {favoriteItems: updatedFavorites});
+
+      return {success: true};
+    } catch (error: any) {
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Update user cart
+  async updateUserCart(
+    uid: string,
+    cartItems: any[],
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      await this.updateUserProfile(uid, {cartItems});
+      return {success: true};
+    } catch (error: any) {
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Add order to user history
+  async addOrderToHistory(
+    uid: string,
+    orderId: string,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      const userProfile = await this.getUserProfile(uid);
+      if (!userProfile) {
+        return {success: false, error: 'User profile not found'};
+      }
+
+      const updatedOrderHistory = [...userProfile.orderHistory, orderId];
+      await this.updateUserProfile(uid, {orderHistory: updatedOrderHistory});
+
+      return {success: true};
+    } catch (error: any) {
+      return {success: false, error: error.message};
+    }
+  }
+}
+
+export default new AuthService();

@@ -1,0 +1,378 @@
+coffees
+    C1
+	average_rating
+    4.6
+    (number)
+
+
+    category
+    "coffee"
+    (string)
+
+
+    createdAt
+    June 5, 2025 at 10:51:55 PM UTC+7
+    (timestamp)
+
+
+    description
+    "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee."
+    (string)
+
+
+    favourite
+    false
+    (boolean)
+
+
+    imageUrlPortrait
+    "src/assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
+    (string)
+
+
+    imageUrlSquare
+    "src/assets/coffee_assets/americano/square/americano_pic_1_square.png"
+    (string)
+
+
+    index
+    0
+    (number)
+
+
+    ingredients
+    "Espresso, Hot Water"
+    (string)
+
+
+    name
+    "Americano"
+    (string)
+
+
+
+    prices
+    (array)
+
+
+
+    0
+    (map)
+
+
+    currency
+    "$"
+    (string)
+
+
+    price
+    "1.15"
+    (string)
+
+
+    size
+    "S"
+    (string)
+
+
+
+    1
+    (map)
+
+
+    currency
+    "$"
+    (string)
+
+
+    price
+    "2.25"
+    (string)
+
+
+    size
+    "M"
+    (string)
+
+
+
+    2
+    (map)
+
+
+    currency
+    "$"
+    (string)
+
+
+    price
+    "3.55"
+    (string)
+
+
+    size
+    "L"
+    (string)
+
+
+    ratings_count
+    "6,986"
+    (string)
+
+
+    roasted
+    "Medium Roasted"
+    (string)
+
+
+    special_ingredient
+    "With Steamed Milk"
+    (string)
+
+
+    type
+    "Coffee"
+    (string)
+
+
+    updatedAt
+    June 5, 2025 at 10:51:55 PM UTC+7
+
+    C2
+
+    C3
+
+    C4
+
+    C5
+
+    C6
+
+
+beans
+    B1
+        average_rating
+        4.7
+        (number)
+
+
+        category
+        "bean"
+        (string)
+
+
+        createdAt
+        June 5, 2025 at 10:51:54 PM UTC+7
+        (timestamp)
+
+
+        description
+        "Robusta beans are larger and more rounded than the other bean varieties. These plants typically grow much larger than Arabica plants, measuring between 15 and 20 feet. Robusta beans are typically considered to be hardier because they can grow at lower altitudes and resist diseases. But recent research suggests that they don't handle heat as well as was previously thought."
+        (string)
+
+
+        favourite
+        false
+        (boolean)
+
+
+        imageUrlPortrait
+        "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_portrait.png"
+        (string)
+
+
+        imageUrlSquare
+        "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_square.png"
+        (string)
+
+
+        index
+        0
+        (number)
+
+
+        ingredients
+        "Africa"
+        (string)
+
+
+        name
+        "Robusta Beans"
+        (string)
+
+
+
+        prices
+        (array)
+
+
+
+        0
+        (map)
+
+
+        currency
+        "$"
+        (string)
+
+
+        price
+        "5.50"
+        (string)
+
+
+        size
+        "250gm"
+        (string)
+
+
+
+        1
+        (map)
+
+
+        currency
+        "$"
+        (string)
+
+
+        price
+        "10.50"
+        (string)
+
+
+        size
+        "500gm"
+        (string)
+
+
+
+        2
+        (map)
+
+
+        currency
+        "$"
+        (string)
+
+
+        price
+        "18.50"
+        (string)
+
+
+        size
+        "1Kg"
+        (string)
+
+
+        ratings_count
+        "6,879"
+        (string)
+
+
+        roasted
+        "Medium Roasted"
+        (string)
+
+
+        special_ingredient
+        "From Africa"
+        (string)
+
+
+        type
+        "Bean"
+        (string)
+
+
+        updatedAt
+        June 5, 2025 at 10:51:54 PM UTC+7
+    B2
+
+    B3
+
+    B4
+
+
+orders
+    sample
+        deliveryAddress
+        "Sample Address"
+        (string)
+
+
+
+        items
+        (array)
+
+
+        orderDate
+        June 5, 2025 at 10:51:54 PM UTC+7
+        (timestamp)
+
+
+        paymentMethod
+        "card"
+        (string)
+
+
+        status
+        "delivered"
+        (string)
+
+
+        totalAmount
+        0
+        (number)
+
+
+        userId
+        "sample-user"
+
+products
+    B1
+
+    B2
+
+    B3
+
+    B4
+
+    C1
+
+    C2
+
+    C3
+
+    C4
+
+    C5
+
+    C6
+
+
+userPreferences
+    sample
+        createdAt
+        June 5, 2025 at 10:51:54 PM UTC+7
+        (timestamp)
+
+
+
+        favorites
+        (array)
+
+
+
+        orderHistory
+        (array)
+
+
+
+        recentSearches
+        (array)
+
+
+        userId
+        "sample-user"
