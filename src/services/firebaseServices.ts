@@ -104,7 +104,7 @@ export interface Order {
   totalAmount: number;
   paymentMethod: string;
   orderDate: Date;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered';
+  status: 'pending' | 'paid' | 'confirmed' | 'preparing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'failed';
   deliveryAddress?: string;
   paymentId?: string | null;
   customerInfo?: {
