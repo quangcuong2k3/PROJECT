@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {View, ActivityIndicator, StyleSheet, LogBox} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import {StripeProvider} from '@stripe/stripe-react-native';
 import TabNavigator from './src/navigators/TabNavigator';
 import AuthNavigator from './src/navigators/AuthNavigator';
 import DetailsScreen from './src/screens/DetailsScreen';
@@ -84,7 +85,7 @@ const App = () => {
   }
 
   return (
-    <>
+    <StripeProvider publishableKey="pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg">
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
           {isAuthenticated ? (
@@ -117,7 +118,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />
-    </>
+    </StripeProvider>
   );
 };
 
