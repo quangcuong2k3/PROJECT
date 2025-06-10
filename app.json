@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "thecoffee",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "main": "index.ts",
@@ -26,6 +27,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "@stripe/stripe-react-native",
+        {
+          "publishableKey": "pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg",
+          "merchantIdentifier": "merchant.com.anonymous.TheCoffee"
+        }
+      ]
+    ]
   }
 }
