@@ -80,7 +80,9 @@ interface StoreActions {
   // Favorites operations
   addToFavoriteList: (type: string, id: string) => Promise<void>;
   deleteFromFavoriteList: (type: string, id: string) => Promise<void>;
+  
   // Order operations
+  sanitizeCartItemsForStore: (cartItems: CartItem[]) => CartItem[];
   addToOrderHistoryListFromCart: (
     paymentDetails: any,
   ) => Promise<{success: boolean; error?: string}>;
@@ -401,84 +403,102 @@ export const useStore = create<Store>()(
         }
       },
 
-      // Order operations (enhanced with Firebase)
+      // Sanitize cart items for Firebase compatibility
+      sanitizeCartItemsForStore: (cartItems: CartItem[]): CartItem[] => {
+        return cartItems.map(item => ({
+          id: item.id || '',
+          name: item.name || '',
+          description: item.description || '',
+          roasted: item.roasted || '',
+          imageUrlSquare: item.imageUrlSquare || '',
+          imageUrlPortrait: item.imageUrlPortrait || '',
+          ingredients: item.ingredients || '',
+          special_ingredient: item.special_ingredient || '',
+          prices: (item.prices || []).map(price => ({
+            size: price.size || '',
+            price: price.price || '0.00',
+            currency: price.currency || '$',
+            quantity: price.quantity || 1,
+          })),
+          average_rating: item.average_rating || 0,
+          ratings_count: item.ratings_count || '0',
+          favourite: item.favourite || false,
+          type: item.type || 'Coffee',
+          index: item.index || 0,
+          category: item.category,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+        }));
+      },
+
+      // Order operations (enhanced - only for local history, Firebase orders handled by payment service)
       addToOrderHistoryListFromCart: async (paymentDetails: any) => {
         const state = get();
         set({isLoading: true, error: null});
 
         try {
+          // Sanitize cart items to prevent undefined values
+          const sanitizedItems = get().sanitizeCartItemsForStore(state.CartList);
+
           const newOrder: Omit<Order, 'id'> = {
-            userId: state.user?.uid || state.userId,
-            items: [...state.CartList],
+            userId: state.user?.uid || state.userId || 'default-user',
+            items: sanitizedItems,
             totalAmount: parseFloat(state.CartPrice),
-            paymentMethod: paymentDetails.method || 'unknown',
+            paymentMethod: paymentDetails.paymentMethod || paymentDetails.method || 'unknown',
             orderDate: new Date(),
-            status:
-              paymentDetails.method === 'Cash on Delivery'
-                ? 'confirmed'
-                : 'pending',
-            deliveryAddress:
-              paymentDetails.address || state.userProfile?.address || '',
+            status: paymentDetails.method === 'cash' || paymentDetails.paymentMethod === 'cash'
+              ? 'confirmed'
+              : 'pending',
+            deliveryAddress: paymentDetails.customerInfo?.address || 
+                           paymentDetails.address || 
+                           state.userProfile?.address || '',
             paymentId: paymentDetails.paymentId || null,
-            customerInfo: paymentDetails.customerInfo || {
-              name:
-                state.userProfile?.displayName ||
-                `${state.userProfile?.firstName} ${state.userProfile?.lastName}` ||
-                'Unknown',
-              email: state.user?.email || 'unknown@email.com',
-              phone: state.userProfile?.phone || '',
+            customerInfo: {
+              name: paymentDetails.customerInfo?.name ||
+                    state.userProfile?.displayName ||
+                    `${state.userProfile?.firstName || ''} ${state.userProfile?.lastName || ''}`.trim() ||
+                    'Unknown',
+              email: paymentDetails.customerInfo?.email ||
+                     state.user?.email || 'unknown@email.com',
+              phone: paymentDetails.customerInfo?.phone ||
+                     state.userProfile?.phone || '',
             },
           };
 
-          // Add to global orders collection in Firebase
-          if (state.useFirebase) {
-            const orderId = await addOrder(newOrder);
+          // Only add to local order history - Firebase orders are handled by payment service
+          const orderId = paymentDetails.orderId || Date.now().toString();
 
-            // Also add to user's personal orders subcollection
-            if (state.user?.uid) {
-              await authService.addOrderToHistory(state.user.uid, orderId);
+          set(
+            produce((stateToUpdate: StoreState) => {
+              const orderWithId = {
+                ...newOrder,
+                id: orderId,
+                OrderDate:
+                  newOrder.orderDate.toDateString() +
+                  ' ' +
+                  newOrder.orderDate.toLocaleTimeString(),
+                CartList: newOrder.items,
+                CartListPrice: newOrder.totalAmount.toFixed(2).toString(),
+              };
+
+              stateToUpdate.OrderHistoryList.unshift(orderWithId);
+              stateToUpdate.CartList = [];
+              stateToUpdate.CartPrice = '0.00';
+              stateToUpdate.isLoading = false;
+            }),
+          );
+
+          // Sync the order history to Firebase user preferences if enabled
+          if (state.useFirebase && state.userId && state.userId !== 'default-user') {
+            try {
+              await updateUserPreferences(state.userId, {
+                orderHistory: [orderId, ...get().userPreferences?.orderHistory || []],
+              });
+              console.log(`✅ User preferences updated with order ${orderId}`);
+            } catch (syncError) {
+              console.error('⚠️ Failed to sync order to user preferences:', syncError);
+              // Don't fail the operation if sync fails
             }
-
-            set(
-              produce((stateToUpdate: StoreState) => {
-                const orderWithId = {
-                  ...newOrder,
-                  id: orderId,
-                  OrderDate:
-                    newOrder.orderDate.toDateString() +
-                    ' ' +
-                    newOrder.orderDate.toLocaleTimeString(),
-                  CartList: newOrder.items,
-                  CartListPrice: newOrder.totalAmount.toFixed(2).toString(),
-                };
-
-                stateToUpdate.OrderHistoryList.unshift(orderWithId);
-                stateToUpdate.CartList = [];
-                stateToUpdate.CartPrice = '0.00';
-                stateToUpdate.isLoading = false;
-              }),
-            );
-          } else {
-            // Local storage fallback
-            set(
-              produce((stateToUpdate: StoreState) => {
-                const orderWithId = {
-                  ...newOrder,
-                  id: Date.now().toString(),
-                  OrderDate:
-                    newOrder.orderDate.toDateString() +
-                    ' ' +
-                    newOrder.orderDate.toLocaleTimeString(),
-                  CartList: newOrder.items,
-                  CartListPrice: newOrder.totalAmount.toFixed(2).toString(),
-                };
-
-                stateToUpdate.OrderHistoryList.unshift(orderWithId);
-                stateToUpdate.CartList = [];
-                stateToUpdate.CartPrice = '0.00';
-                stateToUpdate.isLoading = false;
-              }),
-            );
           }
 
           return {success: true};
@@ -504,7 +524,17 @@ export const useStore = create<Store>()(
 
         set({isLoadingOrders: true, error: null});
         try {
-          const orders = await fetchUserOrders(state.user.uid);
+          console.log(`🔄 Loading orders for user ${state.user.uid}...`);
+          
+          // Try to load from user's orders subcollection first
+          let orders = await authService.getUserOrders(state.user.uid);
+          
+          // If no orders in subcollection, fallback to main orders collection
+          if (orders.length === 0) {
+            console.log('📦 No orders in subcollection, trying main orders collection...');
+            orders = await fetchUserOrders(state.user.uid);
+          }
+          
           const formattedOrders = orders.map(order => ({
             ...order,
             OrderDate:
@@ -512,6 +542,10 @@ export const useStore = create<Store>()(
                 ? order.orderDate.toDateString() +
                   ' ' +
                   order.orderDate.toLocaleTimeString()
+                : order.createdAt
+                ? new Date(order.createdAt.toDate()).toDateString() +
+                  ' ' +
+                  new Date(order.createdAt.toDate()).toLocaleTimeString()
                 : new Date(order.orderDate).toDateString() +
                   ' ' +
                   new Date(order.orderDate).toLocaleTimeString(),
@@ -524,8 +558,10 @@ export const useStore = create<Store>()(
             isLoadingOrders: false,
             error: null,
           });
+          
+          console.log(`✅ Loaded ${formattedOrders.length} orders for user`);
         } catch (error: any) {
-          console.error('Error loading user orders:', error);
+          console.error('❌ Error loading user orders:', error);
           set({
             isLoadingOrders: false,
             error:
