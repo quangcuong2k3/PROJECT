@@ -93,7 +93,7 @@ const ProfileScreen = ({navigation}: any) => {
         <StatusBar backgroundColor={COLORS.primaryBlackHex} />
         <View style={styles.NotAuthenticatedContainer}>
           <CustomIcon
-            name="user"
+            name="person"
             color={COLORS.primaryLightGreyHex}
             size={FONTSIZE.size_30}
           />
@@ -130,7 +130,7 @@ const ProfileScreen = ({navigation}: any) => {
               style={styles.EditButton}
               onPress={() => setIsEditing(!isEditing)}>
               <CustomIcon
-                name={isEditing ? 'x' : 'edit'}
+                name={isEditing ? 'close' : 'pencil'}
                 color={COLORS.primaryOrangeHex}
                 size={FONTSIZE.size_16}
               />
@@ -219,7 +219,7 @@ const ProfileScreen = ({navigation}: any) => {
               onPress={() => isEditing && setNotifications(!notifications)}>
               <View style={styles.PreferenceLeft}>
                 <CustomIcon
-                  name="bell"
+                  name="notifications"
                   color={COLORS.primaryOrangeHex}
                   size={FONTSIZE.size_20}
                 />
