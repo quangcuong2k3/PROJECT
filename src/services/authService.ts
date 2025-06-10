@@ -13,6 +13,11 @@ import {
   getDoc,
   updateDoc,
   serverTimestamp,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
 } from 'firebase/firestore';
 import {auth, firestore} from '../../firebaseconfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -29,6 +34,7 @@ export interface UserProfile {
   favoriteItems: string[];
   cartItems: any[];
   orderHistory: string[];
+  orders?: string[]; // Alternative field name for orders (for compatibility)
   preferences: {
     notifications: boolean;
     theme: 'light' | 'dark';
@@ -69,6 +75,7 @@ class AuthService {
         favoriteItems: [],
         cartItems: [],
         orderHistory: [],
+        orders: [], // Initialize orders field for compatibility
         preferences: {
           notifications: true,
           theme: 'dark',
@@ -272,7 +279,39 @@ class AuthService {
     }
   }
 
-  // Add order to user history
+  // Add order to user's orders subcollection and orderHistory array
+  async addOrderToUserCollection(
+    uid: string,
+    orderId: string,
+    orderData: any,
+  ): Promise<{success: boolean; error?: string}> {
+    try {
+      console.log(`🔄 Adding order ${orderId} to user ${uid} subcollection...`);
+
+      // Add order to user's orders subcollection
+      const userOrdersCollection = collection(firestore, 'users', uid, 'orders');
+      const orderDocRef = doc(userOrdersCollection, orderId);
+      
+      await setDoc(orderDocRef, {
+        ...orderData,
+        orderId: orderId,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(`✅ Order ${orderId} added to user ${uid} orders subcollection`);
+
+      // Also add to orderHistory array for backward compatibility
+      await this.addOrderToHistory(uid, orderId);
+
+      return {success: true};
+    } catch (error: any) {
+      console.error(`❌ Error adding order to user collection:`, error);
+      return {success: false, error: error.message};
+    }
+  }
+
+  // Add order to user history (keeps existing functionality)
   async addOrderToHistory(
     uid: string,
     orderId: string,
@@ -284,11 +323,51 @@ class AuthService {
       }
 
       const updatedOrderHistory = [...userProfile.orderHistory, orderId];
-      await this.updateUserProfile(uid, {orderHistory: updatedOrderHistory});
+      
+      // Update both orderHistory array and orders field (if it exists)
+      const updateData: any = {
+        orderHistory: updatedOrderHistory,
+      };
+
+      // Also update 'orders' field if it exists in the user document
+      // This handles both the current structure and any legacy 'orders' field
+      const userDoc = await getDoc(doc(firestore, 'users', uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.orders !== undefined) {
+          // If user document has an 'orders' field, update it too
+          const currentOrders = Array.isArray(userData.orders) ? userData.orders : [];
+          updateData.orders = [...currentOrders, orderId];
+        }
+      }
+
+      await this.updateUserProfile(uid, updateData);
 
       return {success: true};
     } catch (error: any) {
       return {success: false, error: error.message};
+    }
+  }
+
+  // Get user orders from subcollection
+  async getUserOrders(uid: string): Promise<any[]> {
+    try {
+      console.log(`🔄 Fetching orders for user ${uid} from subcollection...`);
+      
+      const userOrdersCollection = collection(firestore, 'users', uid, 'orders');
+      const ordersQuery = query(userOrdersCollection, orderBy('createdAt', 'desc'));
+      const ordersSnapshot = await getDocs(ordersQuery);
+      
+      const orders = ordersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      
+      console.log(`✅ Found ${orders.length} orders for user ${uid}`);
+      return orders;
+    } catch (error) {
+      console.error('❌ Error fetching user orders from subcollection:', error);
+      return [];
     }
   }
 }
