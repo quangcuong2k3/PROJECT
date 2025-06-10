@@ -91,7 +91,7 @@ const CartItem: React.FC<CartItemProps> = ({
                     decrementCartItemQuantityHandler(id, data.size);
                   }}>
                   <CustomIcon
-                    name="minus"
+                    name="remove"
                     color={COLORS.primaryWhiteHex}
                     size={FONTSIZE.size_10}
                   />
@@ -158,7 +158,7 @@ const CartItem: React.FC<CartItemProps> = ({
                   decrementCartItemQuantityHandler(id, prices[0].size);
                 }}>
                 <CustomIcon
-                  name="minus"
+                  name="remove"
                   color={COLORS.primaryWhiteHex}
                   size={FONTSIZE.size_10}
                 />
