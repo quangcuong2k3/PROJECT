@@ -21,6 +21,7 @@
     "@stripe/stripe-react-native": "^0.45.0",
     "axios": "^1.9.0",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "expo": "~53.0.10",
     "expo-blur": "^14.1.5",
@@ -41,7 +42,8 @@
     "react-native-toast-message": "^2.3.0",
     "react-native-vector-icons": "^10.2.0",
     "stripe": "^18.2.1",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "expo-image-picker": "~16.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
