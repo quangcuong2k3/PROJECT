@@ -228,6 +228,9 @@ const HomeScreen = ({navigation}: any) => {
             colors={[COLORS.primaryOrangeHex]}
             progressViewOffset={100}
             // time out for the refresh
+            // timeout={10000}
+            // progressViewOffset={100}
+            // progressViewOffset={100}
           />
         }>
         <HeaderBar />
