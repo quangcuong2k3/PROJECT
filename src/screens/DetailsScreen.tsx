@@ -18,6 +18,7 @@ import {
 } from '../theme/theme';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
 import PaymentFooter from '../components/PaymentFooter';
+import ReviewSection from '../components/ReviewSection';
 
 const DetailsScreen = ({navigation, route}: any) => {
   // Get data from Firebase store
@@ -194,6 +195,13 @@ const DetailsScreen = ({navigation, route}: any) => {
             ))}
           </View>
         </View>
+        
+        {/* Review Section */}
+        <ReviewSection
+          productId={ItemOfIndex.id}
+          productName={ItemOfIndex.name}
+        />
+        
         <PaymentFooter
           price={price}
           buttonTitle="Add to Cart"
