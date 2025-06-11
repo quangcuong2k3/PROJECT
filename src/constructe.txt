@@ -1,142 +1,147 @@
 coffees
     C1
-	average_rating
-    4.6
-    (number)
+        average_rating
+        4.6
+        (number)
 
 
-    category
-    "coffee"
-    (string)
+        category
+        "coffee"
+        (string)
 
 
-    createdAt
-    June 5, 2025 at 10:51:55 PM UTC+7
-    (timestamp)
+        createdAt
+        June 5, 2025 at 10:51:55 PM UTC+7
+        (timestamp)
 
 
-    description
-    "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee."
-    (string)
+        description
+        "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee."
+        (string)
 
 
-    favourite
-    false
-    (boolean)
+        favourite
+        false
+        (boolean)
 
 
-    imageUrlPortrait
-    "src/assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
-    (string)
+        imageUrlPortrait
+        "src/assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
+        (string)
 
 
-    imageUrlSquare
-    "src/assets/coffee_assets/americano/square/americano_pic_1_square.png"
-    (string)
+        imageUrlSquare
+        "src/assets/coffee_assets/americano/square/americano_pic_1_square.png"
+        (string)
 
 
-    index
-    0
-    (number)
+        index
+        0
+        (number)
 
 
-    ingredients
-    "Espresso, Hot Water"
-    (string)
+        ingredients
+        "Espresso, Hot Water"
+        (string)
 
 
-    name
-    "Americano"
-    (string)
-
-
-
-    prices
-    (array)
+        name
+        "Americano"
+        (string)
 
 
 
-    0
-    (map)
-
-
-    currency
-    "$"
-    (string)
-
-
-    price
-    "1.15"
-    (string)
-
-
-    size
-    "S"
-    (string)
+        prices
+        (array)
 
 
 
-    1
-    (map)
+        0
+        (map)
 
 
-    currency
-    "$"
-    (string)
+        currency
+        "$"
+        (string)
 
 
-    price
-    "2.25"
-    (string)
+        price
+        "1.15"
+        (string)
 
 
-    size
-    "M"
-    (string)
+        size
+        "S"
+        (string)
 
 
 
-    2
-    (map)
+        1
+        (map)
 
 
-    currency
-    "$"
-    (string)
+        currency
+        "$"
+        (string)
 
 
-    price
-    "3.55"
-    (string)
+        price
+        "2.25"
+        (string)
 
 
-    size
-    "L"
-    (string)
+        size
+        "M"
+        (string)
 
 
-    ratings_count
-    "6,986"
-    (string)
+
+        2
+        (map)
 
 
-    roasted
-    "Medium Roasted"
-    (string)
+        currency
+        "$"
+        (string)
 
 
-    special_ingredient
-    "With Steamed Milk"
-    (string)
+        price
+        "3.55"
+        (string)
 
 
-    type
-    "Coffee"
-    (string)
+        size
+        "L"
+        (string)
 
 
-    updatedAt
-    June 5, 2025 at 10:51:55 PM UTC+7
+        ratings_count
+        "6,986"
+        (string)
+
+
+        roasted
+        "Medium Roasted"
+        (string)
+
+
+        special_ingredient
+        "With Steamed Milk"
+        (string)
+
+
+        type
+        "Coffee"
+        (string)
+
+
+        updatedAt
+        June 5, 2025 at 10:51:55 PM UTC+7
+
+        Reviews(this is a subcollection need to create )
+            .......
+            .......
+            .......
 
     C2
 
@@ -288,6 +293,11 @@ beans
 
         updatedAt
         June 5, 2025 at 10:51:54 PM UTC+7
+
+        Reviews(this is a subcollection need to create )
+            .......
+            .......
+            .......
     B2
 
     B3
