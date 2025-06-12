@@ -4,7 +4,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   ToastAndroid,
@@ -20,11 +19,18 @@ import {
   SPACING,
 } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
-import FirebaseModeToggle from '../components/FirebaseModeToggle';
 import CustomIcon from '../components/CustomIcon';
 import {FlatList} from 'react-native';
 import CoffeeCard from '../components/CoffeeCard';
 import {Dimensions} from 'react-native';
+import AdvancedSearchModal, {SearchFilters} from '../components/AdvancedSearchModal';
+import EnhancedSearchBar from '../components/EnhancedSearchBar';
+import SearchResultsHeader from '../components/SearchResultsHeader';
+import {
+  applyAdvancedFilters,
+  getDefaultFilters,
+  hasActiveFilters as checkHasActiveFilters,
+} from '../utils/searchUtils';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -78,6 +84,12 @@ const HomeScreen = ({navigation}: any) => {
     getCoffeeList(categoryIndex.category, CoffeeList),
   );
   const [refreshing, setRefreshing] = useState(false);
+  
+  // Advanced search state
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(getDefaultFilters());
+  const [filteredCoffee, setFilteredCoffee] = useState(CoffeeList);
+  const hasFiltersActive = checkHasActiveFilters(searchFilters);
 
   const ListRef: any = useRef<FlatList>(null);
   const tabBarHeight = useBottomTabBarHeight(); // Load Firebase data on component mount
@@ -100,7 +112,7 @@ const HomeScreen = ({navigation}: any) => {
     }
   }, [error, clearError]);
 
-  // Update categories and sorted coffee when CoffeeList changes
+  // Update categories and filtered coffee when CoffeeList changes
   useEffect(() => {
     const newCategories = getCategoriesFromData(CoffeeList);
     setCategories(newCategories);
@@ -108,32 +120,51 @@ const HomeScreen = ({navigation}: any) => {
       index: 0,
       category: newCategories[0],
     });
-    setSortedCoffee(getCoffeeList(newCategories[0], CoffeeList));
-  }, [CoffeeList]);
+    
+    // Apply current filters to new data
+    const filtered = applyAdvancedFilters(CoffeeList, searchFilters, searchText);
+    setFilteredCoffee(filtered);
+    setSortedCoffee(filtered);
+  }, [CoffeeList, searchFilters, searchText]);
 
-  const searchCoffee = (search: string) => {
-    if (search !== '') {
-      ListRef?.current?.scrollToOffset({
-        animated: true,
-        offset: 0,
-      });
-      setCategoryIndex({index: 0, category: categories[0]});
-      setSortedCoffee([
-        ...CoffeeList.filter((item: any) =>
-          item.name.toLowerCase().includes(search.toLowerCase()),
-        ),
-      ]);
-    }
-  };
-
-  const resetSearchCoffee = () => {
+  // Enhanced search functionality
+  const applySearch = () => {
+    const filtered = applyAdvancedFilters(CoffeeList, searchFilters, searchText);
+    setFilteredCoffee(filtered);
+    setSortedCoffee(filtered);
+    
     ListRef?.current?.scrollToOffset({
       animated: true,
       offset: 0,
     });
-    setCategoryIndex({index: 0, category: categories[0]});
-    setSortedCoffee([...CoffeeList]);
+  };
+
+  const handleSearchTextChange = (text: string) => {
+    setSearchText(text);
+    // Apply search in real-time
+    const filtered = applyAdvancedFilters(CoffeeList, searchFilters, text);
+    setFilteredCoffee(filtered);
+    setSortedCoffee(filtered);
+  };
+
+  const resetSearchCoffee = () => {
     setSearchText('');
+    setSearchFilters(getDefaultFilters());
+    setSortedCoffee([...CoffeeList]);
+    setFilteredCoffee([...CoffeeList]);
+    setCategoryIndex({index: 0, category: categories[0]});
+    
+    ListRef?.current?.scrollToOffset({
+      animated: true,
+      offset: 0,
+    });
+  };
+
+  const handleApplyFilters = (newFilters: SearchFilters) => {
+    setSearchFilters(newFilters);
+    const filtered = applyAdvancedFilters(CoffeeList, newFilters, searchText);
+    setFilteredCoffee(filtered);
+    setSortedCoffee(filtered);
   };
   const CoffeCardAddToCart = ({
     id,
@@ -258,49 +289,47 @@ const HomeScreen = ({navigation}: any) => {
         <Text style={styles.ScreenTitle}>
           Find the best{'\n'}coffee for you
         </Text>
-        {/* Search Input */}
-        <View style={styles.InputContainerComponent}>
-          <TouchableOpacity
-            onPress={() => {
-              searchCoffee(searchText);
-            }}>
+        
+        {/* Enhanced Search Bar */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchResults', {
+            initialSearchText: searchText,
+            initialFilters: searchFilters,
+          })}
+          style={styles.searchBarContainer}
+        >
+          <View style={styles.searchBarContent}>
             <CustomIcon
-              style={styles.InputIcon}
               name="search"
               size={FONTSIZE.size_18}
-              color={
-                searchText.length > 0
-                  ? COLORS.primaryOrangeHex
-                  : COLORS.primaryLightGreyHex
-              }
+              color={COLORS.primaryOrangeHex}
+              style={styles.searchIcon}
             />
-          </TouchableOpacity>
-          <TextInput
-            placeholder="Find Your Coffee..."
-            value={searchText}
-            onChangeText={text => {
-              setSearchText(text);
-              searchCoffee(text);
-            }}
-            placeholderTextColor={COLORS.primaryLightGreyHex}
-            style={styles.TextInputContainer}
-          />
-          {searchText.length > 0 ? (
-            <TouchableOpacity
-              onPress={() => {
-                resetSearchCoffee();
-              }}>
-              <CustomIcon
-                style={styles.InputIcon}
-                name="close"
-                size={FONTSIZE.size_16}
-                color={COLORS.primaryLightGreyHex}
-              />
-            </TouchableOpacity>
-          ) : (
-            <></>
-          )}
-        </View>
+            <Text style={styles.searchPlaceholder}>
+              {searchText || 'Search coffee, beans...'}
+            </Text>
+            {hasFiltersActive && (
+              <View style={styles.filterIndicator}>
+                <CustomIcon
+                  name="options"
+                  size={FONTSIZE.size_14}
+                  color={COLORS.primaryWhiteHex}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+        
+        {/* Search Results Header */}
+        <SearchResultsHeader
+          resultsCount={sortedCoffee.length}
+          totalCount={CoffeeList.length}
+          searchText={searchText}
+          hasActiveFilters={hasFiltersActive}
+          onClearFilters={resetSearchCoffee}
+          activeFilters={searchFilters}
+        />
+        
         {/* Popular Products Section - Only show if we have data from Firebase */}
         {useFirebase && PopularProducts && PopularProducts.length > 0 && (
           <>
@@ -359,9 +388,11 @@ const HomeScreen = ({navigation}: any) => {
                     offset: 0,
                   });
                   setCategoryIndex({index: index, category: categories[index]});
-                  setSortedCoffee([
-                    ...getCoffeeList(categories[index], CoffeeList),
-                  ]);
+                  
+                  // Apply category filter along with search filters
+                  const categoryFiltered = getCoffeeList(categories[index], CoffeeList);
+                  const finalFiltered = applyAdvancedFilters(categoryFiltered, searchFilters, searchText);
+                  setSortedCoffee(finalFiltered);
                 }}>
                 <Text
                   style={[
@@ -466,6 +497,14 @@ const HomeScreen = ({navigation}: any) => {
           }}
         />
       </ScrollView>
+      
+      {/* Advanced Search Modal */}
+      <AdvancedSearchModal
+        visible={showAdvancedSearch}
+        onClose={() => setShowAdvancedSearch(false)}
+        onApplyFilters={handleApplyFilters}
+        initialFilters={searchFilters}
+      />
     </View>
   );
 };
@@ -484,22 +523,33 @@ const styles = StyleSheet.create({
     color: COLORS.primaryWhiteHex,
     paddingLeft: SPACING.space_30,
   },
-  InputContainerComponent: {
+  searchBarContainer: {
+    marginHorizontal: SPACING.space_30,
+    marginBottom: SPACING.space_10,
+  },
+  searchBarContent: {
     flexDirection: 'row',
-    margin: SPACING.space_30,
-    borderRadius: BORDERRADIUS.radius_20,
-    backgroundColor: COLORS.primaryDarkGreyHex,
     alignItems: 'center',
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: BORDERRADIUS.radius_20,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_15,
+    borderWidth: 1,
+    borderColor: COLORS.primaryGreyHex,
   },
-  InputIcon: {
-    marginHorizontal: SPACING.space_20,
+  searchIcon: {
+    marginRight: SPACING.space_12,
   },
-  TextInputContainer: {
+  searchPlaceholder: {
     flex: 1,
-    height: SPACING.space_20 * 3,
+    fontSize: FONTSIZE.size_16,
     fontFamily: FONTFAMILY.poppins_medium,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryWhiteHex,
+    color: COLORS.primaryLightGreyHex,
+  },
+  filterIndicator: {
+    backgroundColor: COLORS.primaryOrangeHex,
+    borderRadius: BORDERRADIUS.radius_10,
+    padding: SPACING.space_8,
   },
   CategoryScrollViewStyle: {
     paddingHorizontal: SPACING.space_20,
