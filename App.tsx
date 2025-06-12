@@ -8,6 +8,7 @@ import TabNavigator from './src/navigators/TabNavigator';
 import AuthNavigator from './src/navigators/AuthNavigator';
 import DetailsScreen from './src/screens/DetailsScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
+import SearchResultsScreen from './src/screens/SearchResultsScreen';
 import {useStore} from './src/store/firebaseStore';
 import authService from './src/services/authService';
 import {COLORS} from './src/theme/theme';
@@ -100,6 +101,11 @@ const App = () => {
                 name="Details"
                 component={DetailsScreen}
                 options={{animation: 'slide_from_bottom'}}
+              />
+              <Stack.Screen
+                name="SearchResults"
+                component={SearchResultsScreen}
+                options={{animation: 'slide_from_right'}}
               />
               <Stack.Screen
                 name="Payment"
