@@ -9,6 +9,7 @@ import FavoritesScreen from '../screens/FavoritesScreen';
 import CartScreen from '../screens/CartScreen';
 import OrderHistoryScreen from '../screens/OrderHistoryScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import InventoryScreen from '../screens/InventoryScreen';
 import CustomIcon from '../components/CustomIcon';
 
 const Tab = createBottomTabNavigator();
@@ -93,6 +94,22 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
+        name="Inventory"
+        component={InventoryScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <CustomIcon
+              name="cube"
+              size={25}
+              color={
+                focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex
+              }
+              style={styles.tabBarIconStyle}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -114,7 +131,7 @@ const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: 70,
+    height: 80,
     position: 'absolute',
     backgroundColor: COLORS.primaryBlackRGBA,
     borderTopWidth: 0,
