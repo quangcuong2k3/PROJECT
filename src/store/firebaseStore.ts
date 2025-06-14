@@ -16,6 +16,14 @@ import {
   Price,
   fetchUserOrders,
 } from '../services/firebaseServices';
+import {
+  fetchInventoryItems,
+  fetchStockAlerts,
+  updateStock,
+  InventoryItem,
+  StockAlert,
+  getInventoryStats,
+} from '../services/inventoryService';
 import authService, {UserProfile} from '../services/authService';
 import {User} from 'firebase/auth';
 
@@ -37,10 +45,16 @@ interface StoreState {
   CartList: CartItem[];
   OrderHistoryList: Order[];
 
+  // Inventory Management
+  InventoryItems: InventoryItem[];
+  StockAlerts: StockAlert[];
+  InventoryStats: ReturnType<typeof getInventoryStats> | null;
+
   // Loading states
   isLoading: boolean;
   isLoadingProducts: boolean;
   isLoadingOrders: boolean;
+  isLoadingInventory: boolean;
 
   // User and Authentication
   user: User | null;
@@ -68,6 +82,12 @@ interface StoreActions {
 
   // Product operations
   trackProductView: (productId: string) => Promise<void>;
+
+  // Inventory operations
+  loadInventoryItems: () => Promise<void>;
+  loadStockAlerts: () => Promise<void>;
+  updateInventoryStock: (inventoryId: string, size: string, newStock: number, reason: string) => Promise<void>;
+  refreshInventoryStats: () => void;
 
   // Cart operations
   addToCart: (cartItem: CartItem) => void;
@@ -124,9 +144,13 @@ export const useStore = create<Store>()(
       FavoritesList: [],
       CartList: [],
       OrderHistoryList: [],
+      InventoryItems: [],
+      StockAlerts: [],
+      InventoryStats: null,
       isLoading: false,
       isLoadingProducts: false,
       isLoadingOrders: false,
+      isLoadingInventory: false,
       user: null,
       userProfile: null,
       isAuthenticated: false,
@@ -719,6 +743,61 @@ export const useStore = create<Store>()(
         get().setUseFirebase(!currentMode);
       },
 
+      // Inventory operations
+      loadInventoryItems: async () => {
+        if (!get().useFirebase) return;
+        
+        set({isLoadingInventory: true, error: null});
+        try {
+          const items = await fetchInventoryItems();
+          const stats = getInventoryStats(items);
+          set({
+            InventoryItems: items,
+            InventoryStats: stats,
+            isLoadingInventory: false,
+            error: null,
+          });
+        } catch (error: any) {
+          set({
+            isLoadingInventory: false,
+            error: error.message || 'Failed to load inventory items',
+          });
+        }
+      },
+
+      loadStockAlerts: async () => {
+        if (!get().useFirebase) return;
+        
+        try {
+          const alerts = await fetchStockAlerts();
+          set({StockAlerts: alerts});
+        } catch (error: any) {
+          console.error('Error loading stock alerts:', error);
+          set({error: error.message || 'Failed to load stock alerts'});
+        }
+      },
+
+      updateInventoryStock: async (inventoryId: string, size: string, newStock: number, reason: string) => {
+        if (!get().useFirebase || !get().user?.uid) return;
+        
+        try {
+          await updateStock(inventoryId, size, newStock, reason, get().user!.uid);
+          // Reload inventory items to get updated data
+          await get().loadInventoryItems();
+          await get().loadStockAlerts();
+        } catch (error: any) {
+          console.error('Error updating inventory stock:', error);
+          set({error: error.message || 'Failed to update stock'});
+          throw error;
+        }
+      },
+
+      refreshInventoryStats: () => {
+        const items = get().InventoryItems;
+        const stats = getInventoryStats(items);
+        set({InventoryStats: stats});
+      },
+
       // Error handling
       setError: (error: string | null) => set({error}),
       clearError: () => set({error: null}),
@@ -736,6 +815,9 @@ export const useStore = create<Store>()(
         FavoritesList: state.FavoritesList,
         CartList: state.CartList,
         OrderHistoryList: state.OrderHistoryList,
+        InventoryItems: state.InventoryItems,
+        StockAlerts: state.StockAlerts,
+        InventoryStats: state.InventoryStats,
         userId: state.userId,
         userPreferences: state.userPreferences,
         useFirebase: state.useFirebase,
