@@ -1,4 +1,3 @@
-# Product Review and Comment System
 
 This document provides a comprehensive guide for the newly implemented product review and comment system in the Coffee app.
 
