@@ -1,0 +1,2622 @@
+Firestore Database Structure Export
+Generated on: 2025-06-14T13:05:33.359Z
+Project ID: thecoffee-b780f
+==================================================
+
+FIRESTORE DATABASE
+====================
+
+Total Collections: 9
+Collections: beans, coffees, comments, inventory, orders, products, reviews, stockAlerts, users
+
+Collection: beans
+------------------------------
+Documents: 4
+
+  Document ID: B1
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Robusta Beans"
+      description: "Robusta beans are larger and more rounded than the other bean varieties. These plants typically grow much larger than Arabica plants, measuring between 15 and 20 feet. Robusta beans are typically considered to be hardier because they can grow at lower altitudes and resist diseases. But recent research suggests that they don't handle heat as well as was previously thought."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_portrait.png"
+      ingredients: "Africa"
+      special_ingredient: "From Africa"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "5.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "10.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "18.50"
+            currency: "$"
+        ]
+      average_rating: 4.7
+      ratings_count: "6,879"
+      favourite: false
+      type: "Bean"
+      index: 0
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138714
+        _nanoseconds: 731000000
+      updatedAt: 
+        _seconds: 1749138714
+        _nanoseconds: 731000000
+
+  Document ID: B2
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Arabica Beans"
+      description: "Arabica coffee is a species of coffee made from the beans of the Coffea arabica plant. Arabica originated in the southwestern highlands of Ethiopia and is the most popular kind of coffee worldwide, making up 60% or more of coffee production."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_portrait.png"
+      ingredients: "South America"
+      special_ingredient: "From South America"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "6.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "12.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "20.50"
+            currency: "$"
+        ]
+      average_rating: 4.5
+      ratings_count: "4,267"
+      favourite: false
+      type: "Bean"
+      index: 1
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 42000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 42000000
+
+  Document ID: B3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Liberica Beans"
+      description: "Liberica coffee is a species of coffee. It is a very hardy plant that can tolerate hot climates. It is characterized by its unique aroma and taste profile."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_portrait.png"
+      ingredients: "West Africa"
+      special_ingredient: "From West Africa"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "7.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "14.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "25.50"
+            currency: "$"
+        ]
+      average_rating: 4.2
+      ratings_count: "2,439"
+      favourite: false
+      type: "Bean"
+      index: 2
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 312000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 312000000
+
+  Document ID: B4
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Excelsa Beans"
+      description: "Excelsa beans are grown primarily in Southeast Asia and account for a very small fraction of the world's coffee consumption. These beans grow on large 20-30 foot coffee plants at medium altitudes."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_portrait.png"
+      ingredients: "Southeast Asia"
+      special_ingredient: "From Southeast Asia"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "8.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "16.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "28.50"
+            currency: "$"
+        ]
+      average_rating: 4.3
+      ratings_count: "1,969"
+      favourite: false
+      type: "Bean"
+      index: 3
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 555000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 555000000
+
+
+Collection: coffees
+------------------------------
+Documents: 6
+
+  Document ID: C1
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Americano"
+      description: "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/americano/square/americano_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
+      ingredients: "Espresso, Hot Water"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,986"
+      favourite: false
+      type: "Coffee"
+      index: 0
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 802000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 802000000
+
+  Document ID: C2
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Black Coffee"
+      description: "Black coffee is as simple as it gets with ground coffee beans steeped in hot water, served warm. And if you want to sound fancy, you can call black coffee by its proper name: cafe noir."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/black_coffee/square/black_coffee_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/black_coffee/portrait/black_coffee_pic_1_portrait.png"
+      ingredients: "Water, Coffee"
+      special_ingredient: "With Sugar"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 1
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 34000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 34000000
+
+  Document ID: C3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Cappuccino"
+      description: "A cappuccino is an espresso-based coffee drink that originated in Italy, and is traditionally prepared with steamed milk foam (microfoam)."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/cappuccino/square/cappuccino_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/cappuccino/portrait/cappuccino_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 2
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 251000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 251000000
+
+  Document ID: C4
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Espresso"
+      description: "Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/espresso/square/espresso_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/espresso/portrait/espresso_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 3
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 478000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 478000000
+
+  Document ID: C5
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Latte"
+      description: "A latte is a coffee drink of Italian origin made with espresso and steamed milk."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/latte/square/latte_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/latte/portrait/latte_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 4
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 698000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 698000000
+
+  Document ID: C6
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Macchiato"
+      description: "A macchiato is an espresso coffee drink with a small amount of milk, usually foamed."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/macchiato/square/macchiato_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/macchiato/portrait/macchiato_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 5
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 914000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 914000000
+    Subcollections:
+      reviews (1 documents)
+        Document ID: jPyCohtWmu5CyjvVEowB
+          userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+          userEmail: "albertanhdung49@gmail.com"
+          productId: "C6"
+          images: 
+            [
+            ]
+          userName: "albert anhdung"
+          gifs: 
+            [
+            ]
+          videos: 
+            [
+            ]
+          rating: 4
+          verified: true
+          replies: 0
+          createdAt: 
+            _seconds: 1749649737
+            _nanoseconds: 407000000
+          helpful: 
+            [
+              [0]: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+            ]
+          dislikes: 
+            [
+            ]
+          likes: 
+            [
+              [0]: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+            ]
+          title: "Hhhhhhtttt"
+          content: "Hhhhhhhhhhhhhhhhhhttttt"
+          updatedAt: 
+            _seconds: 1749651555
+            _nanoseconds: 30000000
+
+
+Collection: comments
+------------------------------
+Documents: 1
+
+  Document ID: ILsvDslNjkPk7s4hgYRr
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      gifs: 
+        [
+        ]
+      videos: 
+        [
+        ]
+      productId: "C6"
+      verified: true
+      likes: 
+        [
+        ]
+      userName: "Tiến Dũng  Nguyễn "
+      userId: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+      dislikes: 
+        [
+        ]
+      userEmail: "dungfopba2@gmail.com"
+      images: 
+        [
+        ]
+      reviewId: "jPyCohtWmu5CyjvVEowB"
+      createdAt: 
+        _seconds: 1749651150
+        _nanoseconds: 445000000
+      content: "Hihhhhhhhhhhhhhhtttttt"
+      updatedAt: 
+        _seconds: 1749651320
+        _nanoseconds: 826000000
+
+
+Collection: inventory
+------------------------------
+Documents: 10
+
+  Document ID: Jb0qGCAApXoqMJswvgrW
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      productId: "C6"
+      totalValue: 405.45
+      supplier: "Coffee Roasters Inc."
+      notes: "Auto-generated inventory for Macchiato"
+      status: "in_stock"
+      totalStock: 307
+      location: "Main Warehouse"
+      createdAt: 
+        _seconds: 1749905405
+        _nanoseconds: 551000000
+      sku: "COFFEE-005"
+      stockLevels: 
+        [
+          [0]: 
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 551000000
+            minStock: 10
+            reorderPoint: 25
+            currentStock: 133
+            cost: 0.69
+            maxStock: 200
+            size: "S"
+          [1]: 
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 551000000
+            reorderPoint: 25
+            size: "M"
+            minStock: 10
+            maxStock: 200
+            cost: 1.3499999999999999
+            currentStock: 73
+          [2]: 
+            currentStock: 101
+            size: "L"
+            maxStock: 200
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 551000000
+            minStock: 10
+            cost: 2.13
+        ]
+      productName: "Macchiato"
+      productType: "Coffee"
+      lastUpdated: 
+        _seconds: 1749905405
+        _nanoseconds: 551000000
+
+  Document ID: OL5hKOgDoFi44ukBfRNy
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      totalStock: 381
+      notes: "Auto-generated inventory for Liberica Beans"
+      lastUpdated: 
+        _seconds: 1749905406
+        _nanoseconds: 460000000
+      productType: "Bean"
+      productId: "B3"
+      sku: "BEAN-002"
+      stockLevels: 
+        [
+          [0]: 
+            reorderPoint: 25
+            minStock: 10
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 460000000
+            cost: 4.5
+            currentStock: 118
+            size: "250gm"
+            maxStock: 200
+          [1]: 
+            reorderPoint: 25
+            minStock: 10
+            cost: 8.7
+            size: "500gm"
+            maxStock: 200
+            currentStock: 126
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 460000000
+          [2]: 
+            minStock: 10
+            reorderPoint: 25
+            size: "1Kg"
+            maxStock: 200
+            currentStock: 137
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 460000000
+            cost: 15.299999999999999
+        ]
+      status: "in_stock"
+      createdAt: 
+        _seconds: 1749905406
+        _nanoseconds: 460000000
+      productName: "Liberica Beans"
+      location: "Main Warehouse"
+      supplier: "Bean Suppliers Ltd."
+      totalValue: 3723.2999999999997
+
+  Document ID: Sac9BQUacoNa9YUkNldM
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      notes: "Auto-generated inventory for Americano"
+      location: "Main Warehouse"
+      productName: "Americano"
+      productType: "Coffee"
+      lastUpdated: 
+        _seconds: 1749905403
+        _nanoseconds: 644000000
+      totalStock: 377
+      stockLevels: 
+        [
+          [0]: 
+            reorderPoint: 25
+            maxStock: 200
+            minStock: 10
+            cost: 0.69
+            currentStock: 126
+            lastRestocked: 
+              _seconds: 1749905403
+              _nanoseconds: 643000000
+            size: "S"
+          [1]: 
+            cost: 1.3499999999999999
+            size: "M"
+            maxStock: 200
+            lastRestocked: 
+              _seconds: 1749905403
+              _nanoseconds: 643000000
+            minStock: 10
+            reorderPoint: 25
+            currentStock: 148
+          [2]: 
+            reorderPoint: 25
+            maxStock: 200
+            currentStock: 103
+            minStock: 10
+            lastRestocked: 
+              _seconds: 1749905403
+              _nanoseconds: 643000000
+            cost: 2.13
+            size: "L"
+        ]
+      createdAt: 
+        _seconds: 1749905403
+        _nanoseconds: 644000000
+      status: "in_stock"
+      supplier: "Coffee Roasters Inc."
+      sku: "COFFEE-000"
+      totalValue: 506.13
+      productId: "C1"
+
+  Document ID: UCXB3iYr5OF9AOnHu69e
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      notes: "Auto-generated inventory for Espresso"
+      location: "Main Warehouse"
+      totalValue: 432.93
+      productType: "Coffee"
+      productId: "C4"
+      lastUpdated: 
+        _seconds: 1749905404
+        _nanoseconds: 793000000
+      createdAt: 
+        _seconds: 1749905404
+        _nanoseconds: 793000000
+      productName: "Espresso"
+      status: "in_stock"
+      sku: "COFFEE-003"
+      totalStock: 321
+      stockLevels: 
+        [
+          [0]: 
+            size: "S"
+            currentStock: 146
+            minStock: 10
+            maxStock: 200
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 793000000
+            cost: 0.69
+          [1]: 
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 793000000
+            cost: 1.3499999999999999
+            maxStock: 200
+            size: "M"
+            minStock: 10
+            currentStock: 52
+            reorderPoint: 25
+          [2]: 
+            minStock: 10
+            currentStock: 123
+            maxStock: 200
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 793000000
+            cost: 2.13
+            size: "L"
+            reorderPoint: 25
+        ]
+      supplier: "Coffee Roasters Inc."
+
+  Document ID: VVoIlgJMLIoc2gJnLJZP
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      totalValue: 435.50999999999993
+      stockLevels: 
+        [
+          [0]: 
+            maxStock: 200
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 324000000
+            reorderPoint: 25
+            minStock: 10
+            currentStock: 81
+            cost: 0.69
+            size: "S"
+          [1]: 
+            maxStock: 200
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 324000000
+            currentStock: 125
+            minStock: 10
+            size: "M"
+            cost: 1.3499999999999999
+          [2]: 
+            currentStock: 99
+            size: "L"
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 324000000
+            cost: 2.13
+            maxStock: 200
+            minStock: 10
+            reorderPoint: 25
+        ]
+      productName: "Cappuccino"
+      supplier: "Coffee Roasters Inc."
+      notes: "Auto-generated inventory for Cappuccino"
+      productId: "C3"
+      lastUpdated: 
+        _seconds: 1749905404
+        _nanoseconds: 324000000
+      status: "in_stock"
+      createdAt: 
+        _seconds: 1749905404
+        _nanoseconds: 324000000
+      productType: "Coffee"
+      totalStock: 305
+      location: "Main Warehouse"
+      sku: "COFFEE-002"
+
+  Document ID: cMbmVA4e5eZPQy6tL5rd
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      supplier: "Bean Suppliers Ltd."
+      productType: "Bean"
+      createdAt: 
+        _seconds: 1749905406
+        _nanoseconds: 793000000
+      productName: "Excelsa Beans"
+      status: "in_stock"
+      location: "Main Warehouse"
+      totalStock: 297
+      stockLevels: 
+        [
+          [0]: 
+            size: "250gm"
+            reorderPoint: 25
+            minStock: 10
+            cost: 5.1
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 793000000
+            currentStock: 147
+            maxStock: 200
+          [1]: 
+            size: "500gm"
+            minStock: 10
+            currentStock: 50
+            cost: 9.9
+            maxStock: 200
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 793000000
+          [2]: 
+            cost: 17.099999999999998
+            size: "1Kg"
+            minStock: 10
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 793000000
+            currentStock: 100
+            maxStock: 200
+        ]
+      totalValue: 2954.7
+      productId: "B4"
+      lastUpdated: 
+        _seconds: 1749905406
+        _nanoseconds: 793000000
+      sku: "BEAN-003"
+      notes: "Auto-generated inventory for Excelsa Beans"
+
+  Document ID: f1YQtzu5fLoniB5GJBXq
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      lastUpdated: 
+        _seconds: 1749905404
+        _nanoseconds: 33000000
+      notes: "Auto-generated inventory for Black Coffee"
+      sku: "COFFEE-001"
+      totalStock: 307
+      productName: "Black Coffee"
+      totalValue: 414.21
+      createdAt: 
+        _seconds: 1749905404
+        _nanoseconds: 33000000
+      supplier: "Coffee Roasters Inc."
+      productType: "Coffee"
+      location: "Main Warehouse"
+      status: "in_stock"
+      stockLevels: 
+        [
+          [0]: 
+            cost: 0.69
+            maxStock: 200
+            currentStock: 89
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 33000000
+            size: "S"
+            minStock: 10
+          [1]: 
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 33000000
+            maxStock: 200
+            cost: 1.3499999999999999
+            currentStock: 143
+            size: "M"
+            minStock: 10
+            reorderPoint: 25
+          [2]: 
+            currentStock: 75
+            lastRestocked: 
+              _seconds: 1749905404
+              _nanoseconds: 33000000
+            cost: 2.13
+            size: "L"
+            maxStock: 200
+            minStock: 10
+            reorderPoint: 25
+        ]
+      productId: "C2"
+
+  Document ID: kLFDJ1bgBy6MRpyM4Vq7
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      supplier: "Bean Suppliers Ltd."
+      totalStock: 318
+      stockLevels: 
+        [
+          [0]: 
+            reorderPoint: 25
+            cost: 3.3
+            size: "250gm"
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 906000000
+            minStock: 10
+            currentStock: 117
+            maxStock: 200
+          [1]: 
+            cost: 6.3
+            size: "500gm"
+            currentStock: 60
+            maxStock: 200
+            minStock: 10
+            reorderPoint: 25
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 906000000
+          [2]: 
+            cost: 11.1
+            currentStock: 141
+            reorderPoint: 25
+            minStock: 10
+            size: "1Kg"
+            maxStock: 200
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 906000000
+        ]
+      productType: "Bean"
+      createdAt: 
+        _seconds: 1749905405
+        _nanoseconds: 906000000
+      sku: "BEAN-000"
+      location: "Main Warehouse"
+      notes: "Auto-generated inventory for Robusta Beans"
+      totalValue: 2329.2
+      status: "in_stock"
+      productId: "B1"
+      productName: "Robusta Beans"
+      lastUpdated: 
+        _seconds: 1749905405
+        _nanoseconds: 906000000
+
+  Document ID: o8ypNTOvf8fZDIo4zr3R
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      productType: "Coffee"
+      location: "Main Warehouse"
+      sku: "COFFEE-004"
+      productName: "Latte"
+      totalStock: 329
+      status: "in_stock"
+      supplier: "Coffee Roasters Inc."
+      lastUpdated: 
+        _seconds: 1749905405
+        _nanoseconds: 86000000
+      totalValue: 506.06999999999994
+      createdAt: 
+        _seconds: 1749905405
+        _nanoseconds: 86000000
+      stockLevels: 
+        [
+          [0]: 
+            cost: 0.69
+            size: "S"
+            reorderPoint: 25
+            minStock: 10
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 86000000
+            maxStock: 200
+            currentStock: 61
+          [1]: 
+            maxStock: 200
+            reorderPoint: 25
+            cost: 1.3499999999999999
+            currentStock: 137
+            minStock: 10
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 86000000
+            size: "M"
+          [2]: 
+            minStock: 10
+            currentStock: 131
+            cost: 2.13
+            lastRestocked: 
+              _seconds: 1749905405
+              _nanoseconds: 86000000
+            reorderPoint: 25
+            maxStock: 200
+            size: "L"
+        ]
+      productId: "C5"
+      notes: "Auto-generated inventory for Latte"
+
+  Document ID: x7azadZgviQuD3aVhQt3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      sku: "BEAN-001"
+      location: "Main Warehouse"
+      productId: "B2"
+      lastUpdated: 
+        _seconds: 1749905406
+        _nanoseconds: 194000000
+      createdAt: 
+        _seconds: 1749905406
+        _nanoseconds: 194000000
+      status: "in_stock"
+      totalStock: 278
+      supplier: "Bean Suppliers Ltd."
+      totalValue: 2211
+      productType: "Bean"
+      notes: "Auto-generated inventory for Arabica Beans"
+      productName: "Arabica Beans"
+      stockLevels: 
+        [
+          [0]: 
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 194000000
+            size: "250gm"
+            reorderPoint: 25
+            currentStock: 77
+            maxStock: 200
+            minStock: 10
+            cost: 3.9
+          [1]: 
+            size: "500gm"
+            minStock: 10
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 194000000
+            currentStock: 117
+            cost: 7.5
+            maxStock: 200
+            reorderPoint: 25
+          [2]: 
+            minStock: 10
+            reorderPoint: 25
+            maxStock: 200
+            size: "1Kg"
+            currentStock: 84
+            lastRestocked: 
+              _seconds: 1749905406
+              _nanoseconds: 194000000
+            cost: 12.299999999999999
+        ]
+
+
+Collection: orders
+------------------------------
+Documents: 19
+
+  Document ID: 2MKAUi7EUPXuaYf5e84O
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "Cash on Delivery"
+      orderDate: 
+        _seconds: 1749482954
+        _nanoseconds: 846000000
+      status: "processing"
+      deliveryAddress: "Somewhere "
+      paymentId: "cod_1749482954568_M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "Somewhere "
+      paymentInfo: 
+        method: "Cash on Delivery"
+        paymentStatus: "completed"
+        transactionId: "cod_1749482954568_M4xRbepSSvUqoFX5dZHzrtxwcP92"
+        paymentDate: 
+          _seconds: 1749482954
+          _nanoseconds: 846000000
+      deliveryInfo: 
+        estimatedDeliveryDate: 
+          _seconds: 1749569354
+          _nanoseconds: 846000000
+      statusHistory: 
+        [
+          [0]: 
+            status: "processing"
+            timestamp: 
+              _seconds: 1749482954
+              _nanoseconds: 847000000
+            updatedBy: "system"
+            notes: "Order created with Cash on Delivery"
+        ]
+
+  Document ID: 3YuYrsdLXlehmvm59Ung
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "cash"
+      orderDate: 
+        _seconds: 1749485618
+        _nanoseconds: 242000000
+      status: "confirmed"
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      paymentId: "COD_1749485618180_ddhw8o04g"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+
+  Document ID: 4Iv7kXmyFQYywtWS5gi3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      paymentMethod: "stripe"
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            name: "Macchiato"
+            description: ""
+            imageUrlPortrait: ""
+            favourite: false
+            ingredients: ""
+            ratings_count: "0"
+            index: 5
+            imageUrlSquare: ""
+            type: "Coffee"
+            average_rating: 0
+            prices: 
+              [
+                [0]: 
+                  quantity: 1
+                  size: "S"
+                  price: "1.15"
+                  currency: "$"
+              ]
+            special_ingredient: "With Steamed Milk"
+            roasted: "Medium Roasted"
+            id: "C6"
+        ]
+      orderDate: 
+        _seconds: 1749527381
+        _nanoseconds: 88000000
+      totalAmount: 1.15
+      status: "paid"
+      paymentId: "pi_3RYJBQ7wRtne0I6D0QNLXmLc"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+
+  Document ID: 4WV0pdV2gny05L0jWz5z
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      paymentId: "pi_3RYIhS7wRtne0I6D0ZMxSCOs"
+      items: 
+        [
+          [0]: 
+            special_ingredient: "With Steamed Milk"
+            prices: 
+              [
+                [0]: 
+                  price: "1.15"
+                  currency: "$"
+                  size: "S"
+                  quantity: 1
+              ]
+            id: "C1"
+            type: "Coffee"
+            index: 0
+            name: "Americano"
+            roasted: "Medium Roasted"
+        ]
+      totalAmount: 1.15
+      deliveryAddress: "Somewhere "
+      paymentMethod: "stripe"
+      orderDate: 
+        _seconds: 1749525651
+        _nanoseconds: 721000000
+      status: "paid"
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      customerInfo: 
+        phone: "0869374437"
+        address: "Somewhere "
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+
+  Document ID: 7NK9icrB62AcX9sj9t94
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      items: 
+        [
+          [0]: 
+            ratings_count: "0"
+            index: 5
+            special_ingredient: "With Steamed Milk"
+            favourite: false
+            name: "Macchiato"
+            description: ""
+            ingredients: ""
+            roasted: "Medium Roasted"
+            imageUrlSquare: ""
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  quantity: 1
+                  currency: "$"
+                  price: "3.55"
+              ]
+            average_rating: 0
+            imageUrlPortrait: ""
+            id: "C6"
+            type: "Coffee"
+        ]
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      status: "confirmed"
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      paymentMethod: "cash"
+      customerInfo: 
+        phone: "0869374437"
+        email: "albertanhdung49@gmail.com"
+        name: "albert anhdung"
+      paymentId: "COD_1749644516573_ht9hbjipm"
+      totalAmount: 3.55
+      orderDate: 
+        _seconds: 1749644516
+        _nanoseconds: 668000000
+
+  Document ID: 7gTzX276yidH80y8Z8vC
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "unknown"
+      orderDate: 
+        _seconds: 1749485618
+        _nanoseconds: 686000000
+      status: "pending"
+      deliveryAddress: "Somewhere "
+      paymentId: "COD_1749485618180_ddhw8o04g"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+
+  Document ID: A1mvT94GAisLHxqeTeYI
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      status: "paid"
+      orderDate: 
+        _seconds: 1749528402
+        _nanoseconds: 386000000
+      totalAmount: 1.15
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      customerInfo: 
+        phone: "0869374437"
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+      paymentMethod: "stripe"
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      paymentId: "pi_3RYJSC7wRtne0I6D09pOstnE"
+      items: 
+        [
+          [0]: 
+            ratings_count: "0"
+            roasted: "Medium Roasted"
+            description: ""
+            prices: 
+              [
+                [0]: 
+                  quantity: 1
+                  size: "S"
+                  price: "1.15"
+                  currency: "$"
+              ]
+            index: 5
+            average_rating: 0
+            imageUrlSquare: ""
+            special_ingredient: "With Steamed Milk"
+            id: "C6"
+            type: "Coffee"
+            favourite: false
+            name: "Macchiato"
+            imageUrlPortrait: ""
+            ingredients: ""
+        ]
+
+  Document ID: GfsXw2UUJiIQ3rcRr18G
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      status: "confirmed"
+      paymentMethod: "cash"
+      customerInfo: 
+        email: "albertanhdung49@gmail.com"
+        name: "albert anhdung"
+        phone: "0869374437"
+      items: 
+        [
+          [0]: 
+            ratings_count: "0"
+            imageUrlSquare: ""
+            roasted: "Medium Roasted"
+            ingredients: ""
+            average_rating: 0
+            special_ingredient: "From South America"
+            id: "B2"
+            prices: 
+              [
+                [0]: 
+                  currency: "$"
+                  price: "6.50"
+                  quantity: 1
+                  size: "250gm"
+              ]
+            description: ""
+            type: "Bean"
+            index: 1
+            favourite: false
+            imageUrlPortrait: ""
+            name: "Arabica Beans"
+        ]
+      paymentId: "COD_1749527488305_jmim4mtgj"
+      orderDate: 
+        _seconds: 1749527488
+        _nanoseconds: 376000000
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      totalAmount: 6.5
+
+  Document ID: KSJXyHAdBXuqrkSW7R87
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "Credit/Debit Card"
+      orderDate: 
+        _seconds: 1749479288
+        _nanoseconds: 713000000
+      status: "processing"
+      deliveryAddress: "Somewhere "
+      paymentId: "pi_mock_1749479286704"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "Somewhere "
+      paymentInfo: 
+        method: "Credit/Debit Card"
+        paymentStatus: "completed"
+        transactionId: "pi_mock_1749479286704"
+        paymentDate: 
+          _seconds: 1749479288
+          _nanoseconds: 713000000
+      deliveryInfo: 
+        estimatedDeliveryDate: 
+          _seconds: 1749565688
+          _nanoseconds: 713000000
+        deliveryInstructions: ""
+      statusHistory: 
+        [
+          [0]: 
+            status: "processing"
+            timestamp: 
+              _seconds: 1749479288
+              _nanoseconds: 716000000
+            updatedBy: "system"
+            notes: "Order created with Credit/Debit Card"
+        ]
+
+  Document ID: KsKrX0tJwCWZW4NxHYEp
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      customerInfo: 
+        phone: "0869374437"
+        email: "albertanhdung49@gmail.com"
+        name: "albert anhdung"
+      orderDate: 
+        _seconds: 1749528835
+        _nanoseconds: 895000000
+      paymentMethod: "cash"
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      items: 
+        [
+          [0]: 
+            id: "C5"
+            ingredients: ""
+            index: 4
+            special_ingredient: "With Steamed Milk"
+            imageUrlPortrait: ""
+            ratings_count: "0"
+            type: "Coffee"
+            description: ""
+            average_rating: 0
+            name: "Latte"
+            favourite: false
+            roasted: "Medium Roasted"
+            imageUrlSquare: ""
+            prices: 
+              [
+                [0]: 
+                  quantity: 1
+                  currency: "$"
+                  size: "S"
+                  price: "1.15"
+              ]
+        ]
+      status: "confirmed"
+      totalAmount: 1.15
+      paymentId: "COD_1749528835840_t1qu5t138"
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+
+  Document ID: bxtaBHiNIVaGUL5tBVcJ
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "Cash on Delivery"
+      orderDate: 
+        _seconds: 1749483494
+        _nanoseconds: 846000000
+      deliveryAddress: "Somewhere "
+      paymentId: "cod_1749483494325_M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "Somewhere "
+      paymentInfo: 
+        method: "Cash on Delivery"
+        paymentStatus: "completed"
+        transactionId: "cod_1749483494325_M4xRbepSSvUqoFX5dZHzrtxwcP92"
+        paymentDate: 
+          _seconds: 1749483494
+          _nanoseconds: 846000000
+      deliveryInfo: 
+        estimatedDeliveryDate: 
+          _seconds: 1749569894
+          _nanoseconds: 846000000
+      statusHistory: 
+        [
+          [0]: 
+            status: "processing"
+            timestamp: 
+              _seconds: 1749483494
+              _nanoseconds: 846000000
+            updatedBy: "system"
+            notes: "Order created with Cash on Delivery"
+        ]
+      createdAt: 
+        _seconds: 1749483494
+        _nanoseconds: 851000000
+      updatedAt: 
+        _seconds: 1749483494
+        _nanoseconds: 851000000
+      status: "completed"
+
+  Document ID: dTrsF9NEQtzgSiRDhn5K
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+      orderDate: 
+        _seconds: 1749650121
+        _nanoseconds: 2000000
+      paymentId: "COD_1749650120907_ctaojmwys"
+      items: 
+        [
+          [0]: 
+            type: "Coffee"
+            imageUrlSquare: ""
+            average_rating: 0
+            favourite: false
+            special_ingredient: "With Steamed Milk"
+            name: "Macchiato"
+            roasted: "Medium Roasted"
+            imageUrlPortrait: ""
+            description: ""
+            ingredients: ""
+            ratings_count: "0"
+            prices: 
+              [
+                [0]: 
+                  price: "1.15"
+                  size: "S"
+                  currency: "$"
+                  quantity: 1
+              ]
+            index: 5
+            id: "C6"
+        ]
+      status: "confirmed"
+      totalAmount: 1.15
+      paymentMethod: "cash"
+      customerInfo: 
+        email: "dungfopba2@gmail.com"
+        phone: "0869374437"
+        name: "Tiến Dũng  Nguyễn "
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+
+  Document ID: eYHxpMqEtanV2sQj9FJz
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "Credit/Debit Card"
+      orderDate: 
+        _seconds: 1749478097
+        _nanoseconds: 761000000
+      status: "processing"
+      deliveryAddress: "Somewhere "
+      paymentId: "pi_mock_1749478095750"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "Somewhere "
+      paymentInfo: 
+        method: "Credit/Debit Card"
+        paymentStatus: "completed"
+        transactionId: "pi_mock_1749478095750"
+        paymentDate: 
+          _seconds: 1749478097
+          _nanoseconds: 761000000
+      deliveryInfo: 
+        estimatedDeliveryDate: 
+          _seconds: 1749564497
+          _nanoseconds: 761000000
+        deliveryInstructions: ""
+      statusHistory: 
+        [
+          [0]: 
+            status: "processing"
+            timestamp: 
+              _seconds: 1749478097
+              _nanoseconds: 761000000
+            updatedBy: "system"
+            notes: "Order created with Credit/Debit Card"
+        ]
+
+  Document ID: j3ZMvQZul8mCoKg01Rzl
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      items: 
+        [
+          [0]: 
+            prices: 
+              [
+                [0]: 
+                  currency: "$"
+                  quantity: 1
+                  price: "1.15"
+                  size: "S"
+              ]
+            name: "Americano"
+            type: "Coffee"
+            special_ingredient: "With Steamed Milk"
+            index: 0
+            roasted: "Medium Roasted"
+            id: "C1"
+        ]
+      orderDate: 
+        _seconds: 1749525652
+        _nanoseconds: 185000000
+      customerInfo: 
+        address: "Somewhere "
+        email: "albertanhdung49@gmail.com"
+        name: "albert anhdung"
+        phone: "0869374437"
+      paymentId: "pi_3RYIhS7wRtne0I6D0ZMxSCOs"
+      deliveryAddress: "Somewhere "
+      status: "pending"
+      paymentMethod: "unknown"
+      totalAmount: 1.15
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+
+  Document ID: lF0fku07uhjMVrqTo3Xg
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C1"
+            index: 0
+            name: "Americano"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Steamed Milk"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  currency: "$"
+                  price: "1.15"
+                  size: "S"
+                  quantity: 2
+              ]
+        ]
+      totalAmount: 2.3
+      paymentMethod: "unknown"
+      orderDate: 
+        _seconds: 1749229786
+        _nanoseconds: 533000000
+      status: "pending"
+      deliveryAddress: ""
+      paymentId: null
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: ""
+
+  Document ID: m5ZjeCtA4emot1hib8ru
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      items: 
+        [
+          [0]: 
+            id: "C2"
+            index: 1
+            name: "Black Coffee"
+            roasted: "Medium Roasted"
+            special_ingredient: "With Sugar"
+            type: "Coffee"
+            prices: 
+              [
+                [0]: 
+                  size: "L"
+                  price: "3.55"
+                  currency: "$"
+                  quantity: 1
+              ]
+        ]
+      totalAmount: 3.55
+      paymentMethod: "Credit/Debit Card"
+      orderDate: 
+        _seconds: 1749481800
+        _nanoseconds: 243000000
+      status: "processing"
+      deliveryAddress: "Somewhere "
+      paymentId: "pi_mock_1749481798231"
+      customerInfo: 
+        name: "albert anhdung"
+        email: "albertanhdung49@gmail.com"
+        phone: "0869374437"
+        address: "Somewhere "
+      paymentInfo: 
+        method: "Credit/Debit Card"
+        paymentStatus: "completed"
+        transactionId: "pi_mock_1749481798231"
+        paymentDate: 
+          _seconds: 1749481800
+          _nanoseconds: 243000000
+      deliveryInfo: 
+        estimatedDeliveryDate: 
+          _seconds: 1749568200
+          _nanoseconds: 243000000
+        deliveryInstructions: ""
+      statusHistory: 
+        [
+          [0]: 
+            status: "processing"
+            timestamp: 
+              _seconds: 1749481800
+              _nanoseconds: 245000000
+            updatedBy: "system"
+            notes: "Order created with Credit/Debit Card"
+        ]
+
+  Document ID: sample
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "sample-user"
+      items: 
+        [
+        ]
+      totalAmount: 0
+      paymentMethod: "card"
+      status: "delivered"
+      deliveryAddress: "Sample Address"
+      orderDate: 
+        _seconds: 1749138714
+        _nanoseconds: 336000000
+
+  Document ID: wWxbXcWoMfiC5jBNmtDz
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      status: "pending"
+      paymentMethod: "momo"
+      totalAmount: 1.15
+      deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      paymentId: "ORDER_1749526639607"
+      items: 
+        [
+          [0]: 
+            ratings_count: "0"
+            id: "C6"
+            favourite: false
+            special_ingredient: "With Steamed Milk"
+            prices: 
+              [
+                [0]: 
+                  price: "1.15"
+                  size: "S"
+                  quantity: 1
+                  currency: "$"
+              ]
+            ingredients: ""
+            type: "Coffee"
+            description: ""
+            imageUrlPortrait: ""
+            average_rating: 0
+            roasted: "Medium Roasted"
+            name: "Macchiato"
+            imageUrlSquare: ""
+            index: 5
+        ]
+      orderDate: 
+        _seconds: 1749526640
+        _nanoseconds: 773000000
+      customerInfo: 
+        name: "albert anhdung"
+        phone: "0869374437"
+        email: "albertanhdung49@gmail.com"
+
+  Document ID: xXUTbrkB1zdijSanCfGd
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      paymentId: "pi_3RYJ1l7wRtne0I6D0qc6I3VY"
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      totalAmount: 1.15
+      paymentMethod: "stripe"
+      deliveryAddress: "Somewhere "
+      items: 
+        [
+          [0]: 
+            description: ""
+            ingredients: ""
+            ratings_count: "0"
+            index: 5
+            special_ingredient: "With Steamed Milk"
+            imageUrlSquare: ""
+            average_rating: 0
+            type: "Coffee"
+            roasted: "Medium Roasted"
+            name: "Macchiato"
+            id: "C6"
+            prices: 
+              [
+                [0]: 
+                  quantity: 1
+                  currency: "$"
+                  price: "1.15"
+                  size: "S"
+              ]
+            imageUrlPortrait: ""
+            favourite: false
+        ]
+      customerInfo: 
+        email: "albertanhdung49@gmail.com"
+        name: "albert anhdung"
+        phone: "0869374437"
+      orderDate: 
+        _seconds: 1749526770
+        _nanoseconds: 570000000
+      status: "paid"
+
+
+Collection: products
+------------------------------
+Documents: 10
+
+  Document ID: B1
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Robusta Beans"
+      description: "Robusta beans are larger and more rounded than the other bean varieties. These plants typically grow much larger than Arabica plants, measuring between 15 and 20 feet. Robusta beans are typically considered to be hardier because they can grow at lower altitudes and resist diseases. But recent research suggests that they don't handle heat as well as was previously thought."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_portrait.png"
+      ingredients: "Africa"
+      special_ingredient: "From Africa"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "5.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "10.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "18.50"
+            currency: "$"
+        ]
+      average_rating: 4.7
+      ratings_count: "6,879"
+      favourite: false
+      type: "Bean"
+      index: 0
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138714
+        _nanoseconds: 551000000
+      updatedAt: 
+        _seconds: 1749138714
+        _nanoseconds: 551000000
+
+  Document ID: B2
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Arabica Beans"
+      description: "Arabica coffee is a species of coffee made from the beans of the Coffea arabica plant. Arabica originated in the southwestern highlands of Ethiopia and is the most popular kind of coffee worldwide, making up 60% or more of coffee production."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_portrait.png"
+      ingredients: "South America"
+      special_ingredient: "From South America"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "6.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "12.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "20.50"
+            currency: "$"
+        ]
+      average_rating: 4.5
+      ratings_count: "4,267"
+      favourite: false
+      type: "Bean"
+      index: 1
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138714
+        _nanoseconds: 880000000
+      updatedAt: 
+        _seconds: 1749138714
+        _nanoseconds: 880000000
+
+  Document ID: B3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Liberica Beans"
+      description: "Liberica coffee is a species of coffee. It is a very hardy plant that can tolerate hot climates. It is characterized by its unique aroma and taste profile."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_portrait.png"
+      ingredients: "West Africa"
+      special_ingredient: "From West Africa"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "7.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "14.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "25.50"
+            currency: "$"
+        ]
+      average_rating: 4.2
+      ratings_count: "2,439"
+      favourite: false
+      type: "Bean"
+      index: 2
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 188000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 188000000
+
+  Document ID: B4
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Excelsa Beans"
+      description: "Excelsa beans are grown primarily in Southeast Asia and account for a very small fraction of the world's coffee consumption. These beans grow on large 20-30 foot coffee plants at medium altitudes."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_portrait.png"
+      ingredients: "Southeast Asia"
+      special_ingredient: "From Southeast Asia"
+      prices: 
+        [
+          [0]: 
+            size: "250gm"
+            price: "8.50"
+            currency: "$"
+          [1]: 
+            size: "500gm"
+            price: "16.50"
+            currency: "$"
+          [2]: 
+            size: "1Kg"
+            price: "28.50"
+            currency: "$"
+        ]
+      average_rating: 4.3
+      ratings_count: "1,969"
+      favourite: false
+      type: "Bean"
+      index: 3
+      category: "bean"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 422000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 422000000
+
+  Document ID: C1
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Americano"
+      description: "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/americano/square/americano_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
+      ingredients: "Espresso, Hot Water"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,986"
+      favourite: false
+      type: "Coffee"
+      index: 0
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 678000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 678000000
+
+  Document ID: C2
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Black Coffee"
+      description: "Black coffee is as simple as it gets with ground coffee beans steeped in hot water, served warm. And if you want to sound fancy, you can call black coffee by its proper name: cafe noir."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/black_coffee/square/black_coffee_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/black_coffee/portrait/black_coffee_pic_1_portrait.png"
+      ingredients: "Water, Coffee"
+      special_ingredient: "With Sugar"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 1
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138715
+        _nanoseconds: 926000000
+      updatedAt: 
+        _seconds: 1749138715
+        _nanoseconds: 926000000
+
+  Document ID: C3
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Cappuccino"
+      description: "A cappuccino is an espresso-based coffee drink that originated in Italy, and is traditionally prepared with steamed milk foam (microfoam)."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/cappuccino/square/cappuccino_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/cappuccino/portrait/cappuccino_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 2
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 142000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 142000000
+
+  Document ID: C4
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Espresso"
+      description: "Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/espresso/square/espresso_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/espresso/portrait/espresso_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 3
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 371000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 371000000
+
+  Document ID: C5
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Latte"
+      description: "A latte is a coffee drink of Italian origin made with espresso and steamed milk."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/latte/square/latte_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/latte/portrait/latte_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      average_rating: 4.6
+      ratings_count: "6,879"
+      favourite: false
+      type: "Coffee"
+      index: 4
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 586000000
+      updatedAt: 
+        _seconds: 1749138716
+        _nanoseconds: 586000000
+
+  Document ID: C6
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      name: "Macchiato"
+      description: "A macchiato is an espresso coffee drink with a small amount of milk, usually foamed."
+      roasted: "Medium Roasted"
+      imageUrlSquare: "src/assets/coffee_assets/macchiato/square/macchiato_pic_1_square.png"
+      imageUrlPortrait: "src/assets/coffee_assets/macchiato/portrait/macchiato_pic_1_portrait.png"
+      ingredients: "Espresso, Steamed Milk"
+      special_ingredient: "With Steamed Milk"
+      prices: 
+        [
+          [0]: 
+            size: "S"
+            price: "1.15"
+            currency: "$"
+          [1]: 
+            size: "M"
+            price: "2.25"
+            currency: "$"
+          [2]: 
+            size: "L"
+            price: "3.55"
+            currency: "$"
+        ]
+      favourite: false
+      type: "Coffee"
+      index: 5
+      category: "coffee"
+      createdAt: 
+        _seconds: 1749138716
+        _nanoseconds: 806000000
+      average_rating: 4
+      ratings_count: "1"
+      updatedAt: 
+        _seconds: 1749651556
+        _nanoseconds: 266000000
+
+
+Collection: reviews
+------------------------------
+Documents: 1
+
+  Document ID: kUhniP3KKZ805Klpzqkn
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      content: "Hhhhhhhhhhhhhhhhhh"
+      productId: "C6"
+      title: "Hhhhhh"
+      userName: "albert anhdung"
+      images: 
+        [
+        ]
+      replies: 0
+      verified: true
+      gifs: 
+        [
+        ]
+      videos: 
+        [
+        ]
+      helpful: 
+        [
+        ]
+      userEmail: "albertanhdung49@gmail.com"
+      rating: 4
+      dislikes: 
+        [
+        ]
+      likes: 
+        [
+        ]
+      createdAt: 
+        _seconds: 1749649737
+        _nanoseconds: 720000000
+      updatedAt: 
+        _seconds: 1749649737
+        _nanoseconds: 720000000
+
+
+Collection: stockAlerts
+------------------------------
+Documents: 2
+
+  Document ID: oLTRACjZhHDuVKHzZzye
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      createdAt: 
+        _seconds: 1749905407
+        _nanoseconds: 94000000
+      productName: "Americano"
+      isRead: false
+      severity: "medium"
+      alertType: "low_stock"
+      threshold: 10
+      productId: "C1"
+      size: "S"
+      inventoryItemId: "sample-inventory-1"
+      currentStock: 8
+
+  Document ID: ybtsZoBq6y7aXNQ4RSOM
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      severity: "critical"
+      threshold: 5
+      isRead: false
+      currentStock: 0
+      inventoryItemId: "sample-inventory-2"
+      productName: "Robusta Beans"
+      alertType: "out_of_stock"
+      createdAt: 
+        _seconds: 1749905407
+        _nanoseconds: 94000000
+      productId: "B1"
+      size: "250gm"
+
+
+Collection: users
+------------------------------
+Documents: 2
+
+  Document ID: 8n05vsMKjugdpwllS4XjK7Sa2Mg2
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      uid: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+      favoriteItems: 
+        [
+        ]
+      firstName: "Tiến Dũng "
+      cartItems: 
+        [
+        ]
+      preferences: 
+        theme: "dark"
+        notifications: true
+      lastName: "Nguyễn "
+      email: "dungfopba2@gmail.com"
+      displayName: "Tiến Dũng  Nguyễn "
+      createdAt: 
+        _seconds: 1749649932
+        _nanoseconds: 109000000
+      orderHistory: 
+        [
+          [0]: "dTrsF9NEQtzgSiRDhn5K"
+        ]
+      orders: 
+        [
+          [0]: "dTrsF9NEQtzgSiRDhn5K"
+        ]
+      updatedAt: 
+        _seconds: 1749650123
+        _nanoseconds: 271000000
+    Subcollections:
+      orders (1 documents)
+        Document ID: dTrsF9NEQtzgSiRDhn5K
+          orderId: "dTrsF9NEQtzgSiRDhn5K"
+          deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+          items: 
+            [
+              [0]: 
+                id: "C6"
+                imageUrlPortrait: ""
+                ingredients: ""
+                prices: 
+                  [
+                    [0]: 
+                      currency: "$"
+                      size: "S"
+                      quantity: 1
+                      price: "1.15"
+                  ]
+                average_rating: 0
+                index: 5
+                description: ""
+                special_ingredient: "With Steamed Milk"
+                name: "Macchiato"
+                favourite: false
+                roasted: "Medium Roasted"
+                ratings_count: "0"
+                imageUrlSquare: ""
+                type: "Coffee"
+            ]
+          paymentMethod: "cash"
+          paymentId: "COD_1749650120907_ctaojmwys"
+          id: "dTrsF9NEQtzgSiRDhn5K"
+          userId: "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+          totalAmount: 1.15
+          customerInfo: 
+            name: "Tiến Dũng  Nguyễn "
+            phone: "0869374437"
+            email: "dungfopba2@gmail.com"
+          orderDate: 
+            _seconds: 1749650121
+            _nanoseconds: 2000000
+          status: "confirmed"
+          createdAt: 
+            _seconds: 1749650122
+            _nanoseconds: 139000000
+          updatedAt: 
+            _seconds: 1749650122
+            _nanoseconds: 139000000
+
+  Document ID: M4xRbepSSvUqoFX5dZHzrtxwcP92
+    Created: [object Object]
+    Updated: [object Object]
+    Data:
+      uid: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+      email: "albertanhdung49@gmail.com"
+      displayName: "albert anhdung"
+      firstName: "albert"
+      lastName: "anhdung"
+      favoriteItems: 
+        [
+        ]
+      cartItems: 
+        [
+        ]
+      preferences: 
+        notifications: true
+        theme: "dark"
+      createdAt: 
+        _seconds: 1749180402
+        _nanoseconds: 436000000
+      address: "Somewhere "
+      phone: "0869374437"
+      orderHistory: 
+        [
+          [0]: "lF0fku07uhjMVrqTo3Xg"
+          [1]: "7gTzX276yidH80y8Z8vC"
+          [2]: "j3ZMvQZul8mCoKg01Rzl"
+          [3]: "A1mvT94GAisLHxqeTeYI"
+          [4]: "KsKrX0tJwCWZW4NxHYEp"
+          [5]: "7NK9icrB62AcX9sj9t94"
+        ]
+      lastLoginAt: 
+        _seconds: 1749905392
+        _nanoseconds: 566000000
+      updatedAt: 
+        _seconds: 1749905392
+        _nanoseconds: 566000000
+    Subcollections:
+      orders (7 documents)
+        Document ID: 7NK9icrB62AcX9sj9t94
+          userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+          status: "confirmed"
+          orderId: "7NK9icrB62AcX9sj9t94"
+          deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+          totalAmount: 3.55
+          paymentMethod: "cash"
+          paymentId: "COD_1749644516573_ht9hbjipm"
+          customerInfo: 
+            name: "albert anhdung"
+            email: "albertanhdung49@gmail.com"
+            phone: "0869374437"
+          orderDate: 
+            _seconds: 1749644516
+            _nanoseconds: 667000000
+          id: "7NK9icrB62AcX9sj9t94"
+          items: 
+            [
+              [0]: 
+                roasted: "Medium Roasted"
+                type: "Coffee"
+                favourite: false
+                name: "Macchiato"
+                imageUrlSquare: ""
+                id: "C6"
+                ratings_count: "0"
+                prices: 
+                  [
+                    [0]: 
+                      price: "3.55"
+                      currency: "$"
+                      size: "L"
+                      quantity: 1
+                  ]
+                index: 5
+                average_rating: 0
+                special_ingredient: "With Steamed Milk"
+                imageUrlPortrait: ""
+                description: ""
+                ingredients: ""
+            ]
+          createdAt: 
+            _seconds: 1749644518
+            _nanoseconds: 92000000
+          updatedAt: 
+            _seconds: 1749644518
+            _nanoseconds: 92000000
+        Document ID: AZssJeLgW6BU9Njc9clm
+          orderId: "2MKAUi7EUPXuaYf5e84O"
+          orderDate: 
+            _seconds: 1749482954
+            _nanoseconds: 846000000
+          totalAmount: 3.55
+          paymentMethod: "Cash on Delivery"
+          status: "completed"
+        Document ID: KsKrX0tJwCWZW4NxHYEp
+          deliveryAddress: "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+          totalAmount: 1.15
+          paymentMethod: "cash"
+          userId: "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+          status: "confirmed"
+          orderDate: 
+            _seconds: 1749528835
+            _nanoseconds: 894000000
+          customerInfo: 
+            name: "albert anhdung"
+            phone: "0869374437"
+            email: "albertanhdung49@gmail.com"
+          items: 
+            [
+              [0]: 
+                name: "Latte"
+                imageUrlSquare: ""
+                description: ""
+                id: "C5"
+                roasted: "Medium Roasted"
+                average_rating: 0
+                ingredients: ""
+                favourite: false
+                special_ingredient: "With Steamed Milk"
+                index: 4
+                prices: 
+                  [
+                    [0]: 
+                      price: "1.15"
+                      currency: "$"
+                      size: "S"
+                      quantity: 1
+                  ]
+                type: "Coffee"
+                ratings_count: "0"
+                imageUrlPortrait: ""
+            ]
+          orderId: "KsKrX0tJwCWZW4NxHYEp"
+          id: "KsKrX0tJwCWZW4NxHYEp"
+          paymentId: "COD_1749528835840_t1qu5t138"
+          createdAt: 
+            _seconds: 1749528836
+            _nanoseconds: 494000000
+          updatedAt: 
+            _seconds: 1749528836
+            _nanoseconds: 494000000
+        Document ID: MiKPvKJ5m2D2a9o0a9jy
+          orderId: "eYHxpMqEtanV2sQj9FJz"
+          orderDate: 
+            _seconds: 1749478097
+            _nanoseconds: 761000000
+          totalAmount: 3.55
+          status: "processing"
+          paymentMethod: "Credit/Debit Card"
+        Document ID: PT7zYPlhRexa2XepRqv2
+          orderId: "KSJXyHAdBXuqrkSW7R87"
+          orderDate: 
+            _seconds: 1749479288
+            _nanoseconds: 713000000
+          totalAmount: 3.55
+          status: "processing"
+          paymentMethod: "Credit/Debit Card"
+        Document ID: SHGu2mefjO3Rp1DHm23u
+          orderId: "bxtaBHiNIVaGUL5tBVcJ"
+          orderDate: 
+            _seconds: 1749483494
+            _nanoseconds: 846000000
+          totalAmount: 3.55
+          paymentMethod: "Cash on Delivery"
+          createdAt: 
+            _seconds: 1749483495
+            _nanoseconds: 160000000
+          status: "completed"
+        Document ID: h9OpHiG6r0os42uUcj9P
+          orderId: "m5ZjeCtA4emot1hib8ru"
+          orderDate: 
+            _seconds: 1749481800
+            _nanoseconds: 243000000
+          totalAmount: 3.55
+          status: "processing"
+          paymentMethod: "Credit/Debit Card"
+
+
