@@ -4,7 +4,7 @@
     "slug": "TheCoffee",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon/play_store_512.png",
     "scheme": "thecoffee",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
