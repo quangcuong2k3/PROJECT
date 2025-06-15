@@ -471,6 +471,455 @@ export const batchAddProducts = async (
   }
 };
 
+// ======================
+// ENHANCED SEARCH OPERATIONS
+// ======================
+
+// Search products with relevance scoring based on multiple terms
+export const searchProductsByTerms = async (
+  searchTerms: string[],
+  options: {
+    minRelevanceScore?: number;
+    maxResults?: number;
+    includePartialMatches?: boolean;
+  } = {}
+): Promise<{ products: Product[]; relevanceScores: { [key: string]: number } }> => {
+  try {
+    console.log('🔍 Searching products by terms:', searchTerms);
+    
+    const {
+      minRelevanceScore = 0.1,
+      maxResults = 20,
+      includePartialMatches = true,
+    } = options;
+
+    // Fetch all products
+    const allProducts = await fetchProducts();
+    
+    // Calculate relevance scores for each product
+    const productScores: { product: Product; score: number }[] = [];
+    
+    allProducts.forEach(product => {
+      let relevanceScore = 0;
+      const searchableText = [
+        product.name,
+        product.description,
+        product.ingredients,
+        product.special_ingredient,
+        product.roasted,
+        product.type,
+        product.category,
+      ].join(' ').toLowerCase();
+
+      searchTerms.forEach(term => {
+        const lowerTerm = term.toLowerCase();
+        
+        // Exact name match (highest score)
+        if (product.name.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 1.0;
+        }
+        
+        // Type match (high score)
+        if (product.type.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 0.8;
+        }
+        
+        // Ingredients match (medium-high score)
+        if (product.ingredients.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 0.7;
+        }
+        
+        // Special ingredient match (medium score)
+        if (product.special_ingredient.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 0.6;
+        }
+        
+        // Roast level match (medium score)
+        if (product.roasted.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 0.5;
+        }
+        
+        // Description match (lower score)
+        if (product.description.toLowerCase().includes(lowerTerm)) {
+          relevanceScore += 0.3;
+        }
+        
+        // Partial matches in searchable text
+        if (includePartialMatches && searchableText.includes(lowerTerm)) {
+          relevanceScore += 0.2;
+        }
+        
+        // Fuzzy matching for common coffee terms
+        const coffeeTermMappings: { [key: string]: string[] } = {
+          'espresso': ['americano', 'cappuccino', 'latte', 'macchiato'],
+          'milk': ['cappuccino', 'latte', 'macchiato'],
+          'foam': ['cappuccino', 'latte'],
+          'strong': ['espresso', 'americano', 'black coffee'],
+          'light': ['americano', 'latte'],
+          'dark': ['espresso', 'black coffee'],
+          'bean': ['arabica', 'robusta', 'liberica', 'excelsa'],
+          'roast': ['light', 'medium', 'dark'],
+        };
+        
+        Object.entries(coffeeTermMappings).forEach(([key, relatedTerms]) => {
+          if (lowerTerm.includes(key)) {
+            relatedTerms.forEach(relatedTerm => {
+              if (searchableText.includes(relatedTerm)) {
+                relevanceScore += 0.4;
+              }
+            });
+          }
+        });
+      });
+
+      // Normalize score by number of search terms
+      relevanceScore = relevanceScore / searchTerms.length;
+      
+      if (relevanceScore >= minRelevanceScore) {
+        productScores.push({ product, score: relevanceScore });
+      }
+    });
+
+    // Sort by relevance score (highest first)
+    productScores.sort((a, b) => b.score - a.score);
+    
+    // Limit results
+    const limitedResults = productScores.slice(0, maxResults);
+    
+    // Extract products and create score mapping
+    const products = limitedResults.map(item => item.product);
+    const relevanceScores: { [key: string]: number } = {};
+    limitedResults.forEach(item => {
+      if (item.product.id) {
+        relevanceScores[item.product.id] = item.score;
+      }
+    });
+
+    console.log(`✅ Found ${products.length} relevant products`);
+    console.log('Top matches:', products.slice(0, 3).map(p => ({ name: p.name, score: relevanceScores[p.id || ''] })));
+    
+    return { products, relevanceScores };
+  } catch (error) {
+    console.error('❌ Error searching products by terms:', error);
+    throw error;
+  }
+};
+
+// Search products with AI-enhanced matching
+export const searchProductsWithAI = async (
+  searchQuery: string,
+  searchTerms: string[],
+  searchType: 'voice' | 'image' | 'text' = 'text',
+  options: {
+    minRelevanceScore?: number;
+    maxResults?: number;
+    boostPopular?: boolean;
+  } = {}
+): Promise<{ 
+  products: Product[]; 
+  relevanceScores: { [key: string]: number };
+  searchMetadata: {
+    originalQuery: string;
+    processedTerms: string[];
+    searchType: string;
+    totalMatches: number;
+  };
+}> => {
+  try {
+    console.log(`🤖 AI-enhanced search - Type: ${searchType}, Query: "${searchQuery}"`);
+    
+    const {
+      minRelevanceScore = 0.1,
+      maxResults = 20,
+      boostPopular = true,
+    } = options;
+
+    // Enhance search terms based on search type
+    let enhancedTerms = [...searchTerms];
+    
+    if (searchType === 'voice') {
+      // Add voice-specific enhancements
+      enhancedTerms = enhanceVoiceSearchTerms(searchQuery, searchTerms);
+    } else if (searchType === 'image') {
+      // Add image-specific enhancements
+      enhancedTerms = enhanceImageSearchTerms(searchTerms);
+    }
+
+    // Get search results
+    const { products, relevanceScores } = await searchProductsByTerms(enhancedTerms, {
+      minRelevanceScore,
+      maxResults: maxResults * 2, // Get more results for further processing
+      includePartialMatches: true,
+    });
+
+    // Apply popularity boost if enabled
+    let finalProducts = products;
+    let finalScores = { ...relevanceScores };
+    
+    if (boostPopular) {
+      const popularProductIds = await getPopularProducts();
+      finalProducts.forEach(product => {
+        if (product.id && popularProductIds.includes(product.id)) {
+          finalScores[product.id] = (finalScores[product.id] || 0) * 1.2; // 20% boost
+        }
+      });
+      
+      // Re-sort by updated scores
+      finalProducts.sort((a, b) => {
+        const scoreA = finalScores[a.id || ''] || 0;
+        const scoreB = finalScores[b.id || ''] || 0;
+        return scoreB - scoreA;
+      });
+    }
+
+    // Limit to final result count
+    finalProducts = finalProducts.slice(0, maxResults);
+
+    const searchMetadata = {
+      originalQuery: searchQuery,
+      processedTerms: enhancedTerms,
+      searchType,
+      totalMatches: products.length,
+    };
+
+    console.log(`✅ AI search completed: ${finalProducts.length} results`);
+    
+    return { 
+      products: finalProducts, 
+      relevanceScores: finalScores,
+      searchMetadata,
+    };
+  } catch (error) {
+    console.error('❌ Error in AI-enhanced search:', error);
+    throw error;
+  }
+};
+
+// Helper function to enhance voice search terms
+const enhanceVoiceSearchTerms = (originalQuery: string, terms: string[]): string[] => {
+  const enhanced = [...terms];
+  const query = originalQuery.toLowerCase();
+  
+  // Add common voice search patterns
+  const voicePatterns = [
+    { pattern: /find.*coffee/i, additions: ['coffee', 'espresso'] },
+    { pattern: /show.*bean/i, additions: ['bean', 'arabica', 'robusta'] },
+    { pattern: /i want.*latte/i, additions: ['latte', 'milk', 'espresso'] },
+    { pattern: /looking for.*cappuccino/i, additions: ['cappuccino', 'foam', 'milk'] },
+    { pattern: /strong.*coffee/i, additions: ['espresso', 'dark roast', 'americano'] },
+    { pattern: /mild.*coffee/i, additions: ['latte', 'cappuccino', 'light roast'] },
+  ];
+  
+  voicePatterns.forEach(({ pattern, additions }) => {
+    if (pattern.test(query)) {
+      enhanced.push(...additions);
+    }
+  });
+  
+  return [...new Set(enhanced)]; // Remove duplicates
+};
+
+// Helper function to enhance image search terms
+const enhanceImageSearchTerms = (terms: string[]): string[] => {
+  const enhanced = [...terms];
+  
+  // Add related terms based on image analysis results
+  terms.forEach(term => {
+    const lowerTerm = term.toLowerCase();
+    
+    if (lowerTerm.includes('cappuccino')) {
+      enhanced.push('foam', 'milk', 'espresso', 'steamed milk');
+    } else if (lowerTerm.includes('latte')) {
+      enhanced.push('milk', 'espresso', 'steamed milk');
+    } else if (lowerTerm.includes('americano')) {
+      enhanced.push('espresso', 'hot water', 'black coffee');
+    } else if (lowerTerm.includes('espresso')) {
+      enhanced.push('strong', 'concentrated', 'dark roast');
+    } else if (lowerTerm.includes('arabica')) {
+      enhanced.push('bean', 'south america', 'smooth');
+    } else if (lowerTerm.includes('robusta')) {
+      enhanced.push('bean', 'africa', 'strong', 'bitter');
+    } else if (lowerTerm.includes('dark')) {
+      enhanced.push('dark roast', 'strong', 'bold');
+    } else if (lowerTerm.includes('light')) {
+      enhanced.push('light roast', 'mild', 'smooth');
+    } else if (lowerTerm.includes('medium')) {
+      enhanced.push('medium roast', 'balanced');
+    }
+  });
+  
+  return [...new Set(enhanced)]; // Remove duplicates
+};
+
+// Search products based on Gemini's suggested names with flexible matching
+// 
+// Example: If Gemini analyzes an image and returns:
+// suggestedNames: ["Black Coffee", "Americano"]
+// 
+// This function will search through all products and find matches like:
+// - "Black Coffee" → matches C2 (name: "Black Coffee")
+// - "Americano" → matches C1 (name: "Americano") 
+// - "Coffee" → matches all Coffee type products (C1-C6)
+// - "Espresso" → matches C4 (name: "Espresso") and products with "Espresso" in ingredients
+// - "Arabica" → matches B2 (name: "Arabica Beans")
+// - "Medium Roasted" → matches products with roasted: "Medium Roasted"
+//
+// The search is flexible and checks all product fields:
+// - name, description, ingredients, special_ingredient, roasted, type, category
+export const searchProductsBySuggestedNames = async (
+  suggestedNames: string[],
+  options: {
+    minRelevanceScore?: number;
+    maxResults?: number;
+  } = {}
+): Promise<{ products: Product[]; relevanceScores: { [key: string]: number } }> => {
+  try {
+    console.log('🔍 Searching products by Gemini suggested names:', suggestedNames);
+    
+    const {
+      minRelevanceScore = 0.1,
+      maxResults = 20,
+    } = options;
+
+    // Fetch all products from both collections
+    const allProducts = await fetchProducts();
+    
+    // Calculate relevance scores for each product based on suggested names
+    const productScores: { product: Product; score: number }[] = [];
+    
+    allProducts.forEach(product => {
+      let relevanceScore = 0;
+      
+      // Create searchable text from all product fields
+      const searchableFields = [
+        product.name,
+        product.description,
+        product.ingredients,
+        product.special_ingredient,
+        product.roasted,
+        product.type,
+        product.category,
+      ].map(field => (field || '').toLowerCase());
+      
+      const searchableText = searchableFields.join(' ');
+
+      // Check each suggested name against all product fields
+      suggestedNames.forEach(suggestedName => {
+        const lowerSuggested = suggestedName.toLowerCase();
+        
+        // Direct name matching (highest priority)
+        if (product.name.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 2.0;
+          console.log(`✅ Direct name match: "${product.name}" contains "${suggestedName}"`);
+        }
+        
+        // Type matching (high priority)
+        if (product.type.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 1.5;
+          console.log(`✅ Type match: "${product.type}" contains "${suggestedName}"`);
+        }
+        
+        // Ingredients matching
+        if (product.ingredients.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 1.2;
+          console.log(`✅ Ingredients match: "${product.ingredients}" contains "${suggestedName}"`);
+        }
+        
+        // Special ingredient matching
+        if (product.special_ingredient.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 1.0;
+          console.log(`✅ Special ingredient match: "${product.special_ingredient}" contains "${suggestedName}"`);
+        }
+        
+        // Roasted level matching
+        if (product.roasted.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 0.8;
+          console.log(`✅ Roasted match: "${product.roasted}" contains "${suggestedName}"`);
+        }
+        
+        // Description matching
+        if (product.description.toLowerCase().includes(lowerSuggested)) {
+          relevanceScore += 0.6;
+          console.log(`✅ Description match: "${product.description}" contains "${suggestedName}"`);
+        }
+        
+        // Partial word matching in any field
+        const words = lowerSuggested.split(' ');
+        words.forEach(word => {
+          if (word.length > 2 && searchableText.includes(word)) {
+            relevanceScore += 0.3;
+            console.log(`✅ Partial word match: "${word}" found in product fields`);
+          }
+        });
+        
+        // Fuzzy matching for common coffee terms
+        const coffeeTermMappings: { [key: string]: string[] } = {
+          'black coffee': ['black', 'coffee', 'americano'],
+          'americano': ['black coffee', 'espresso', 'hot water'],
+          'cappuccino': ['espresso', 'steamed milk', 'foam'],
+          'latte': ['espresso', 'steamed milk', 'milk'],
+          'macchiato': ['espresso', 'steamed milk'],
+          'espresso': ['strong', 'concentrated', 'coffee'],
+          'arabica': ['arabica beans', 'bean', 'south america'],
+          'robusta': ['robusta beans', 'bean', 'africa'],
+          'liberica': ['liberica beans', 'bean', 'west africa'],
+          'excelsa': ['excelsa beans', 'bean', 'southeast asia'],
+          'medium roast': ['medium roasted', 'roasted'],
+          'dark roast': ['dark roasted', 'roasted'],
+          'light roast': ['light roasted', 'roasted'],
+        };
+        
+        // Check fuzzy mappings
+        Object.entries(coffeeTermMappings).forEach(([key, relatedTerms]) => {
+          if (lowerSuggested.includes(key)) {
+            relatedTerms.forEach(relatedTerm => {
+              if (searchableText.includes(relatedTerm)) {
+                relevanceScore += 0.5;
+                console.log(`✅ Fuzzy match: "${key}" → "${relatedTerm}" found`);
+              }
+            });
+          }
+        });
+      });
+
+      // Normalize score by number of suggested names
+      relevanceScore = relevanceScore / suggestedNames.length;
+      
+      if (relevanceScore >= minRelevanceScore) {
+        productScores.push({ product, score: relevanceScore });
+        console.log(`📊 Product "${product.name}" scored: ${relevanceScore.toFixed(2)}`);
+      }
+    });
+
+    // Sort by relevance score (highest first)
+    productScores.sort((a, b) => b.score - a.score);
+    
+    // Limit results
+    const limitedResults = productScores.slice(0, maxResults);
+    
+    // Extract products and create score mapping
+    const products = limitedResults.map(item => item.product);
+    const relevanceScores: { [key: string]: number } = {};
+    limitedResults.forEach(item => {
+      if (item.product.id) {
+        relevanceScores[item.product.id] = item.score;
+      }
+    });
+
+    console.log(`✅ Found ${products.length} products matching suggested names`);
+    console.log('Top matches:', products.slice(0, 3).map(p => ({ 
+      name: p.name, 
+      type: p.type,
+      score: relevanceScores[p.id || '']?.toFixed(2) 
+    })));
+    
+    return { products, relevanceScores };
+  } catch (error) {
+    console.error('❌ Error searching products by suggested names:', error);
+    throw error;
+  }
+};
+
 export default {
   fetchProducts,
   fetchProductById,
@@ -486,4 +935,7 @@ export default {
   updateProductPopularity,
   getPopularProducts,
   batchAddProducts,
+  searchProductsByTerms,
+  searchProductsWithAI,
+  searchProductsBySuggestedNames,
 };
