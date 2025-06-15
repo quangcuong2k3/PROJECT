@@ -9,6 +9,9 @@ import {
   updateUserPreferences,
   updateProductPopularity,
   getPopularProducts,
+  searchProductsWithAI,
+  searchProductsByTerms,
+  searchProductsBySuggestedNames,
   Product,
   CartItem,
   Order,
@@ -82,6 +85,44 @@ interface StoreActions {
 
   // Product operations
   trackProductView: (productId: string) => Promise<void>;
+
+  // Enhanced search operations
+  searchProductsWithAI: (
+    searchQuery: string,
+    searchTerms: string[],
+    searchType?: 'voice' | 'image' | 'text',
+    options?: {
+      minRelevanceScore?: number;
+      maxResults?: number;
+      boostPopular?: boolean;
+    }
+  ) => Promise<{
+    products: Product[];
+    relevanceScores: { [key: string]: number };
+    searchMetadata: {
+      originalQuery: string;
+      processedTerms: string[];
+      searchType: string;
+      totalMatches: number;
+    };
+  }>;
+
+  searchProductsByTerms: (
+    searchTerms: string[],
+    options?: {
+      minRelevanceScore?: number;
+      maxResults?: number;
+      includePartialMatches?: boolean;
+    }
+  ) => Promise<{ products: Product[]; relevanceScores: { [key: string]: number } }>;
+
+  searchProductsBySuggestedNames: (
+    suggestedNames: string[],
+    options?: {
+      minRelevanceScore?: number;
+      maxResults?: number;
+    }
+  ) => Promise<{ products: Product[]; relevanceScores: { [key: string]: number } }>;
 
   // Inventory operations
   loadInventoryItems: () => Promise<void>;
@@ -796,6 +837,101 @@ export const useStore = create<Store>()(
         const items = get().InventoryItems;
         const stats = getInventoryStats(items);
         set({InventoryStats: stats});
+      },
+
+      // Enhanced search operations
+      searchProductsWithAI: async (
+        searchQuery: string,
+        searchTerms: string[],
+        searchType?: 'voice' | 'image' | 'text',
+        options?: {
+          minRelevanceScore?: number;
+          maxResults?: number;
+          boostPopular?: boolean;
+        }
+      ) => {
+        if (!get().useFirebase) {
+          return {
+            products: [],
+            relevanceScores: {},
+            searchMetadata: {
+              originalQuery: '',
+              processedTerms: [],
+              searchType: '',
+              totalMatches: 0,
+            },
+          };
+        }
+
+        try {
+          const result = await searchProductsWithAI(searchQuery, searchTerms, searchType, options);
+          return result;
+        } catch (error: any) {
+          console.error('Error searching products with AI:', error);
+          return {
+            products: [],
+            relevanceScores: {},
+            searchMetadata: {
+              originalQuery: '',
+              processedTerms: [],
+              searchType: '',
+              totalMatches: 0,
+            },
+          };
+        }
+      },
+
+      searchProductsByTerms: async (
+        searchTerms: string[],
+        options?: {
+          minRelevanceScore?: number;
+          maxResults?: number;
+          includePartialMatches?: boolean;
+        }
+      ) => {
+        if (!get().useFirebase) {
+          return {
+            products: [],
+            relevanceScores: {},
+          };
+        }
+
+        try {
+          const result = await searchProductsByTerms(searchTerms, options);
+          return result;
+        } catch (error: any) {
+          console.error('Error searching products by terms:', error);
+          return {
+            products: [],
+            relevanceScores: {},
+          };
+        }
+      },
+
+      searchProductsBySuggestedNames: async (
+        suggestedNames: string[],
+        options?: {
+          minRelevanceScore?: number;
+          maxResults?: number;
+        }
+      ) => {
+        if (!get().useFirebase) {
+          return {
+            products: [],
+            relevanceScores: {},
+          };
+        }
+
+        try {
+          const result = await searchProductsBySuggestedNames(suggestedNames, options);
+          return result;
+        } catch (error: any) {
+          console.error('Error searching products by suggested names:', error);
+          return {
+            products: [],
+            relevanceScores: {},
+          };
+        }
       },
 
       // Error handling
