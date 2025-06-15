@@ -24,7 +24,9 @@ interface SpeechOptions {
 // Optional imports with error handling
 let Speech: any = null;
 let Voice: any = null;
+let voiceModuleError: string | null = null;
 
+// Try to load expo-speech
 try {
   Speech = require('expo-speech');
   console.log('✅ expo-speech loaded successfully');
@@ -32,15 +34,53 @@ try {
   console.warn('❌ expo-speech not available:', error);
 }
 
-try {
-  // Try different import methods for voice recognition
-  const voiceModule = require('@react-native-voice/voice');
-  Voice = voiceModule.default || voiceModule;
-  console.log('✅ @react-native-voice/voice loaded successfully');
-  console.log('Available methods:', Object.keys(Voice || {}));
-} catch (error) {
-  console.warn('❌ @react-native-voice/voice not available:', error);
-}
+// Try to load react-native-voice with multiple strategies
+const loadVoiceModule = () => {
+  try {
+    // Strategy 1: Try default import
+    const voiceModule = require('@react-native-voice/voice');
+    Voice = voiceModule.default || voiceModule;
+    
+    if (Voice && typeof Voice === 'object') {
+      console.log('✅ @react-native-voice/voice loaded successfully');
+      console.log('Available methods:', Object.keys(Voice));
+      return true;
+    }
+  } catch (error) {
+    console.warn('❌ Strategy 1 failed:', error);
+  }
+
+  try {
+    // Strategy 2: Try direct require
+    Voice = require('@react-native-voice/voice');
+    if (Voice && typeof Voice === 'object') {
+      console.log('✅ @react-native-voice/voice loaded (strategy 2)');
+      return true;
+    }
+  } catch (error) {
+    console.warn('❌ Strategy 2 failed:', error);
+  }
+
+  try {
+    // Strategy 3: Try with .default
+    const voiceModule = require('@react-native-voice/voice').default;
+    Voice = voiceModule;
+    if (Voice && typeof Voice === 'object') {
+      console.log('✅ @react-native-voice/voice loaded (strategy 3)');
+      return true;
+    }
+  } catch (error) {
+    console.warn('❌ Strategy 3 failed:', error);
+  }
+
+  // All strategies failed
+  voiceModuleError = 'Voice recognition module could not be loaded. Please ensure @react-native-voice/voice is properly installed and linked.';
+  console.error('❌ All voice module loading strategies failed');
+  return false;
+};
+
+// Load the voice module
+const voiceModuleLoaded = loadVoiceModule();
 
 export interface VoiceSearchResult {
   success: boolean;
@@ -58,6 +98,7 @@ export interface VoiceSearchOptions {
 class VoiceSearchService {
   private isListening = false;
   private recognitionTimeout: NodeJS.Timeout | null = null;
+  private isInitialized = false;
 
   constructor() {
     this.initializeVoice();
@@ -67,17 +108,26 @@ class VoiceSearchService {
    * Initialize voice recognition
    */
   private initializeVoice() {
-    if (!Voice) {
+    if (!voiceModuleLoaded || !Voice) {
       console.warn('Voice module not available, skipping initialization');
       return;
     }
-    
-    Voice.onSpeechStart = this.onSpeechStart;
-    Voice.onSpeechRecognized = this.onSpeechRecognized;
-    Voice.onSpeechEnd = this.onSpeechEnd;
-    Voice.onSpeechError = this.onSpeechError;
-    Voice.onSpeechResults = this.onSpeechResults;
-    Voice.onSpeechPartialResults = this.onSpeechPartialResults;
+
+    try {
+      // Set up event handlers with error catching
+      Voice.onSpeechStart = this.onSpeechStart;
+      Voice.onSpeechRecognized = this.onSpeechRecognized;
+      Voice.onSpeechEnd = this.onSpeechEnd;
+      Voice.onSpeechError = this.onSpeechError;
+      Voice.onSpeechResults = this.onSpeechResults;
+      Voice.onSpeechPartialResults = this.onSpeechPartialResults;
+      
+      this.isInitialized = true;
+      console.log('✅ Voice recognition initialized successfully');
+    } catch (error) {
+      console.error('❌ Error initializing voice recognition:', error);
+      voiceModuleError = `Voice initialization failed: ${error}`;
+    }
   }
 
   /**
@@ -85,26 +135,49 @@ class VoiceSearchService {
    */
   async isVoiceAvailable(): Promise<boolean> {
     try {
-      if (!Voice) {
-        console.warn('Voice module not available');
+      console.log('🔍 Checking voice availability...');
+      
+      // Check if module is loaded
+      if (!voiceModuleLoaded || !Voice) {
+        console.warn('❌ Voice module not loaded');
         return false;
       }
-      
-      // Try different method names as the API might vary
+
+      // Check if initialized
+      if (!this.isInitialized) {
+        console.warn('❌ Voice module not initialized');
+        return false;
+      }
+
+      // Check platform compatibility
+      if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
+        console.warn('❌ Platform not supported for voice recognition');
+        return false;
+      }
+
+      // Try different availability check methods
       let available = false;
       
       if (typeof Voice.isAvailable === 'function') {
+        console.log('🔍 Checking with Voice.isAvailable()');
         available = await Voice.isAvailable();
-      } else if (typeof Voice.isSpeechAvailable === 'function') {
-        available = await Voice.isSpeechAvailable();
+        console.log('📋 Voice.isAvailable() result:', available);
+      } else if (typeof Voice.getSpeechRecognitionServices === 'function') {
+        console.log('🔍 Checking with Voice.getSpeechRecognitionServices()');
+        const services = await Voice.getSpeechRecognitionServices();
+        available = services && services.length > 0;
+        console.log('📋 Speech recognition services:', services);
       } else {
-        console.warn('No voice availability check method found');
-        return false;
+        console.log('🔍 No availability check method found, assuming available on physical device');
+        // If no availability check method exists, assume it's available
+        // This is a fallback for cases where the API might be different
+        available = true;
       }
       
+      console.log('✅ Voice availability check result:', available);
       return Boolean(available);
     } catch (error) {
-      console.error('Error checking voice availability:', error);
+      console.error('❌ Error checking voice availability:', error);
       return false;
     }
   }
@@ -114,24 +187,41 @@ class VoiceSearchService {
    */
   async requestMicrophonePermissions(): Promise<boolean> {
     try {
-      if (!Voice) {
-        console.warn('Voice module not available');
+      if (!voiceModuleLoaded || !Voice) {
+        console.warn('❌ Voice module not available for permission request');
         return false;
       }
       
+      console.log('🔍 Requesting microphone permissions...');
+      
       if (Platform.OS === 'android') {
-        // For Android, permissions are handled in AndroidManifest.xml
-        // We'll add the permission check here if needed
-        return true;
-      } else {
-        // For iOS, permissions are requested automatically
+        // For Android, permissions should be handled automatically by the voice module
+        // But we can check if the permission is available
+        try {
+          if (typeof Voice.requestSpeechRecognitionPermission === 'function') {
+            const granted = await Voice.requestSpeechRecognitionPermission();
+            console.log('📋 Android permission request result:', granted);
+            return granted;
+          } else {
+            console.log('📋 No explicit permission request method, assuming granted');
+            return true;
+          }
+        } catch (permError) {
+          console.warn('⚠️ Permission request failed, but might still work:', permError);
+          return true;
+        }
+      } else if (Platform.OS === 'ios') {
+        // For iOS, permissions are requested automatically when starting recognition
+        console.log('📋 iOS permissions will be requested automatically');
         return true;
       }
+      
+      return true;
     } catch (error) {
-      console.error('Error requesting microphone permissions:', error);
+      console.error('❌ Error requesting microphone permissions:', error);
       Alert.alert(
         'Microphone Permission Required',
-        'Please grant microphone permission to use voice search.',
+        'Please grant microphone permission to use voice search. You may need to enable it in your device settings.',
         [{ text: 'OK' }]
       );
       return false;
@@ -143,31 +233,48 @@ class VoiceSearchService {
    */
   async startListening(options: VoiceSearchOptions = {}): Promise<VoiceSearchResult> {
     try {
-      if (!Voice) {
-        // Return a helpful error message instead of crashing
+      console.log('🎤 Starting voice recognition...');
+      
+      // Check if voice module is available
+      if (!voiceModuleLoaded || !Voice) {
+        const errorMessage = voiceModuleError || 'Voice recognition module is not available. Please ensure you are running on a physical device with @react-native-voice/voice properly installed.';
+        console.error('❌ Voice module not available:', errorMessage);
         return {
           success: false,
-          error: 'Voice recognition is not available. Please install the required dependencies:\n\nnpm install @react-native-voice/voice\nnpx expo install expo-speech\n\nThen restart your development server.',
+          error: errorMessage,
         };
       }
 
+      // Check if initialized
+      if (!this.isInitialized) {
+        console.error('❌ Voice service not initialized');
+        return {
+          success: false,
+          error: 'Voice recognition service is not properly initialized. Please restart the app and try again.',
+        };
+      }
+
+      // Check permissions
       const hasPermission = await this.requestMicrophonePermissions();
       if (!hasPermission) {
         return {
           success: false,
-          error: 'Microphone permission denied',
+          error: 'Microphone permission is required for voice search.',
         };
       }
 
+      // Check availability
       const isAvailable = await this.isVoiceAvailable();
       if (!isAvailable) {
         return {
           success: false,
-          error: 'Voice recognition not available on this device',
+          error: 'Voice recognition is not available on this device. Please ensure you are using a physical device (not simulator) and have microphone access.',
         };
       }
 
+      // Stop any existing recognition
       if (this.isListening) {
+        console.log('🔄 Stopping existing recognition...');
         await this.stopListening();
       }
 
@@ -177,29 +284,58 @@ class VoiceSearchService {
         partialResults = true,
       } = options;
 
+      console.log('🎤 Starting recognition with options:', { language, timeout, partialResults });
       this.isListening = true;
 
       // Set timeout for recognition
       this.recognitionTimeout = setTimeout(() => {
+        console.log('⏰ Voice recognition timeout');
         this.stopListening();
       }, timeout);
 
-      await Voice.start(language, {
-        EXTRA_PARTIAL_RESULTS: partialResults,
-        EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS: 1000,
-        EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS: 2000,
-      });
+      // Start voice recognition
+      try {
+        await Voice.start(language, {
+          EXTRA_PARTIAL_RESULTS: partialResults,
+          EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS: 1000,
+          EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS: 2000,
+        });
+        console.log('✅ Voice recognition started successfully');
+      } catch (startError) {
+        console.error('❌ Error starting voice recognition:', startError);
+        this.cleanup();
+        return {
+          success: false,
+          error: `Failed to start voice recognition: ${startError}. Please ensure microphone permissions are granted and try again.`,
+        };
+      }
 
+      // Return a promise that resolves when recognition completes
       return new Promise((resolve) => {
         const originalOnResults = Voice.onSpeechResults;
         const originalOnError = Voice.onSpeechError;
+        const originalOnEnd = Voice.onSpeechEnd;
+
+        let resolved = false;
+
+        const resolveOnce = (result: VoiceSearchResult) => {
+          if (!resolved) {
+            resolved = true;
+            // Restore original handlers
+            Voice.onSpeechResults = originalOnResults;
+            Voice.onSpeechError = originalOnError;
+            Voice.onSpeechEnd = originalOnEnd;
+            resolve(result);
+          }
+        };
 
         Voice.onSpeechResults = (event: SpeechResultsEvent) => {
+          console.log('🎤 Speech results received:', event);
           if (originalOnResults) originalOnResults(event);
           
           if (event.value && event.value.length > 0) {
             this.cleanup();
-            resolve({
+            resolveOnce({
               success: true,
               transcript: event.value[0],
               confidence: 1.0, // Voice API doesn't provide confidence scores
@@ -208,21 +344,39 @@ class VoiceSearchService {
         };
 
         Voice.onSpeechError = (event: SpeechErrorEvent) => {
+          console.log('🎤 Speech error received:', event);
           if (originalOnError) originalOnError(event);
           
           this.cleanup();
-          resolve({
+          const errorMessage = event.error?.message || 'Voice recognition failed';
+          resolveOnce({
             success: false,
-            error: event.error?.message || 'Voice recognition failed',
+            error: `Voice recognition error: ${errorMessage}. Please speak clearly and try again.`,
           });
+        };
+
+        Voice.onSpeechEnd = (event: any) => {
+          console.log('🎤 Speech recognition ended:', event);
+          if (originalOnEnd) originalOnEnd(event);
+          
+          // If we haven't resolved yet and recognition ended without results
+          setTimeout(() => {
+            if (!resolved) {
+              this.cleanup();
+              resolveOnce({
+                success: false,
+                error: 'No speech detected. Please try speaking more clearly.',
+              });
+            }
+          }, 500);
         };
       });
     } catch (error) {
-      console.error('Error starting voice recognition:', error);
+      console.error('❌ Unexpected error in voice recognition:', error);
       this.cleanup();
       return {
         success: false,
-        error: 'Failed to start voice recognition. Please ensure you have installed the required dependencies and are testing on a physical device.',
+        error: `Voice recognition failed: ${error}. Please ensure you are using a physical device with microphone access.`,
       };
     }
   }
@@ -232,16 +386,18 @@ class VoiceSearchService {
    */
   async stopListening(): Promise<void> {
     try {
+      console.log('🛑 Stopping voice recognition...');
       if (!Voice) {
         console.warn('Voice module not available');
         return;
       }
       if (this.isListening) {
         await Voice.stop();
+        console.log('✅ Voice recognition stopped');
         this.cleanup();
       }
     } catch (error) {
-      console.error('Error stopping voice recognition:', error);
+      console.error('❌ Error stopping voice recognition:', error);
       this.cleanup();
     }
   }
@@ -251,16 +407,18 @@ class VoiceSearchService {
    */
   async cancelListening(): Promise<void> {
     try {
+      console.log('❌ Canceling voice recognition...');
       if (!Voice) {
         console.warn('Voice module not available');
         return;
       }
       if (this.isListening) {
         await Voice.cancel();
+        console.log('✅ Voice recognition canceled');
         this.cleanup();
       }
     } catch (error) {
-      console.error('Error canceling voice recognition:', error);
+      console.error('❌ Error canceling voice recognition:', error);
       this.cleanup();
     }
   }
@@ -269,6 +427,7 @@ class VoiceSearchService {
    * Clean up recognition state
    */
   private cleanup() {
+    console.log('🧹 Cleaning up voice recognition state...');
     this.isListening = false;
     if (this.recognitionTimeout) {
       clearTimeout(this.recognitionTimeout);
@@ -286,6 +445,7 @@ class VoiceSearchService {
         return;
       }
 
+      console.log('🔊 Speaking:', text);
       const defaultOptions: SpeechOptions = {
         language: 'en-US',
         pitch: 1.0,
@@ -295,7 +455,7 @@ class VoiceSearchService {
 
       await Speech.speak(text, defaultOptions);
     } catch (error) {
-      console.error('Error with text-to-speech:', error);
+      console.error('❌ Error with text-to-speech:', error);
     }
   }
 
@@ -309,8 +469,9 @@ class VoiceSearchService {
         return;
       }
       await Speech.stop();
+      console.log('🛑 Speech stopped');
     } catch (error) {
-      console.error('Error stopping speech:', error);
+      console.error('❌ Error stopping speech:', error);
     }
   }
 
@@ -319,6 +480,23 @@ class VoiceSearchService {
    */
   getIsListening(): boolean {
     return this.isListening;
+  }
+
+  /**
+   * Get module status for debugging
+   */
+  getModuleStatus(): {
+    voiceLoaded: boolean;
+    speechLoaded: boolean;
+    initialized: boolean;
+    error?: string;
+  } {
+    return {
+      voiceLoaded: voiceModuleLoaded && !!Voice,
+      speechLoaded: !!Speech,
+      initialized: this.isInitialized,
+      error: voiceModuleError || undefined,
+    };
   }
 
   /**
@@ -469,27 +647,27 @@ class VoiceSearchService {
    * Voice event handlers
    */
   private onSpeechStart = (event: any) => {
-    console.log('Voice recognition started:', event);
+    console.log('🎤 Voice recognition started:', event);
   };
 
   private onSpeechRecognized = (event: SpeechRecognizedEvent) => {
-    console.log('Speech recognized:', event);
+    console.log('🎤 Speech recognized:', event);
   };
 
   private onSpeechEnd = (event: any) => {
-    console.log('Voice recognition ended:', event);
+    console.log('🎤 Voice recognition ended:', event);
   };
 
   private onSpeechError = (event: SpeechErrorEvent) => {
-    console.log('Voice recognition error:', event);
+    console.log('🎤 Voice recognition error:', event);
   };
 
   private onSpeechResults = (event: SpeechResultsEvent) => {
-    console.log('Voice recognition results:', event);
+    console.log('🎤 Voice recognition results:', event);
   };
 
   private onSpeechPartialResults = (event: SpeechResultsEvent) => {
-    console.log('Voice recognition partial results:', event);
+    console.log('🎤 Voice recognition partial results:', event);
   };
 
   /**
@@ -497,12 +675,14 @@ class VoiceSearchService {
    */
   async destroy(): Promise<void> {
     try {
+      console.log('🗑️ Destroying voice recognition instance...');
       await this.stopListening();
-      if (Voice) {
+      if (Voice && typeof Voice.destroy === 'function') {
         await Voice.destroy();
+        console.log('✅ Voice recognition destroyed');
       }
     } catch (error) {
-      console.error('Error destroying voice recognition:', error);
+      console.error('❌ Error destroying voice recognition:', error);
     }
   }
 }
