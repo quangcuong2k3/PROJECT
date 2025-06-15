@@ -69,7 +69,7 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({navigation}) => {
     {key: 'dashboard', title: 'Overview', icon: 'home', color: '#4A90E2'},
     {key: 'inventory', title: 'Stock', icon: 'cube', color: COLORS.primaryOrangeHex},
     {key: 'alerts', title: 'Alerts', icon: 'notifications', color: '#FF6B6B'},
-    {key: 'stats', title: 'Analytics', icon: 'bar-chart', color: '#50C878'},
+    {key: 'stats', title: 'Analytics', icon: 'bar', color: '#50C878'},
   ];
 
   // Enhanced animations
