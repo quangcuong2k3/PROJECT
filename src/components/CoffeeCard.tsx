@@ -32,6 +32,7 @@ interface CoffeeCardProps {
   average_rating: number;
   price: any;
   buttonPressHandler: any;
+  relevanceScore?: number;
 }
 
 const CoffeeCard: React.FC<CoffeeCardProps> = ({
@@ -45,6 +46,7 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
   average_rating,
   price,
   buttonPressHandler,
+  relevanceScore,
 }) => {
   return (
     <LinearGradient
@@ -64,6 +66,15 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
           />
           <Text style={styles.CardRatingText}>{average_rating}</Text>
         </View>
+        
+        {/* Relevance Score for Search Results */}
+        {relevanceScore && relevanceScore > 0.5 && (
+          <View style={styles.RelevanceContainer}>
+            <Text style={styles.RelevanceText}>
+              {Math.round(relevanceScore * 100)}% match
+            </Text>
+          </View>
+        )}
       </ImageBackground>
       <Text style={styles.CardTitle}>{name}</Text>
       <Text style={styles.CardSubtitle}>{special_ingredient}</Text>
@@ -150,6 +161,19 @@ const styles = StyleSheet.create({
   },
   CardPrice: {
     color: COLORS.primaryWhiteHex,
+  },
+  RelevanceContainer: {
+    backgroundColor: COLORS.primaryBlackRGBA,
+    padding: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+  },
+  RelevanceText: {
+    fontFamily: FONTFAMILY.poppins_light,
+    color: COLORS.primaryWhiteHex,
+    fontSize: FONTSIZE.size_10,
   },
 });
 
