@@ -31,6 +31,9 @@ import {
   getDefaultFilters,
   hasActiveFilters as checkHasActiveFilters,
 } from '../utils/searchUtils';
+import { quickImageTest, testFirebaseIntegration } from '../utils/runImageTests';
+import { updateAllProductImages } from '../utils/updateFirebaseImages';
+import { completeImageSetup, testCartAndFavorites } from '../utils/adminTools';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -71,6 +74,10 @@ const HomeScreen = ({navigation}: any) => {
   const useFirebase = useStore((state: any) => state.useFirebase);
   const error = useStore((state: any) => state.error);
   const clearError = useStore((state: any) => state.clearError);
+  
+  // Image fixing functions
+  const fixCartItemImages = useStore((state: any) => state.fixCartItemImages);
+  const fixFavoritesImages = useStore((state: any) => state.fixFavoritesImages);
 
   const [categories, setCategories] = useState(
     getCategoriesFromData(CoffeeList),
@@ -101,6 +108,13 @@ const HomeScreen = ({navigation}: any) => {
       loadPopularProducts(); // Load popular products
     }
   }, [useFirebase, loadProducts, loadPopularProducts]);
+
+  // Fix existing cart and favorites images on app load
+  useEffect(() => {
+    console.log('🔧 Fixing existing cart and favorites images...');
+    fixCartItemImages();
+    fixFavoritesImages();
+  }, [fixCartItemImages, fixFavoritesImages]);
 
   // Show error message if Firebase loading fails
   useEffect(() => {
@@ -198,6 +212,10 @@ const HomeScreen = ({navigation}: any) => {
       ToastAndroid.SHORT,
       ToastAndroid.CENTER,
     );
+    
+    // Quick test to verify cart images are working (remove this after testing)
+    console.log('🖼️ Cart item added with image:', imagelink_square);
+    console.log('📝 Cart item type:', typeof imagelink_square);
   };
   // Refresh function for pull-to-refresh with timeout
   const onRefresh = async () => {
@@ -568,8 +586,10 @@ const styles = StyleSheet.create({
     paddingLeft: SPACING.space_30,
   },
   searchBarContainer: {
-    marginHorizontal: SPACING.space_30,
+    marginHorizontal: SPACING.space_20,
     marginBottom: SPACING.space_10,
+    marginTop: SPACING.space_10,
+    marginVertical: SPACING.space_10,
   },
   searchBarContent: {
     flexDirection: 'row',
