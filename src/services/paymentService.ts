@@ -9,7 +9,7 @@ import authService from './authService';
 
 // Constants for payment configuration
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg';
-export const BACKEND_URL = 'http://192.168.1.3:3000'; // Local development server
+export const BACKEND_URL = 'http://192.168.1.7:3000'; // Local development server
 
 export interface PaymentDetails {
   paymentMethod: 'stripe' | 'momo' | 'cash';
@@ -225,33 +225,67 @@ class PaymentService {
   // Process MoMo Payment
   async processMoMoPayment(paymentDetails: PaymentDetails): Promise<PaymentResult> {
     try {
-      // Convert USD to VND (approximate rate)
-      const vndAmount = Math.round(paymentDetails.amount * 23000);
+      // Convert USD to VND (approximate rate: 1 USD = 24,000 VND)
+      const vndAmount = Math.round(paymentDetails.amount * 24000);
+      
+      // Ensure minimum amount (MoMo requires minimum 1,000 VND)
+      const finalAmount = Math.max(vndAmount, 1000);
 
-      const orderId = 'ORDER_' + Date.now();
+      const orderId = 'COFFEE_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+      
+      console.log('Creating MoMo payment with:', {
+        usdAmount: paymentDetails.amount,
+        vndAmount: finalAmount,
+        orderId
+      });
+      
+      const requestBody = {
+        amount: finalAmount,
+        orderInfo: `The Coffee House - ${paymentDetails.orderItems.length} items`,
+        orderId: orderId,
+        redirectUrl: 'thecoffee://momo-success',
+        ipnUrl: `${BACKEND_URL}/momo/ipn`,
+        extraData: {
+          customerInfo: paymentDetails.customerInfo,
+          orderItems: paymentDetails.orderItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.prices?.[0]?.quantity || 1,
+            price: item.prices?.[0]?.price || '0.00'
+          })),
+          originalAmount: paymentDetails.amount,
+          currency: paymentDetails.currency
+        }
+      };
+      
+      console.log('MoMo request body:', requestBody);
+
       const response = await fetch(`${BACKEND_URL}/momo/create-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          amount: vndAmount,
-          orderInfo: `Coffee order - ${paymentDetails.orderItems.length} items`,
-          orderId: orderId,
-          redirectUrl: 'thecoffee://momo-redirect',
-          ipnUrl: `${BACKEND_URL}/momo/ipn`,
-          extraData: JSON.stringify({
-            customerInfo: paymentDetails.customerInfo,
-            orderItems: paymentDetails.orderItems,
-          }),
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      const responseText = await response.text();
+      console.log('MoMo response status:', response.status);
+      console.log('MoMo response text:', responseText);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || errorData.message || errorMessage;
+          console.error('MoMo API error details:', errorData);
+        } catch (parseError) {
+          console.error('Could not parse error response:', responseText);
+        }
+        throw new Error(errorMessage);
       }
 
-      const data = await response.json();
+      const data = JSON.parse(responseText);
+      console.log('MoMo response data:', data);
 
       if (data.success) {
         return {
@@ -261,7 +295,7 @@ class PaymentService {
           requiresAction: true,
         };
       } else {
-        throw new Error(data.error || 'MoMo payment failed');
+        throw new Error(data.error || data.localMessage || 'MoMo payment creation failed');
       }
     } catch (error: any) {
       console.error('MoMo payment error:', error);
@@ -342,36 +376,68 @@ class PaymentService {
   // Verify payment status (for async payments like MoMo)
   async verifyPaymentStatus(paymentId: string, method: string): Promise<PaymentResult> {
     try {
-      let endpoint = '';
+      console.log('Verifying payment:', { paymentId, method });
       
-      switch (method) {
-        case 'stripe':
-          endpoint = `/api/stripe/verify-payment/${paymentId}`;
-          break;
-        case 'momo':
-          endpoint = `/api/momo/verify-payment/${paymentId}`;
-          break;
-        default:
-          throw new Error('Invalid payment method for verification');
+      if (method === 'momo') {
+        // For MoMo, we need both orderId and requestId
+        // Extract requestId from paymentId if it contains it, or generate one
+        const requestId = paymentId + Date.now();
+        
+        const response = await fetch(`${BACKEND_URL}/momo/verify-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderId: paymentId,
+            requestId: requestId
+          }),
+        });
+
+        const responseText = await response.text();
+        console.log('MoMo verify response status:', response.status);
+        console.log('MoMo verify response text:', responseText);
+
+        if (!response.ok) {
+          let errorMessage = `HTTP error! status: ${response.status}`;
+          try {
+            const errorData = JSON.parse(responseText);
+            errorMessage = errorData.error || errorMessage;
+          } catch (parseError) {
+            // Response is not JSON
+          }
+          throw new Error(errorMessage);
+        }
+
+        const data = JSON.parse(responseText);
+        console.log('MoMo verify data:', data);
+        
+        return {
+          success: data.success && data.resultCode === 0,
+          paymentId: data.paymentId || paymentId,
+          error: data.success ? undefined : (data.message || 'Payment verification failed'),
+        };
+      } else {
+        // For other payment methods (Stripe, etc.)
+        const endpoint = `/api/${method}/verify-payment/${paymentId}`;
+        const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+          success: data.success,
+          paymentId: data.paymentId,
+          error: data.error,
+        };
       }
-
-      const response = await fetch(`${BACKEND_URL}${endpoint}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return {
-        success: data.success,
-        paymentId: data.paymentId,
-        error: data.error,
-      };
     } catch (error: any) {
       console.error('Payment verification error:', error);
       return {
