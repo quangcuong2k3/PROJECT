@@ -308,6 +308,50 @@ const HomeScreen = ({navigation}: any) => {
             <Text style={styles.searchPlaceholder}>
               {searchText || 'Search coffee, beans...'}
             </Text>
+            
+            {/* Quick Action Buttons */}
+            <View style={styles.quickActionsContainer}>
+              {/* Voice Search Button */}
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation(); // Prevent parent TouchableOpacity from firing
+                  console.log('🎤 HomeScreen: Voice search button pressed');
+                  navigation.navigate('SearchResults', {
+                    initialSearchText: searchText,
+                    initialFilters: searchFilters,
+                    openVoiceSearch: true,
+                  });
+                }}
+                style={styles.quickActionButton}
+              >
+                <CustomIcon
+                  name="mic"
+                  size={FONTSIZE.size_14}
+                  color={COLORS.primaryLightGreyHex}
+                />
+              </TouchableOpacity>
+              
+              {/* Image Search Button */}
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation(); // Prevent parent TouchableOpacity from firing
+                  console.log('📷 HomeScreen: Image search button pressed');
+                  navigation.navigate('SearchResults', {
+                    initialSearchText: searchText,
+                    initialFilters: searchFilters,
+                    openImageSearch: true,
+                  });
+                }}
+                style={styles.quickActionButton}
+              >
+                <CustomIcon
+                  name="camera"
+                  size={FONTSIZE.size_14}
+                  color={COLORS.primaryLightGreyHex}
+                />
+              </TouchableOpacity>
+            </View>
+            
             {hasFiltersActive && (
               <View style={styles.filterIndicator}>
                 <CustomIcon
@@ -629,6 +673,14 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_12,
     fontFamily: FONTFAMILY.poppins_medium,
     color: COLORS.primaryLightGreyHex,
+  },
+  quickActionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.space_10,
+  },
+  quickActionButton: {
+    padding: SPACING.space_8,
   },
 });
 
