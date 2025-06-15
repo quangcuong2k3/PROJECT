@@ -6,9 +6,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import TabNavigator from './src/navigators/TabNavigator';
 import AuthNavigator from './src/navigators/AuthNavigator';
+import AdminTabNavigator from './src/navigators/AdminTabNavigator';
 import DetailsScreen from './src/screens/DetailsScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
 import SearchResultsScreen from './src/screens/SearchResultsScreen';
+import StockMovementsScreen from './src/screens/StockMovementsScreen';
 import {useStore} from './src/store/firebaseStore';
 import authService from './src/services/authService';
 import {COLORS} from './src/theme/theme';
@@ -111,6 +113,16 @@ const App = () => {
                 name="Payment"
                 component={PaymentScreen}
                 options={{animation: 'slide_from_bottom'}}
+              />
+              <Stack.Screen
+                name="AdminTabs"
+                component={AdminTabNavigator}
+                options={{animation: 'slide_from_right'}}
+              />
+              <Stack.Screen
+                name="StockMovements"
+                component={StockMovementsScreen}
+                options={{animation: 'slide_from_right'}}
               />
             </>
           ) : (
