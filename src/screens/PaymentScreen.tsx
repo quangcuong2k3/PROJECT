@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,10 @@ import {
   Alert,
   Linking,
   Platform,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import {
   BORDERRADIUS,
@@ -28,6 +32,8 @@ import EnhancedPaymentMethod from '../components/EnhancedPaymentMethod';
 import OrderConfirmationModal from '../components/OrderConfirmationModal';
 import paymentService, {PaymentDetails, PaymentResult} from '../services/paymentService';
 import locationService, {DetailedAddress} from '../services/locationService';
+
+const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
 interface PaymentMethodData {
   id: string;
@@ -53,7 +59,7 @@ const PAYMENT_METHODS: PaymentMethodData[] = [
     id: 'momo',
     name: 'momo',
     displayName: 'MoMo Wallet',
-    description: 'Vietnamese digital wallet',
+    description: 'Fast & secure Vietnamese e-wallet',
     supported: true,
     processingFee: 'Free',
     estimatedTime: 'Instant',
@@ -78,12 +84,18 @@ const PaymentScreen = ({navigation, route}: any) => {
   const user = useStore((state: any) => state.user);
   const userProfile = useStore((state: any) => state.userProfile);
 
+  // Animation references
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+
   // State management
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodData>(PAYMENT_METHODS[0]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<'delivery' | 'payment' | null>('delivery');
 
   // Customer information state
   const [customerInfo, setCustomerInfo] = useState({
@@ -101,6 +113,23 @@ const PaymentScreen = ({navigation, route}: any) => {
   } | null>(null);
 
   const [currentLocation, setCurrentLocation] = useState<DetailedAddress | null>(null);
+
+  // Animation effects
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   // Load user location and calculate delivery info
   useEffect(() => {
@@ -329,39 +358,92 @@ const PaymentScreen = ({navigation, route}: any) => {
     paymentResult: PaymentResult
   ) => {
     try {
-      // Open MoMo app or web URL
+      console.log('Attempting to open MoMo URL:', redirectUrl);
+      
+      // Try to open MoMo app or web URL
       const canOpen = await Linking.canOpenURL(redirectUrl);
+      console.log('Can open URL:', canOpen);
+      
       if (canOpen) {
         await Linking.openURL(redirectUrl);
         
-        // Show instructions to user
+        // Give user options after redirect
+        setTimeout(() => {
+          Alert.alert(
+            'Complete Payment in MoMo',
+            'Please complete your payment in the MoMo app. Once finished, return to this app.',
+            [
+              {
+                text: 'Cancel Payment',
+                style: 'cancel',
+                onPress: () => {
+                  console.log('Payment cancelled by user');
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Payment Cancelled',
+                    text2: 'Your order has been cancelled.',
+                    visibilityTime: 3000,
+                  });
+                },
+              },
+              {
+                text: 'Payment Completed',
+                onPress: async () => {
+                  try {
+                    setIsProcessingPayment(true);
+                    // Wait a moment for payment to process
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await verifyPaymentAndCreateOrder(paymentDetails, paymentResult);
+                  } catch (error) {
+                    console.error('Error verifying payment:', error);
+                    Alert.alert(
+                      'Verification Failed',
+                      'Could not verify your payment. Please contact support if money was deducted.',
+                      [{ text: 'OK' }]
+                    );
+                  } finally {
+                    setIsProcessingPayment(false);
+                  }
+                },
+              },
+            ]
+          );
+        }, 1000); // Small delay to let the app switch happen
+      } else {
+        // Fallback: show URL or instructions
         Alert.alert(
-          'Complete Payment in MoMo',
-          'You will be redirected to MoMo app to complete your payment. Once completed, you will be redirected back to the app.',
+          'MoMo Payment',
+          'MoMo app is not installed. Would you like to open the payment in your browser?',
           [
             {
               text: 'Cancel',
               style: 'cancel',
-              onPress: () => {
-                // Handle payment cancellation
-                console.log('Payment cancelled by user');
-              },
             },
             {
-              text: 'I have completed payment',
+              text: 'Open Browser',
               onPress: async () => {
-                // Verify payment status
-                await verifyPaymentAndCreateOrder(paymentDetails, paymentResult);
+                try {
+                  await Linking.openURL(redirectUrl);
+                } catch (browserError) {
+                  console.error('Error opening browser:', browserError);
+                  Alert.alert(
+                    'Error',
+                    'Could not open payment page. Please install MoMo app or check your internet connection.',
+                    [{ text: 'OK' }]
+                  );
+                }
               },
             },
           ]
         );
-      } else {
-        throw new Error('Cannot open MoMo app. Please install MoMo app first.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error handling payment redirect:', error);
-      throw error;
+      Alert.alert(
+        'Payment Error',
+        error.message || 'Could not process MoMo payment. Please try again.',
+        [{ text: 'OK' }]
+      );
     }
   };
 
@@ -389,176 +471,377 @@ const PaymentScreen = ({navigation, route}: any) => {
     }
   };
 
-  return (
-      <View style={styles.ScreenContainer}>
-        <StatusBar backgroundColor={COLORS.primaryBlackHex} />
+  const toggleSection = (section: 'delivery' | 'payment') => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
-        {showAnimation && (
-          <PopUpAnimation
-            style={styles.LottieAnimation}
-            source={require('../lottie/successful.json')}
+  const SectionHeader = ({
+    title,
+    subtitle,
+    icon,
+    expanded,
+    onToggle,
+    rightElement,
+  }: {
+    title: string;
+    subtitle?: string;
+    icon: string;
+    expanded: boolean;
+    onToggle: () => void;
+    rightElement?: React.ReactNode;
+  }) => (
+    <TouchableOpacity 
+      style={styles.sectionHeader} 
+      onPress={onToggle}
+      activeOpacity={0.7}>
+      <View style={styles.sectionHeaderLeft}>
+        <View style={styles.sectionIconContainer}>
+          <CustomIcon
+            name={icon as any}
+            size={FONTSIZE.size_20}
+            color={COLORS.primaryOrangeHex}
           />
+        </View>
+        <View style={styles.sectionHeaderText}>
+          <Text style={styles.sectionHeaderTitle}>{title}</Text>
+          {subtitle && (
+            <Text style={styles.sectionHeaderSubtitle}>{subtitle}</Text>
+          )}
+        </View>
+      </View>
+      <View style={styles.sectionHeaderRight}>
+        {rightElement}
+        <CustomIcon
+          name={expanded ? 'chevron-up-outline' : 'chevron-down-outline'}
+          size={FONTSIZE.size_20}
+          color={COLORS.primaryLightGreyHex}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+
+  // Calculate animated header opacity
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.9],
+    extrapolate: 'clamp',
+  });
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -10],
+    extrapolate: 'clamp',
+  });
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.ScreenContainer}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <StatusBar backgroundColor={COLORS.primaryBlackHex} barStyle="light-content" />
+
+      {showAnimation && (
+        <PopUpAnimation
+          style={styles.LottieAnimation}
+          source={require('../lottie/successful.json')}
+        />
+      )}
+
+      {/* Enhanced Header */}
+      <Animated.View 
+        style={[
+          styles.HeaderContainer,
+          {
+            opacity: headerOpacity,
+            transform: [{ translateY: headerTranslateY }],
+          },
+        ]}>
+        <TouchableOpacity 
+          onPress={() => navigation.pop()}
+          style={styles.backButton}
+          activeOpacity={0.7}>
+          <GradientBGIcon
+            name="arrow-back"
+            color={COLORS.primaryLightGreyHex}
+            size={FONTSIZE.size_16}
+          />
+        </TouchableOpacity>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.HeaderText}>Payment</Text>
+          <Text style={styles.HeaderSubtext}>Secure checkout process</Text>
+        </View>
+        <View style={styles.EmptyView} />
+      </Animated.View>
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.ScrollViewContainer}
+        style={[
+          styles.ScrollView,
+          {
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          },
+        ]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
         )}
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.ScrollViewFlex}>
-          {/* Header */}
-          <View style={styles.HeaderContainer}>
-            <TouchableOpacity onPress={() => navigation.pop()}>
-              <GradientBGIcon
-                name="arrow-back"
-                color={COLORS.primaryLightGreyHex}
-                size={FONTSIZE.size_16}
-              />
-            </TouchableOpacity>
-            <Text style={styles.HeaderText}>Payment</Text>
-            <View style={styles.EmptyView} />
-          </View>
-
-          {/* Customer Information */}
-          <View style={styles.SectionContainer}>
-            <Text style={styles.SectionTitle}>Delivery Information</Text>
-            
-            <View style={styles.CustomerInfoContainer}>
-              <TextInput
-                style={styles.TextInput}
-                placeholder="Full Name *"
-                placeholderTextColor={COLORS.secondaryLightGreyHex}
-                value={customerInfo.name}
-                onChangeText={text =>
-                  setCustomerInfo(prev => ({...prev, name: text}))
-                }
-              />
-              
-              <TextInput
-                style={styles.TextInput}
-                placeholder="Email Address *"
-                placeholderTextColor={COLORS.secondaryLightGreyHex}
-                value={customerInfo.email}
-                onChangeText={text =>
-                  setCustomerInfo(prev => ({...prev, email: text}))
-                }
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-              
-              <TextInput
-                style={styles.TextInput}
-                placeholder="Phone Number *"
-                placeholderTextColor={COLORS.secondaryLightGreyHex}
-                value={customerInfo.phone}
-                onChangeText={text =>
-                  setCustomerInfo(prev => ({...prev, phone: text}))
-                }
-                keyboardType="phone-pad"
-              />
-              
-              <View style={styles.AddressInputContainer}>
-                <TextInput
-                  style={[styles.TextInput, styles.AddressInput]}
-                  placeholder="Delivery Address *"
-                  placeholderTextColor={COLORS.secondaryLightGreyHex}
-                  value={customerInfo.address}
-                  onChangeText={text =>
-                    setCustomerInfo(prev => ({...prev, address: text}))
-                  }
-                  multiline
-                  numberOfLines={3}
-                />
-                <TouchableOpacity
-                  style={styles.LocationButton}
-                  onPress={handleUseCurrentLocation}
-                  disabled={isLoadingLocation}>
+        scrollEventThrottle={16}>
+        
+        {/* Delivery Information Section */}
+        <View style={styles.Section}>
+          <SectionHeader
+            title="Delivery Information"
+            subtitle="Where should we deliver your order?"
+            icon="location-outline"
+            expanded={expandedSection === 'delivery'}
+            onToggle={() => toggleSection('delivery')}
+            rightElement={
+              deliveryInfo && (
+                <View style={styles.deliveryStatusBadge}>
                   <CustomIcon
-                    name="location"
-                    size={FONTSIZE.size_20}
-                    color={isLoadingLocation ? COLORS.primaryGreyHex : COLORS.primaryOrangeHex}
+                    name="checkmark-circle"
+                    size={FONTSIZE.size_14}
+                    color={'#00D4AA'}
                   />
-                  <Text style={styles.LocationButtonText}>
-                    {isLoadingLocation ? 'Loading...' : 'Use Current Location'}
-                  </Text>
-                </TouchableOpacity>
+                </View>
+              )
+            }
+          />
+          
+          {expandedSection === 'delivery' && (
+            <Animated.View style={styles.SectionContent}>
+              <View style={styles.FormContainer}>
+                <View style={styles.InputGroup}>
+                  <Text style={styles.InputLabel}>Full Name *</Text>
+                  <TextInput
+                    style={styles.TextInput}
+                    placeholder="Enter your full name"
+                    placeholderTextColor={COLORS.secondaryLightGreyHex}
+                    value={customerInfo.name}
+                    onChangeText={text =>
+                      setCustomerInfo(prev => ({...prev, name: text}))
+                    }
+                  />
+                </View>
+                
+                <View style={styles.InputRow}>
+                  <View style={[styles.InputGroup, styles.InputHalf]}>
+                    <Text style={styles.InputLabel}>Email Address *</Text>
+                    <TextInput
+                      style={styles.TextInput}
+                      placeholder="your@email.com"
+                      placeholderTextColor={COLORS.secondaryLightGreyHex}
+                      value={customerInfo.email}
+                      onChangeText={text =>
+                        setCustomerInfo(prev => ({...prev, email: text}))
+                      }
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  </View>
+                  
+                  <View style={[styles.InputGroup, styles.InputHalf]}>
+                    <Text style={styles.InputLabel}>Phone Number *</Text>
+                    <TextInput
+                      style={styles.TextInput}
+                      placeholder="0901234567"
+                      placeholderTextColor={COLORS.secondaryLightGreyHex}
+                      value={customerInfo.phone}
+                      onChangeText={text =>
+                        setCustomerInfo(prev => ({...prev, phone: text}))
+                      }
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+                </View>
+                
+                <View style={styles.InputGroup}>
+                  <Text style={styles.InputLabel}>Delivery Address *</Text>
+                  <TextInput
+                    style={[styles.TextInput, styles.AddressInput]}
+                    placeholder="Enter your complete delivery address"
+                    placeholderTextColor={COLORS.secondaryLightGreyHex}
+                    value={customerInfo.address}
+                    onChangeText={text =>
+                      setCustomerInfo(prev => ({...prev, address: text}))
+                    }
+                    multiline
+                    numberOfLines={3}
+                    textAlignVertical="top"
+                  />
+                  
+                  <TouchableOpacity
+                    style={styles.LocationButton}
+                    onPress={handleUseCurrentLocation}
+                    disabled={isLoadingLocation}
+                    activeOpacity={0.7}>
+                    {isLoadingLocation ? (
+                      <ActivityIndicator size="small" color={COLORS.primaryOrangeHex} />
+                    ) : (
+                      <CustomIcon
+                        name="location-outline"
+                        size={FONTSIZE.size_18}
+                        color={COLORS.primaryOrangeHex}
+                      />
+                    )}
+                    <Text style={styles.LocationButtonText}>
+                      {isLoadingLocation ? 'Getting location...' : 'Use Current Location'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
 
-            {/* Delivery Information Display */}
-            {deliveryInfo && (
-              <View style={styles.DeliveryInfoContainer}>
-                <Text style={styles.DeliveryInfoTitle}>Delivery Details</Text>
-                <View style={styles.DeliveryInfoRow}>
-                  <Text style={styles.DeliveryInfoLabel}>Distance:</Text>
-                  <Text style={styles.DeliveryInfoValue}>{deliveryInfo.distance} km</Text>
+              {/* Enhanced Delivery Information Display */}
+              {deliveryInfo && (
+                <View style={styles.DeliveryStatsContainer}>
+                  <Text style={styles.DeliveryStatsTitle}>Delivery Estimate</Text>
+                  <View style={styles.DeliveryStatsGrid}>
+                    <View style={styles.DeliveryStat}>
+                      <View style={styles.DeliveryStatIcon}>
+                        <CustomIcon
+                          name="speedometer-outline"
+                          size={FONTSIZE.size_20}
+                          color={COLORS.primaryOrangeHex}
+                        />
+                      </View>
+                      <Text style={styles.DeliveryStatValue}>{deliveryInfo.distance} km</Text>
+                      <Text style={styles.DeliveryStatLabel}>Distance</Text>
+                    </View>
+                    
+                    <View style={styles.DeliveryStat}>
+                      <View style={styles.DeliveryStatIcon}>
+                        <CustomIcon
+                          name="time-outline"
+                          size={FONTSIZE.size_20}
+                          color={COLORS.primaryOrangeHex}
+                        />
+                      </View>
+                      <Text style={styles.DeliveryStatValue}>{deliveryInfo.estimatedTime}</Text>
+                      <Text style={styles.DeliveryStatLabel}>Estimated Time</Text>
+                    </View>
+                    
+                    <View style={styles.DeliveryStat}>
+                      <View style={styles.DeliveryStatIcon}>
+                        <CustomIcon
+                          name="cash-outline"
+                          size={FONTSIZE.size_20}
+                          color={COLORS.primaryOrangeHex}
+                        />
+                      </View>
+                      <Text style={styles.DeliveryStatValue}>
+                        {deliveryInfo.fee.toLocaleString()} VND
+                      </Text>
+                      <Text style={styles.DeliveryStatLabel}>Delivery Fee</Text>
+                    </View>
+                  </View>
                 </View>
-                <View style={styles.DeliveryInfoRow}>
-                  <Text style={styles.DeliveryInfoLabel}>Estimated Time:</Text>
-                  <Text style={styles.DeliveryInfoValue}>{deliveryInfo.estimatedTime}</Text>
-                </View>
-                <View style={styles.DeliveryInfoRow}>
-                  <Text style={styles.DeliveryInfoLabel}>Delivery Fee:</Text>
-                  <Text style={styles.DeliveryInfoValue}>
-                    {deliveryInfo.fee.toLocaleString()} VND
-                  </Text>
-                </View>
+              )}
+            </Animated.View>
+          )}
+        </View>
+
+        {/* Payment Methods Section */}
+        <View style={styles.Section}>
+          <SectionHeader
+            title="Payment Method"
+            subtitle="Choose your preferred payment option"
+            icon="card-outline"
+            expanded={expandedSection === 'payment'}
+            onToggle={() => toggleSection('payment')}
+            rightElement={
+              <View style={styles.selectedMethodBadge}>
+                <Text style={styles.selectedMethodText}>
+                  {selectedPaymentMethod.displayName}
+                </Text>
               </View>
-            )}
-          </View>
+            }
+          />
+          
+          {expandedSection === 'payment' && (
+            <Animated.View style={styles.SectionContent}>
+              <View style={styles.PaymentMethodsContainer}>
+                {PAYMENT_METHODS.map((method) => (
+                  <EnhancedPaymentMethod
+                    key={method.id}
+                    paymentMethod={method}
+                    isSelected={selectedPaymentMethod.id === method.id}
+                    onSelect={handlePaymentMethodSelect}
+                    disabled={isProcessingPayment}
+                  />
+                ))}
+              </View>
+            </Animated.View>
+          )}
+        </View>
 
-          {/* Payment Methods */}
-          <View style={styles.SectionContainer}>
-            <Text style={styles.SectionTitle}>Payment Method</Text>
-            {PAYMENT_METHODS.map((method) => (
-              <EnhancedPaymentMethod
-                key={method.id}
-                paymentMethod={method}
-                isSelected={selectedPaymentMethod.id === method.id}
-                onSelect={handlePaymentMethodSelect}
-                disabled={isProcessingPayment}
-              />
-            ))}
-          </View>
-
-          {/* Additional Information for Cash on Delivery */}
-          {selectedPaymentMethod.id === 'cash' && (
-            <View style={styles.CashInfoContainer}>
+        {/* Payment Method Information */}
+        {selectedPaymentMethod.id === 'cash' && (
+          <View style={styles.InfoContainer}>
+            <View style={styles.InfoHeader}>
               <CustomIcon
-                name="information-circle"
+                name="information-circle-outline"
                 size={FONTSIZE.size_20}
                 color={COLORS.primaryOrangeHex}
               />
-              <Text style={styles.CashInfoText}>
-                Please ensure someone is available at the delivery address to receive and pay for the order. 
-                Exact change is appreciated.
-              </Text>
+              <Text style={styles.InfoTitle}>Cash on Delivery</Text>
             </View>
-          )}
-        </ScrollView>
+            <Text style={styles.InfoText}>
+              Please ensure someone is available at the delivery address to receive and pay for the order. 
+              Exact change is appreciated for a smooth transaction.
+            </Text>
+          </View>
+        )}
 
-        {/* Payment Footer */}
+        {selectedPaymentMethod.id === 'momo' && (
+          <View style={styles.InfoContainer}>
+            <View style={styles.InfoHeader}>
+              <CustomIcon
+                name="shield-checkmark-outline"
+                size={FONTSIZE.size_20}
+                color={COLORS.primaryOrangeHex}
+              />
+              <Text style={styles.InfoTitle}>MoMo Security</Text>
+            </View>
+            <Text style={styles.InfoText}>
+              Your payment is secured by MoMo's banking-grade encryption. 
+              You'll be redirected to the MoMo app to complete the transaction safely.
+            </Text>
+          </View>
+        )}
+      </Animated.ScrollView>
+
+      {/* Enhanced Payment Footer */}
+      <View style={styles.FooterContainer}>
         <PaymentFooter
-          buttonTitle={`Continue with ${selectedPaymentMethod.displayName}`}
+          buttonTitle={
+            isProcessingPayment 
+              ? 'Processing...' 
+              : `Continue with ${selectedPaymentMethod.displayName}`
+          }
           price={{
             price: deliveryInfo 
               ? (parseFloat(route.params.amount) + (deliveryInfo.fee / 23000)).toFixed(2)
               : route.params.amount,
             currency: '$'
           }}
-          buttonPressHandler={handleContinueToPayment}
-        />
-
-        {/* Order Confirmation Modal */}
-        <OrderConfirmationModal
-          visible={showConfirmationModal}
-          onClose={() => setShowConfirmationModal(false)}
-          onConfirm={handleConfirmOrder}
-          orderItems={CartList}
-          customerInfo={customerInfo}
-          paymentMethod={selectedPaymentMethod.id}
-          totalAmount={route.params.amount}
-          deliveryInfo={deliveryInfo || undefined}
-          isLoading={isProcessingPayment}
+                     buttonPressHandler={handleContinueToPayment}
         />
       </View>
+
+      {/* Order Confirmation Modal */}
+      <OrderConfirmationModal
+        visible={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmOrder}
+        orderItems={CartList}
+        customerInfo={customerInfo}
+        paymentMethod={selectedPaymentMethod.id}
+        totalAmount={route.params.amount}
+        deliveryInfo={deliveryInfo || undefined}
+        isLoading={isProcessingPayment}
+      />
+    </KeyboardAvoidingView>
   );
 };
 
@@ -566,69 +849,183 @@ const styles = StyleSheet.create({
   ScreenContainer: {
     flex: 1,
     backgroundColor: COLORS.primaryBlackHex,
+    paddingTop: SPACING.space_20,
   },
   LottieAnimation: {
     flex: 1,
   },
-  ScrollViewFlex: {
-    flexGrow: 1,
-    paddingBottom: SPACING.space_20,
-  },
   HeaderContainer: {
     paddingHorizontal: SPACING.space_24,
-    paddingVertical: SPACING.space_15,
+    paddingVertical: SPACING.space_20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.primaryBlackHex,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(37, 37, 37, 0.3)',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   HeaderText: {
-    fontFamily: FONTFAMILY.poppins_semibold,
+    fontFamily: FONTFAMILY.poppins_bold,
     fontSize: FONTSIZE.size_20,
     color: COLORS.primaryWhiteHex,
+    letterSpacing: 0.5,
+  },
+  HeaderSubtext: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.secondaryLightGreyHex,
+    marginTop: 2,
   },
   EmptyView: {
-    height: SPACING.space_36,
-    width: SPACING.space_36,
+    width: 44,
+    height: 44,
   },
-  SectionContainer: {
-    padding: SPACING.space_20,
+  ScrollView: {
+    flex: 1,
   },
-  SectionTitle: {
-    fontFamily: FONTFAMILY.poppins_semibold,
+  ScrollViewContainer: {
+    paddingBottom: 100,  
+  },
+  Section: {
+    marginBottom: SPACING.space_20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.space_24,
+    paddingVertical: SPACING.space_20,
+    backgroundColor: 'rgba(37, 37, 37, 0.4)',
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primaryOrangeHex,
+  },
+  sectionHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  sectionIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(209, 120, 66, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.space_16,
+  },
+  sectionHeaderText: {
+    flex: 1,
+  },
+  sectionHeaderTitle: {
     fontSize: FONTSIZE.size_18,
-    color: COLORS.primaryOrangeHex,
-    marginBottom: SPACING.space_15,
+    fontFamily: FONTFAMILY.poppins_semibold,
+    color: COLORS.primaryWhiteHex,
+    lineHeight: 24,
   },
-  CustomerInfoContainer: {
+  sectionHeaderSubtitle: {
+    fontSize: FONTSIZE.size_12,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.secondaryLightGreyHex,
+    marginTop: 2,
+  },
+  sectionHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.space_8,
+  },
+  deliveryStatusBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 212, 170, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedMethodBadge: {
+    backgroundColor: 'rgba(209, 120, 66, 0.15)',
+    paddingHorizontal: SPACING.space_8,
+    paddingVertical: SPACING.space_4,
+    borderRadius: BORDERRADIUS.radius_8,
+  },
+  selectedMethodText: {
+    fontSize: FONTSIZE.size_10,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryOrangeHex,
+  },
+  SectionContent: {
+    paddingHorizontal: SPACING.space_24,
+    paddingTop: SPACING.space_12,
+  },
+  FormContainer: {
     backgroundColor: COLORS.primaryDarkGreyHex,
-    borderRadius: BORDERRADIUS.radius_15,
-    padding: SPACING.space_15,
-    marginBottom: SPACING.space_15,
+    borderRadius: BORDERRADIUS.radius_20,
+    padding: SPACING.space_24,
+    marginBottom: SPACING.space_16,
+  },
+  InputGroup: {
+    marginBottom: SPACING.space_20,
+  },
+  InputRow: {
+    flexDirection: 'row',
+    gap: SPACING.space_12,
+  },
+  InputHalf: {
+    flex: 1,
+  },
+  InputLabel: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryWhiteHex,
+    marginBottom: SPACING.space_8,
   },
   TextInput: {
     backgroundColor: COLORS.primaryGreyHex,
-    borderRadius: BORDERRADIUS.radius_10,
-    padding: SPACING.space_15,
+    borderRadius: BORDERRADIUS.radius_15,
+    padding: SPACING.space_16,
     fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryWhiteHex,
-    marginBottom: SPACING.space_12,
-  },
-  AddressInputContainer: {
-    marginBottom: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(82, 82, 82, 0.3)',
   },
   AddressInput: {
     minHeight: 80,
     textAlignVertical: 'top',
+    paddingTop: SPACING.space_16,
   },
   LocationButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.primaryBlackHex,
-    borderRadius: BORDERRADIUS.radius_10,
+    backgroundColor: 'rgba(209, 120, 66, 0.1)',
+    borderRadius: BORDERRADIUS.radius_15,
     padding: SPACING.space_12,
-    marginTop: SPACING.space_8,
+    marginTop: SPACING.space_12,
+    borderWidth: 1,
+    borderColor: 'rgba(209, 120, 66, 0.2)',
   },
   LocationButtonText: {
     fontFamily: FONTFAMILY.poppins_medium,
@@ -636,47 +1033,94 @@ const styles = StyleSheet.create({
     color: COLORS.primaryOrangeHex,
     marginLeft: SPACING.space_8,
   },
-  DeliveryInfoContainer: {
+  DeliveryStatsContainer: {
     backgroundColor: COLORS.primaryDarkGreyHex,
-    borderRadius: BORDERRADIUS.radius_15,
-    padding: SPACING.space_15,
+    borderRadius: BORDERRADIUS.radius_20,
+    padding: SPACING.space_20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  DeliveryInfoTitle: {
+  DeliveryStatsTitle: {
+    fontSize: FONTSIZE.size_16,
     fontFamily: FONTFAMILY.poppins_semibold,
-    fontSize: FONTSIZE.size_14,
     color: COLORS.primaryWhiteHex,
-    marginBottom: SPACING.space_10,
+    marginBottom: SPACING.space_16,
+    textAlign: 'center',
   },
-  DeliveryInfoRow: {
+  DeliveryStatsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  DeliveryStat: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  DeliveryStatIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(209, 120, 66, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: SPACING.space_8,
   },
-  DeliveryInfoLabel: {
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_12,
-    color: COLORS.secondaryLightGreyHex,
-  },
-  DeliveryInfoValue: {
-    fontFamily: FONTFAMILY.poppins_medium,
-    fontSize: FONTSIZE.size_12,
+  DeliveryStatValue: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_bold,
     color: COLORS.primaryWhiteHex,
+    textAlign: 'center',
   },
-  CashInfoContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(209, 120, 66, 0.1)',
-    borderRadius: BORDERRADIUS.radius_15,
-    padding: SPACING.space_15,
-    margin: SPACING.space_20,
-    marginTop: 0,
-  },
-  CashInfoText: {
+  DeliveryStatLabel: {
+    fontSize: FONTSIZE.size_10,
     fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_12,
+    color: COLORS.secondaryLightGreyHex,
+    marginTop: SPACING.space_4,
+    textAlign: 'center',
+  },
+  PaymentMethodsContainer: {
+    gap: SPACING.space_12,
+  },
+  InfoContainer: {
+    backgroundColor: 'rgba(209, 120, 66, 0.1)',
+    borderRadius: BORDERRADIUS.radius_20,
+    padding: SPACING.space_20,
+    marginHorizontal: SPACING.space_24,
+    marginBottom: SPACING.space_16,
+    borderWidth: 1,
+    borderColor: 'rgba(209, 120, 66, 0.2)',
+  },
+  InfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.space_12,
+  },
+  InfoTitle: {
+    fontSize: FONTSIZE.size_16,
+    fontFamily: FONTFAMILY.poppins_semibold,
     color: COLORS.primaryOrangeHex,
     marginLeft: SPACING.space_12,
-    flex: 1,
+  },
+  InfoText: {
+    fontSize: FONTSIZE.size_12,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.primaryOrangeHex,
     lineHeight: 18,
+    opacity: 0.9,
+  },
+  FooterContainer: {
+    backgroundColor: COLORS.primaryBlackHex,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(37, 37, 37, 0.5)',
+    paddingTop: SPACING.space_12,
   },
 });
 
