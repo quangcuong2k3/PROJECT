@@ -27,6 +27,7 @@ import {
   //remove,
 } from 'firebase/database';
 import {firestore, storage, realtimeDb} from '../../firebaseconfig';
+import { updateProductWithLocalImages } from '../utils/imageMapping';
 
 // Types
 export interface Price {
@@ -143,10 +144,14 @@ export const fetchProducts = async (
       snapshot.forEach(document => {
         const data = document.data();
         console.log(`  - Found: ${document.id} (${data.name})`);
-        products.push({
+        
+        // Convert Firebase URLs to local image requires
+        const productWithLocalImages = updateProductWithLocalImages({
           id: document.id,
           ...data,
-        } as Product);
+        });
+        
+        products.push(productWithLocalImages as Product);
       });
     } else {
       // Fetch from both collections
@@ -155,10 +160,14 @@ export const fetchProducts = async (
       coffeesSnapshot.forEach(document => {
         const data = document.data();
         console.log(`  - Found coffee: ${document.id} (${data.name})`);
-        products.push({
+        
+        // Convert Firebase URLs to local image requires
+        const productWithLocalImages = updateProductWithLocalImages({
           id: document.id,
           ...data,
-        } as Product);
+        });
+        
+        products.push(productWithLocalImages as Product);
       });
 
       console.log('📦 Fetching from beans collection...');
@@ -166,14 +175,19 @@ export const fetchProducts = async (
       beansSnapshot.forEach(document => {
         const data = document.data();
         console.log(`  - Found bean: ${document.id} (${data.name})`);
-        products.push({
+        
+        // Convert Firebase URLs to local image requires
+        const productWithLocalImages = updateProductWithLocalImages({
           id: document.id,
           ...data,
-        } as Product);
+        });
+        
+        products.push(productWithLocalImages as Product);
       });
     }
 
     console.log(`✅ Total fetched: ${products.length} products from Firebase`);
+    console.log('🖼️ All image URLs converted to local requires');
     return products;
   } catch (error) {
     console.error('❌ Error fetching products:', error);
@@ -193,10 +207,14 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
     if (!docSnap.empty) {
       const document = docSnap.docs[0];
       console.log(`✅ Found coffee: ${document.id}`);
-      return {
+      
+      // Convert Firebase URLs to local image requires
+      const productWithLocalImages = updateProductWithLocalImages({
         id: document.id,
         ...document.data(),
-      } as Product;
+      });
+      
+      return productWithLocalImages as Product;
     }
 
     // Try beans collection
@@ -207,10 +225,14 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
     if (!docSnap.empty) {
       const document = docSnap.docs[0];
       console.log(`✅ Found bean: ${document.id}`);
-      return {
+      
+      // Convert Firebase URLs to local image requires
+      const productWithLocalImages = updateProductWithLocalImages({
         id: document.id,
         ...document.data(),
-      } as Product;
+      });
+      
+      return productWithLocalImages as Product;
     }
 
     console.log(`❌ Product not found: ${id}`);
