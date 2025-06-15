@@ -29,6 +29,7 @@ import {
 } from '../services/inventoryService';
 import authService, {UserProfile} from '../services/authService';
 import {User} from 'firebase/auth';
+import { updateProductWithLocalImages } from '../utils/imageMapping';
 
 // Extended Price interface for cart items that includes quantity
 export interface CartPrice extends Price {
@@ -137,10 +138,12 @@ interface StoreActions {
   decrementCartItemQuantity: (id: string, size: string) => void;
   removeFromCart: (id: string, size: string) => void;
   clearCart: () => void;
+  fixCartItemImages: () => void;
 
   // Favorites operations
   addToFavoriteList: (type: string, id: string) => Promise<void>;
   deleteFromFavoriteList: (type: string, id: string) => Promise<void>;
+  fixFavoritesImages: () => void;
   
   // Order operations
   sanitizeCartItemsForStore: (cartItems: CartItem[]) => CartItem[];
@@ -148,6 +151,7 @@ interface StoreActions {
     paymentDetails: any,
   ) => Promise<{success: boolean; error?: string}>;
   loadUserOrders: () => Promise<void>;
+  loadOrderHistory: () => Promise<void>;
 
   // Authentication
   signIn: (email: string, password: string) => Promise<void>;
@@ -303,14 +307,17 @@ export const useStore = create<Store>()(
       addToCart: (cartItem: CartItem) =>
         set(
           produce((state: StoreState) => {
+            // Convert Firebase URLs to local images before adding to cart
+            const cartItemWithLocalImages = updateProductWithLocalImages(cartItem);
+            
             let found = false;
             for (let i = 0; i < state.CartList.length; i++) {
-              if (state.CartList[i].id === cartItem.id) {
+              if (state.CartList[i].id === cartItemWithLocalImages.id) {
                 found = true;
                 let j;
                 for (j = 0; j < state.CartList[i].prices.length; j++) {
                   if (
-                    state.CartList[i].prices[j].size === cartItem.prices[0].size
+                    state.CartList[i].prices[j].size === cartItemWithLocalImages.prices[0].size
                   ) {
                     state.CartList[i].prices[j].quantity =
                       (state.CartList[i].prices[j].quantity || 1) + 1;
@@ -319,7 +326,7 @@ export const useStore = create<Store>()(
                 }
                 if (j === state.CartList[i].prices.length) {
                   state.CartList[i].prices.push({
-                    ...cartItem.prices[0],
+                    ...cartItemWithLocalImages.prices[0],
                     quantity: 1,
                   });
                 }
@@ -337,8 +344,8 @@ export const useStore = create<Store>()(
             }
             if (!found) {
               state.CartList.push({
-                ...cartItem,
-                prices: [{...cartItem.prices[0], quantity: 1}],
+                ...cartItemWithLocalImages,
+                prices: [{...cartItemWithLocalImages.prices[0], quantity: 1}],
               });
             }
           }),
@@ -416,6 +423,20 @@ export const useStore = create<Store>()(
 
       clearCart: () => set({CartList: [], CartPrice: '0.00'}),
 
+      // Fix existing cart items to use local images
+      fixCartItemImages: () =>
+        set(
+          produce((state: StoreState) => {
+            console.log('🔄 Fixing cart item images...');
+            state.CartList = state.CartList.map(item => {
+              const updatedItem = updateProductWithLocalImages(item);
+              console.log(`✅ Fixed images for: ${item.name}`);
+              return updatedItem;
+            });
+            console.log('🎉 All cart items updated with local images');
+          }),
+        ),
+
       // Favorites operations (enhanced with Firebase sync)
       addToFavoriteList: async (type: string, id: string) => {
         set(
@@ -427,7 +448,9 @@ export const useStore = create<Store>()(
                 fav => fav.id === id,
               );
               if (existingIndex === -1) {
-                state.FavoritesList.push(product);
+                // Ensure product has local images when adding to favorites
+                const productWithLocalImages = updateProductWithLocalImages(product);
+                state.FavoritesList.push(productWithLocalImages);
               }
             }
           }),
@@ -467,6 +490,20 @@ export const useStore = create<Store>()(
           }
         }
       },
+
+      // Fix existing favorites to use local images
+      fixFavoritesImages: () =>
+        set(
+          produce((state: StoreState) => {
+            console.log('🔄 Fixing favorites images...');
+            state.FavoritesList = state.FavoritesList.map(item => {
+              const updatedItem = updateProductWithLocalImages(item);
+              console.log(`✅ Fixed favorite images for: ${item.name}`);
+              return updatedItem;
+            });
+            console.log('🎉 All favorites updated with local images');
+          }),
+        ),
 
       // Sanitize cart items for Firebase compatibility
       sanitizeCartItemsForStore: (cartItems: CartItem[]): CartItem[] => {
@@ -633,6 +670,12 @@ export const useStore = create<Store>()(
               'Failed to load orders: ' + (error.message || 'Unknown error'),
           });
         }
+      },
+
+      // Load order history (alias for loadUserOrders for backward compatibility)
+      loadOrderHistory: async () => {
+        const currentState = get();
+        await currentState.loadUserOrders();
       },
 
       // Authentication
