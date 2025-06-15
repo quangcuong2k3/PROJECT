@@ -93,7 +93,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Admin"
         component={AdminScreen}
         options={{
@@ -108,7 +108,7 @@ const TabNavigator = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
