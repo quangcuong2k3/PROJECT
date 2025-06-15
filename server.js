@@ -125,19 +125,59 @@ app.post('/momo/create-payment', async (req, res) => {
     const partnerCode = process.env.MOMO_PARTNER_CODE;
     const accessKey = process.env.MOMO_ACCESS_KEY;
     const secretkey = process.env.MOMO_SECRET_KEY;
+    
+    // Validate environment variables
+    if (!partnerCode || !accessKey || !secretkey) {
+      console.error('Missing MoMo credentials in environment variables');
+      return res.status(500).json({
+        success: false,
+        error: 'MoMo payment configuration is incomplete. Please contact administrator.',
+        details: {
+          partnerCode: !!partnerCode,
+          accessKey: !!accessKey,
+          secretkey: !!secretkey
+        }
+      });
+    }
+    
+    // Validate required parameters
+    if (!amount || !orderInfo || !orderId || !redirectUrl || !ipnUrl) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters',
+        required: ['amount', 'orderInfo', 'orderId', 'redirectUrl', 'ipnUrl']
+      });
+    }
+    
     const requestId = orderId + new Date().getTime();
     const requestType = "captureWallet";
-    const extraDataStr = extraData || "";
+    const extraDataStr = extraData ? JSON.stringify(extraData) : "";
     
-    // Create signature
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraDataStr}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
+    // Validate amount is positive integer
+    const validAmount = parseInt(amount);
+    if (isNaN(validAmount) || validAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid amount. Amount must be a positive integer.',
+        providedAmount: amount
+      });
+    }
+    
+    // Create signature - MoMo requires specific parameter order
+    const rawSignature = `accessKey=${accessKey}&amount=${validAmount}&extraData=${extraDataStr}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
     const signature = crypto.createHmac('sha256', secretkey).update(rawSignature).digest('hex');
+    
+    console.log('=== Signature Debug ===');
+    console.log('Secret Key Length:', secretkey.length);
+    console.log('Raw Signature String:', rawSignature);
+    console.log('Generated Signature:', signature);
+    console.log('=====================');
     
     const requestBody = {
       partnerCode,
       accessKey,
       requestId,
-      amount,
+      amount: validAmount,
       orderId,
       orderInfo,
       redirectUrl,
@@ -145,19 +185,33 @@ app.post('/momo/create-payment', async (req, res) => {
       extraData: extraDataStr,
       requestType,
       signature,
-      lang: 'en'
+      lang: 'vi'
     };
     
-    console.log('MoMo request body:', requestBody);
+    console.log('=== MoMo Request Debug ===');
+    console.log('Partner Code:', partnerCode);
+    console.log('Access Key:', accessKey ? 'SET' : 'NOT SET');
+    console.log('Secret Key:', secretkey ? 'SET' : 'NOT SET');
+    console.log('Amount:', validAmount);
+    console.log('Order ID:', orderId);
+    console.log('Request ID:', requestId);
+    console.log('Raw Signature String:', rawSignature);
+    console.log('Generated Signature:', signature);
+    console.log('Full Request Body:', JSON.stringify(requestBody, null, 2));
+    console.log('========================');
     
     // Make request to MoMo
     const response = await axios.post('https://test-payment.momo.vn/v2/gateway/api/create', requestBody, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000 // 10 second timeout
     });
     
-    console.log('MoMo response:', response.data);
+    console.log('=== MoMo API Response ===');
+    console.log('Status Code:', response.status);
+    console.log('Response Data:', JSON.stringify(response.data, null, 2));
+    console.log('========================');
     
     if (response.data.resultCode === 0) {
       res.json({
@@ -166,21 +220,50 @@ app.post('/momo/create-payment', async (req, res) => {
         deeplink: response.data.deeplink,
         qrCodeUrl: response.data.qrCodeUrl,
         orderId: response.data.orderId,
-        requestId: response.data.requestId
+        requestId: response.data.requestId,
+        amount: response.data.amount
       });
     } else {
+      console.error('MoMo payment creation failed with result code:', response.data.resultCode);
+      console.error('MoMo error details:', response.data);
       res.status(400).json({
         success: false,
         error: response.data.message || 'MoMo payment creation failed',
-        resultCode: response.data.resultCode
+        resultCode: response.data.resultCode,
+        localMessage: response.data.localMessage,
+        momoResponse: response.data // Include full response for debugging
       });
     }
   } catch (error) {
     console.error('Error creating MoMo payment:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: error.message 
-    });
+    
+    // Handle specific axios errors
+    if (error.response) {
+      console.error('=== MoMo API Error Response ===');
+      console.error('Error Status:', error.response.status);
+      console.error('Error Headers:', error.response.headers);
+      console.error('Error Data:', JSON.stringify(error.response.data, null, 2));
+      console.error('==============================');
+      
+      res.status(500).json({
+        success: false,
+        error: `MoMo API returned ${error.response.status}: ${error.response.data?.message || 'Unknown error'}`,
+        momoErrorCode: error.response.status,
+        momoErrorData: error.response.data
+      });
+    } else if (error.request) {
+      console.error('No response from MoMo API - Request details:', error.request);
+      res.status(502).json({
+        success: false,
+        error: 'No response from MoMo payment service. Please try again.'
+      });
+    } else {
+      console.error('MoMo request setup error:', error.message);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message || 'Internal server error'
+      });
+    }
   }
 });
 
@@ -194,6 +277,22 @@ app.post('/momo/verify-payment', async (req, res) => {
     const accessKey = process.env.MOMO_ACCESS_KEY;
     const secretkey = process.env.MOMO_SECRET_KEY;
     
+    // Validate environment variables
+    if (!partnerCode || !accessKey || !secretkey) {
+      return res.status(500).json({
+        success: false,
+        error: 'MoMo configuration is incomplete'
+      });
+    }
+    
+    // Validate required parameters
+    if (!orderId || !requestId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing orderId or requestId'
+      });
+    }
+    
     // Create signature for query
     const rawSignature = `accessKey=${accessKey}&orderId=${orderId}&partnerCode=${partnerCode}&requestId=${requestId}`;
     const signature = crypto.createHmac('sha256', secretkey).update(rawSignature).digest('hex');
@@ -204,32 +303,45 @@ app.post('/momo/verify-payment', async (req, res) => {
       requestId,
       orderId,
       signature,
-      lang: 'en'
+      lang: 'vi'
     };
+    
+    console.log('MoMo verify request:', requestBody);
     
     // Query payment status
     const response = await axios.post('https://test-payment.momo.vn/v2/gateway/api/query', requestBody, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000
     });
     
     console.log('MoMo verification response:', response.data);
     
     res.json({
-      success: true,
+      success: response.data.resultCode === 0,
       resultCode: response.data.resultCode,
       message: response.data.message,
       transId: response.data.transId,
       amount: response.data.amount,
-      payType: response.data.payType
+      payType: response.data.payType,
+      paymentId: orderId
     });
   } catch (error) {
     console.error('Error verifying MoMo payment:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: error.message 
-    });
+    
+    if (error.response) {
+      res.status(error.response.status).json({
+        success: false,
+        error: error.response.data?.message || 'MoMo verification API error',
+        details: error.response.data
+      });
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        error: error.message || 'Payment verification failed'
+      });
+    }
   }
 });
 
