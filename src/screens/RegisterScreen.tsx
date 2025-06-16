@@ -12,7 +12,9 @@ import {
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import GradientBGIcon from '../components/GradientBGIcon';
 import CustomIcon from '../components/CustomIcon';
+import UserAvatar from '../components/UserAvatar';
 import {useStore} from '../store/firebaseStore';
+import {generateInitials, sanitizeNameForAvatar} from '../utils/avatarUtils';
 
 const RegisterScreen = ({navigation}: any) => {
   const [firstName, setFirstName] = useState('');
@@ -49,9 +51,14 @@ const RegisterScreen = ({navigation}: any) => {
     try {
       await registerUser(email, password, firstName, lastName);
       if (!authError) {
+        // Generate initials for display (using sanitized names for avatar generation)
+        const sanitizedFirst = sanitizeNameForAvatar(firstName);
+        const sanitizedLast = sanitizeNameForAvatar(lastName);
+        const initials = generateInitials(sanitizedFirst, sanitizedLast);
+        
         Alert.alert(
           'Success',
-          'Account created successfully! Welcome to Coffee Shop!',
+          `Account created successfully! Welcome to Coffee Shop!\n\nYour profile shows: ${firstName} ${lastName}\nYour avatar initials: "${initials}"`,
           [
             {
               text: 'OK',
@@ -67,6 +74,14 @@ const RegisterScreen = ({navigation}: any) => {
 
   const navigateToLogin = () => {
     navigation.navigate('Login');
+  };
+
+  // Generate preview initials for display
+  const getPreviewInitials = () => {
+    if (!firstName && !lastName) return '';
+    const sanitizedFirst = sanitizeNameForAvatar(firstName);
+    const sanitizedLast = sanitizeNameForAvatar(lastName);
+    return generateInitials(sanitizedFirst, sanitizedLast);
   };
 
   return (
@@ -87,6 +102,24 @@ const RegisterScreen = ({navigation}: any) => {
             <Text style={styles.SubHeaderText}>
               Join us for the best coffee experience
             </Text>
+            
+            {/* Avatar Preview */}
+            {(firstName || lastName) && (
+              <View style={styles.AvatarPreviewContainer}>
+                <Text style={styles.AvatarPreviewLabel}>Your Avatar Preview:</Text>
+                <UserAvatar 
+                  firstName={sanitizeNameForAvatar(firstName)}
+                  lastName={sanitizeNameForAvatar(lastName)}
+                  size="medium"
+                />
+                <Text style={styles.AvatarPreviewText}>
+                  Initials: "{getPreviewInitials()}"
+                </Text>
+                <Text style={styles.AvatarPreviewSubtext}>
+                  Name: {firstName} {lastName}
+                </Text>
+              </View>
+            )}
           </View>
 
           {/* Form */}
@@ -245,6 +278,35 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     textAlign: 'center',
     marginTop: SPACING.space_4,
+  },
+  AvatarPreviewContainer: {
+    alignItems: 'center',
+    marginTop: SPACING.space_20,
+    padding: SPACING.space_16,
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: SPACING.space_12,
+    borderWidth: 1,
+    borderColor: COLORS.primaryGreyHex,
+  },
+  AvatarPreviewLabel: {
+    fontFamily: FONTFAMILY.poppins_medium,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryLightGreyHex,
+    marginBottom: SPACING.space_8,
+  },
+  AvatarPreviewText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+    marginTop: SPACING.space_8,
+    textAlign: 'center',
+  },
+  AvatarPreviewSubtext: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryLightGreyHex,
+    marginTop: SPACING.space_4,
+    textAlign: 'center',
   },
   FormContainer: {
     width: '100%',
