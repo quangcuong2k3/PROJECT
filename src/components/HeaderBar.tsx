@@ -2,13 +2,16 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import GradientBGIcon from './GradientBGIcon';
-import ProfilePic from './ProfilePic';
+import UserAvatar from './UserAvatar';
+import {useStore} from '../store/firebaseStore';
 
 interface HeaderBarProps {
   title?: string;
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({title}) => {
+  const {userProfile} = useStore();
+
   return (
     <View style={styles.HeaderContainer}>
       <GradientBGIcon
@@ -17,7 +20,14 @@ const HeaderBar: React.FC<HeaderBarProps> = ({title}) => {
         size={FONTSIZE.size_16}
       />
       <Text style={styles.HeaderText}>{title}</Text>
-      <ProfilePic />
+      <UserAvatar 
+        firstName={userProfile?.firstName}
+        lastName={userProfile?.lastName}
+        profileImageUrl={userProfile?.profileImageUrl}
+        avatarInitials={userProfile?.avatarInitials}
+        avatarBackgroundColor={userProfile?.avatarBackgroundColor}
+        size="small"
+      />
     </View>
   );
 };
