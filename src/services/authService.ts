@@ -21,6 +21,7 @@ import {
 } from 'firebase/firestore';
 import {auth, firestore} from '../../firebaseconfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {generateInitials, generateAvatarColor, sanitizeNameForAvatar} from '../utils/avatarUtils';
 
 export interface UserProfile {
   uid: string;
@@ -31,6 +32,9 @@ export interface UserProfile {
   phone?: string;
   address?: string;
   profileImageUrl?: string;
+  // Avatar data for users without profile images
+  avatarInitials?: string;
+  avatarBackgroundColor?: string;
   favoriteItems: string[];
   cartItems: any[];
   orderHistory: string[];
@@ -60,18 +64,29 @@ class AuthService {
       );
       const user = userCredential.user;
 
-      // Update user profile with display name
+      // Keep original names but generate avatar data from sanitized versions
+      const sanitizedFirstName = sanitizeNameForAvatar(firstName);
+      const sanitizedLastName = sanitizeNameForAvatar(lastName);
+
+      // Generate avatar data from sanitized names (for initials only)
+      const avatarInitials = generateInitials(sanitizedFirstName, sanitizedLastName);
+      const avatarBackgroundColor = generateAvatarColor(avatarInitials);
+
+      // Update user profile with display name using original names
       await updateProfile(user, {
-        displayName: `${firstName} ${lastName}`,
+        displayName: `${firstName.trim()} ${lastName.trim()}`,
       });
 
-      // Create user profile in Firestore
+      // Create user profile in Firestore with original names
       const userProfile: UserProfile = {
         uid: user.uid,
         email: user.email!,
-        displayName: `${firstName} ${lastName}`,
-        firstName,
-        lastName,
+        displayName: `${firstName.trim()} ${lastName.trim()}`,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        // Avatar data for users without profile images
+        avatarInitials,
+        avatarBackgroundColor,
         favoriteItems: [],
         cartItems: [],
         orderHistory: [],
@@ -89,6 +104,8 @@ class AuthService {
       // Cache user session
       await AsyncStorage.setItem('userToken', user.uid);
       await AsyncStorage.setItem('userEmail', user.email!);
+
+      console.log(`✅ User registered with avatar: ${avatarInitials} (${avatarBackgroundColor})`);
 
       return {success: true, user};
     } catch (error: any) {
@@ -181,6 +198,32 @@ class AuthService {
     updates: Partial<UserProfile>,
   ): Promise<{success: boolean; error?: string}> {
     try {
+      // If firstName or lastName is being updated, regenerate avatar data
+      if (updates.firstName || updates.lastName) {
+        const currentProfile = await this.getUserProfile(uid);
+        const firstName = updates.firstName || currentProfile?.firstName || '';
+        const lastName = updates.lastName || currentProfile?.lastName || '';
+        
+        // Keep original names but generate avatar from sanitized versions
+        const sanitizedFirstName = sanitizeNameForAvatar(firstName);
+        const sanitizedLastName = sanitizeNameForAvatar(lastName);
+        const avatarInitials = generateInitials(sanitizedFirstName, sanitizedLastName);
+        const avatarBackgroundColor = generateAvatarColor(avatarInitials);
+        
+        // Store original names, not sanitized ones
+        updates.firstName = firstName.trim();
+        updates.lastName = lastName.trim();
+        updates.avatarInitials = avatarInitials;
+        updates.avatarBackgroundColor = avatarBackgroundColor;
+        
+        // Update display name with original names
+        if (firstName.trim() && lastName.trim()) {
+          updates.displayName = `${firstName.trim()} ${lastName.trim()}`;
+        }
+        
+        console.log(`✅ Avatar updated: ${avatarInitials} (${avatarBackgroundColor}) for ${firstName.trim()} ${lastName.trim()}`);
+      }
+
       await updateDoc(doc(firestore, 'users', uid), {
         ...updates,
         updatedAt: serverTimestamp(),
