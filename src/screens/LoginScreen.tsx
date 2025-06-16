@@ -66,7 +66,7 @@ const LoginScreen = ({navigation}: any) => {
             />
             <Text style={styles.HeaderText}>Welcome Back</Text>
             <Text style={styles.SubHeaderText}>
-              Sign in to your coffee account
+              Sign in to your coffee account and see your personalized avatar
             </Text>
           </View>
 
