@@ -203,11 +203,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               {comment.userAvatar ? (
                 <Image source={{uri: comment.userAvatar}} style={styles.commentAvatarImage} />
               ) : (
-                <CustomIcon
-                  name="person"
-                  size={FONTSIZE.size_16}
-                  color={COLORS.primaryLightGreyHex}
-                />
+                <View style={styles.commentAvatarPlaceholder}>
+                  <Text style={styles.commentAvatarText}>
+                    {comment.userName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase() || 'CF'}
+                  </Text>
+                </View>
               )}
             </View>
             <View style={styles.commentUserDetails}>
@@ -622,6 +622,20 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+  },
+  commentAvatarPlaceholder: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.primaryOrangeHex,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  commentAvatarText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_10,
+    color: COLORS.primaryWhiteHex,
+    fontWeight: '600',
   },
   commentUserDetails: {
     flex: 1,
