@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
-import ProfilePic from '../components/ProfilePic';
+import UserAvatar from '../components/UserAvatar';
 import CustomIcon from '../components/CustomIcon';
 import {useStore} from '../store/firebaseStore';
 import authService from '../services/authService';
@@ -148,7 +148,14 @@ const ProfileScreen = ({navigation}: any) => {
 
       const result = await authService.updateUserProfile(user.uid, updates);
       if (result.success) {
-        setUserProfile({...userProfile, ...updates});
+        // Fetch the updated profile to get the new avatar data
+        const updatedProfile = await authService.getUserProfile(user.uid);
+        if (updatedProfile) {
+          setUserProfile(updatedProfile);
+          console.log(`✅ Profile updated with avatar: ${updatedProfile.avatarInitials}`);
+        } else {
+          setUserProfile({...userProfile, ...updates});
+        }
         setIsEditing(false);
         Alert.alert('✅ Success', 'Profile updated successfully!', [
           {text: 'OK', style: 'default'},
@@ -248,8 +255,20 @@ const ProfileScreen = ({navigation}: any) => {
             <View style={styles.ProfileHeaderCard}>
               <View style={styles.ProfileHeaderContainer}>
                 <View style={styles.ProfilePicContainer}>
-                  <ProfilePic />
-                  <View style={styles.OnlineIndicator} />
+                  <UserAvatar 
+                    firstName={userProfile?.firstName}
+                    lastName={userProfile?.lastName}
+                    profileImageUrl={userProfile?.profileImageUrl}
+                    avatarInitials={userProfile?.avatarInitials}
+                    avatarBackgroundColor={userProfile?.avatarBackgroundColor}
+                    size="large"
+                    showOnlineIndicator={true}
+                    showEditIcon={isEditing}
+                    onPress={isEditing ? () => {
+                      // Future: Add image picker functionality
+                      console.log('Edit avatar pressed');
+                    } : undefined}
+                  />
                 </View>
                 <Text style={styles.ProfileName}>
                   {userProfile?.displayName || 'Coffee Lover'}
@@ -634,17 +653,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginBottom: SPACING.space_16,
   },
-  OnlineIndicator: {
-    position: 'absolute',
-    bottom: 5,
-    right: 5,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: COLORS.primaryOrangeHex,
-    borderWidth: 2,
-    borderColor: COLORS.primaryDarkGreyHex,
-  },
+
   ProfileName: {
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_24,
