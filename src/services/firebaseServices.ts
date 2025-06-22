@@ -294,6 +294,7 @@ export const addOrder = async (order: Omit<Order, 'id'>): Promise<string> => {
 
 export const fetchUserOrders = async (userId: string): Promise<Order[]> => {
   try {
+    // First try the optimized query with orderBy
     const q = query(
       collection(firestore, 'orders'),
       where('userId', '==', userId),
@@ -308,8 +309,39 @@ export const fetchUserOrders = async (userId: string): Promise<Order[]> => {
           ...document.data(),
         } as Order),
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching user orders:', error);
+    
+    // If the error is about missing index, try fallback query without orderBy
+    if (error.message?.includes('index') || error.code === 'failed-precondition') {
+      console.log('📋 Index not available, using fallback query without orderBy...');
+      try {
+        const fallbackQuery = query(
+          collection(firestore, 'orders'),
+          where('userId', '==', userId),
+        );
+
+        const fallbackSnapshot = await getDocs(fallbackQuery);
+        const orders = fallbackSnapshot.docs.map(
+          document =>
+            ({
+              id: document.id,
+              ...document.data(),
+            } as Order),
+        );
+
+        // Sort client-side by orderDate
+        return orders.sort((a, b) => {
+          const dateA = a.orderDate instanceof Date ? a.orderDate : new Date(a.orderDate);
+          const dateB = b.orderDate instanceof Date ? b.orderDate : new Date(b.orderDate);
+          return dateB.getTime() - dateA.getTime();
+        });
+      } catch (fallbackError) {
+        console.error('Fallback query also failed:', fallbackError);
+        throw fallbackError;
+      }
+    }
+    
     throw error;
   }
 };
