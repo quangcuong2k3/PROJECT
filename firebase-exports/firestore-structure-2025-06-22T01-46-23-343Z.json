@@ -1,0 +1,4890 @@
+{
+  "exportTimestamp": "2025-06-22T01:46:33.034Z",
+  "projectId": "thecoffee-b780f",
+  "firestore": {
+    "beans": {
+      "B1": {
+        "data": {
+          "name": "Robusta Beans",
+          "description": "Robusta beans are larger and more rounded than the other bean varieties. These plants typically grow much larger than Arabica plants, measuring between 15 and 20 feet. Robusta beans are typically considered to be hardier because they can grow at lower altitudes and resist diseases. But recent research suggests that they don't handle heat as well as was previously thought.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_portrait.png",
+          "ingredients": "Africa",
+          "special_ingredient": "From Africa",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "5.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "10.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "18.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.7,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Bean",
+          "index": 0,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 731000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 141000000
+          }
+        },
+        "metadata": {
+          "id": "B1",
+          "createTime": {
+            "_seconds": 1749137898,
+            "_nanoseconds": 873363000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 877903000
+          },
+          "readTime": {
+            "_seconds": 1750556781,
+            "_nanoseconds": 382257000
+          }
+        }
+      },
+      "B2": {
+        "data": {
+          "name": "Arabica Beans",
+          "description": "Arabica coffee is a species of coffee made from the beans of the Coffea arabica plant. Arabica originated in the southwestern highlands of Ethiopia and is the most popular kind of coffee worldwide, making up 60% or more of coffee production.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_portrait.png",
+          "ingredients": "South America",
+          "special_ingredient": "From South America",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "6.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "12.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "20.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.5,
+          "ratings_count": "4,267",
+          "favourite": false,
+          "type": "Bean",
+          "index": 1,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 42000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 143000000
+          }
+        },
+        "metadata": {
+          "id": "B2",
+          "createTime": {
+            "_seconds": 1749137900,
+            "_nanoseconds": 245179000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 982732000
+          },
+          "readTime": {
+            "_seconds": 1750556781,
+            "_nanoseconds": 382257000
+          }
+        }
+      },
+      "B3": {
+        "data": {
+          "name": "Liberica Beans",
+          "description": "Liberica coffee is a species of coffee. It is a very hardy plant that can tolerate hot climates. It is characterized by its unique aroma and taste profile.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_portrait.png",
+          "ingredients": "West Africa",
+          "special_ingredient": "From West Africa",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "7.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "14.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "25.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.2,
+          "ratings_count": "2,439",
+          "favourite": false,
+          "type": "Bean",
+          "index": 2,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 312000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 147000000
+          }
+        },
+        "metadata": {
+          "id": "B3",
+          "createTime": {
+            "_seconds": 1749137901,
+            "_nanoseconds": 466845000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 996372000
+          },
+          "readTime": {
+            "_seconds": 1750556781,
+            "_nanoseconds": 382257000
+          }
+        }
+      },
+      "B4": {
+        "data": {
+          "name": "Excelsa Beans",
+          "description": "Excelsa beans are grown primarily in Southeast Asia and account for a very small fraction of the world's coffee consumption. These beans grow on large 20-30 foot coffee plants at medium altitudes.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_portrait.png",
+          "ingredients": "Southeast Asia",
+          "special_ingredient": "From Southeast Asia",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "8.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "16.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "28.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.3,
+          "ratings_count": "1,969",
+          "favourite": false,
+          "type": "Bean",
+          "index": 3,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 555000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 148000000
+          }
+        },
+        "metadata": {
+          "id": "B4",
+          "createTime": {
+            "_seconds": 1749137902,
+            "_nanoseconds": 736653000
+          },
+          "updateTime": {
+            "_seconds": 1749997629,
+            "_nanoseconds": 79149000
+          },
+          "readTime": {
+            "_seconds": 1750556781,
+            "_nanoseconds": 382257000
+          }
+        }
+      }
+    },
+    "coffees": {
+      "C1": {
+        "data": {
+          "name": "Americano",
+          "description": "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee.",
+          "roasted": "Medium Roasted",
+          "ingredients": "Espresso, Hot Water",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,986",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 0,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 802000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 166000000
+          },
+          "imageUrlPortrait": "",
+          "imageUrlSquare": ""
+        },
+        "metadata": {
+          "id": "C1",
+          "createTime": {
+            "_seconds": 1749137904,
+            "_nanoseconds": 38684000
+          },
+          "updateTime": {
+            "_seconds": 1749997653,
+            "_nanoseconds": 910508000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        }
+      },
+      "C2": {
+        "data": {
+          "name": "Black Coffee",
+          "description": "Black coffee is as simple as it gets with ground coffee beans steeped in hot water, served warm. And if you want to sound fancy, you can call black coffee by its proper name: cafe noir.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/black_coffee/square/black_coffee_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/black_coffee/portrait/black_coffee_pic_1_portrait.png",
+          "ingredients": "Water, Coffee",
+          "special_ingredient": "With Sugar",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 1,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 34000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 168000000
+          }
+        },
+        "metadata": {
+          "id": "C2",
+          "createTime": {
+            "_seconds": 1749137905,
+            "_nanoseconds": 216966000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 75633000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        },
+        "subcollections": {
+          "reviews": {
+            "6BGPSVx1kYk80OydFKRx": {
+              "data": {
+                "replies": 0,
+                "verified": true,
+                "userEmail": "cuonglequang539@gmail.com",
+                "videos": [],
+                "gifs": [],
+                "rating": 5,
+                "userName": "Cần Đường",
+                "helpful": [],
+                "dislikes": [],
+                "likes": [],
+                "userId": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+                "title": "hhhhhhhhhhhhhhhhh",
+                "content": "hhhhhhhhhhhhhhhhhhhhhhhhhhh",
+                "images": [],
+                "productId": "C2",
+                "createdAt": {
+                  "_seconds": 1749991845,
+                  "_nanoseconds": 815000000
+                },
+                "updatedAt": {
+                  "_seconds": 1749991845,
+                  "_nanoseconds": 815000000
+                }
+              },
+              "metadata": {
+                "id": "6BGPSVx1kYk80OydFKRx",
+                "createTime": {
+                  "_seconds": 1749991845,
+                  "_nanoseconds": 831343000
+                },
+                "updateTime": {
+                  "_seconds": 1749991845,
+                  "_nanoseconds": 831343000
+                },
+                "readTime": {
+                  "_seconds": 1750556782,
+                  "_nanoseconds": 482654000
+                }
+              }
+            }
+          }
+        }
+      },
+      "C3": {
+        "data": {
+          "name": "Cappuccino",
+          "description": "A cappuccino is an espresso-based coffee drink that originated in Italy, and is traditionally prepared with steamed milk foam (microfoam).",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/cappuccino/square/cappuccino_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/cappuccino/portrait/cappuccino_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 2,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 251000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 170000000
+          }
+        },
+        "metadata": {
+          "id": "C3",
+          "createTime": {
+            "_seconds": 1749137906,
+            "_nanoseconds": 362462000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 86361000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        }
+      },
+      "C4": {
+        "data": {
+          "name": "Espresso",
+          "description": "Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/espresso/square/espresso_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/espresso/portrait/espresso_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 3,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 478000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 171000000
+          }
+        },
+        "metadata": {
+          "id": "C4",
+          "createTime": {
+            "_seconds": 1749137907,
+            "_nanoseconds": 483286000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 276090000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        }
+      },
+      "C5": {
+        "data": {
+          "name": "Latte",
+          "description": "A latte is a coffee drink of Italian origin made with espresso and steamed milk.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/latte/square/latte_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/latte/portrait/latte_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 4,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 698000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 173000000
+          }
+        },
+        "metadata": {
+          "id": "C5",
+          "createTime": {
+            "_seconds": 1749137908,
+            "_nanoseconds": 685171000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 287379000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        }
+      },
+      "C6": {
+        "data": {
+          "name": "Macchiato",
+          "description": "A macchiato is an espresso coffee drink with a small amount of milk, usually foamed.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/macchiato/square/macchiato_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/macchiato/portrait/macchiato_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 5,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 914000000
+          },
+          "updatedAt": {
+            "_seconds": 1749997627,
+            "_nanoseconds": 174000000
+          }
+        },
+        "metadata": {
+          "id": "C6",
+          "createTime": {
+            "_seconds": 1749137910,
+            "_nanoseconds": 267565000
+          },
+          "updateTime": {
+            "_seconds": 1749997628,
+            "_nanoseconds": 445025000
+          },
+          "readTime": {
+            "_seconds": 1750556782,
+            "_nanoseconds": 128173000
+          }
+        },
+        "subcollections": {
+          "reviews": {
+            "jPyCohtWmu5CyjvVEowB": {
+              "data": {
+                "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+                "userEmail": "albertanhdung49@gmail.com",
+                "productId": "C6",
+                "images": [],
+                "userName": "albert anhdung",
+                "gifs": [],
+                "videos": [],
+                "rating": 4,
+                "verified": true,
+                "replies": 0,
+                "createdAt": {
+                  "_seconds": 1749649737,
+                  "_nanoseconds": 407000000
+                },
+                "helpful": [
+                  "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+                ],
+                "dislikes": [],
+                "likes": [
+                  "8n05vsMKjugdpwllS4XjK7Sa2Mg2"
+                ],
+                "title": "Hhhhhhtttt",
+                "content": "Hhhhhhhhhhhhhhhhhhttttt",
+                "updatedAt": {
+                  "_seconds": 1749651555,
+                  "_nanoseconds": 30000000
+                }
+              },
+              "metadata": {
+                "id": "jPyCohtWmu5CyjvVEowB",
+                "createTime": {
+                  "_seconds": 1749649737,
+                  "_nanoseconds": 420017000
+                },
+                "updateTime": {
+                  "_seconds": 1749651555,
+                  "_nanoseconds": 65251000
+                },
+                "readTime": {
+                  "_seconds": 1750556782,
+                  "_nanoseconds": 978350000
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "comments": {
+      "ILsvDslNjkPk7s4hgYRr": {
+        "data": {
+          "gifs": [],
+          "videos": [],
+          "productId": "C6",
+          "verified": true,
+          "likes": [],
+          "userName": "Tiến Dũng  Nguyễn ",
+          "userId": "8n05vsMKjugdpwllS4XjK7Sa2Mg2",
+          "dislikes": [],
+          "userEmail": "dungfopba2@gmail.com",
+          "images": [],
+          "reviewId": "jPyCohtWmu5CyjvVEowB",
+          "createdAt": {
+            "_seconds": 1749651150,
+            "_nanoseconds": 445000000
+          },
+          "content": "Hihhhhhhhhhhhhhhtttttt",
+          "updatedAt": {
+            "_seconds": 1749651320,
+            "_nanoseconds": 826000000
+          }
+        },
+        "metadata": {
+          "id": "ILsvDslNjkPk7s4hgYRr",
+          "createTime": {
+            "_seconds": 1749651150,
+            "_nanoseconds": 464926000
+          },
+          "updateTime": {
+            "_seconds": 1749651320,
+            "_nanoseconds": 850629000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 74585000
+          }
+        }
+      }
+    },
+    "inventory": {
+      "5Bg8crOv0uyzSwKFPbnK": {
+        "data": {
+          "lastUpdated": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 321000000
+          },
+          "productType": "Coffee",
+          "stockLevels": [
+            {
+              "size": "S",
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749906424,
+                "_nanoseconds": 321000000
+              },
+              "minStock": 10,
+              "cost": 0.69,
+              "currentStock": 72,
+              "maxStock": 200
+            },
+            {
+              "currentStock": 73,
+              "reorderPoint": 25,
+              "size": "M",
+              "cost": 1.3499999999999999,
+              "lastRestocked": {
+                "_seconds": 1749906424,
+                "_nanoseconds": 321000000
+              },
+              "maxStock": 200,
+              "minStock": 10
+            },
+            {
+              "reorderPoint": 25,
+              "currentStock": 118,
+              "maxStock": 200,
+              "size": "L",
+              "cost": 2.13,
+              "lastRestocked": {
+                "_seconds": 1749906424,
+                "_nanoseconds": 321000000
+              },
+              "minStock": 10
+            }
+          ],
+          "location": "Main Warehouse",
+          "notes": "Auto-generated inventory for Black Coffee",
+          "totalStock": 263,
+          "productName": "Black Coffee",
+          "createdAt": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 321000000
+          },
+          "supplier": "Coffee Roasters Inc.",
+          "sku": "COFFEE-001",
+          "productId": "C2",
+          "totalValue": 399.56999999999994,
+          "status": "in_stock"
+        },
+        "metadata": {
+          "id": "5Bg8crOv0uyzSwKFPbnK",
+          "createTime": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 951959000
+          },
+          "updateTime": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 951959000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "6YDw6t2ZQwStwmAEGnGc": {
+        "data": {
+          "totalStock": 263,
+          "notes": "Auto-generated inventory for Robusta Beans",
+          "sku": "BEAN-000",
+          "productName": "Robusta Beans",
+          "productId": "B1",
+          "stockLevels": [
+            {
+              "maxStock": 200,
+              "cost": 3.3,
+              "reorderPoint": 25,
+              "currentStock": 64,
+              "size": "250gm",
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749906460,
+                "_nanoseconds": 265000000
+              }
+            },
+            {
+              "reorderPoint": 25,
+              "cost": 6.3,
+              "maxStock": 200,
+              "minStock": 10,
+              "size": "500gm",
+              "currentStock": 142,
+              "lastRestocked": {
+                "_seconds": 1749906460,
+                "_nanoseconds": 265000000
+              }
+            },
+            {
+              "cost": 11.1,
+              "minStock": 10,
+              "reorderPoint": 25,
+              "size": "1Kg",
+              "lastRestocked": {
+                "_seconds": 1749906460,
+                "_nanoseconds": 265000000
+              },
+              "currentStock": 57,
+              "maxStock": 200
+            }
+          ],
+          "lastUpdated": {
+            "_seconds": 1749906460,
+            "_nanoseconds": 265000000
+          },
+          "location": "Main Warehouse",
+          "status": "in_stock",
+          "totalValue": 1738.5,
+          "supplier": "Bean Suppliers Ltd.",
+          "createdAt": {
+            "_seconds": 1749906460,
+            "_nanoseconds": 265000000
+          },
+          "productType": "Bean"
+        },
+        "metadata": {
+          "id": "6YDw6t2ZQwStwmAEGnGc",
+          "createTime": {
+            "_seconds": 1749906460,
+            "_nanoseconds": 942327000
+          },
+          "updateTime": {
+            "_seconds": 1749906460,
+            "_nanoseconds": 942327000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "6q4f9Yr2GoHgfdufA8fZ": {
+        "data": {
+          "notes": "Auto-generated inventory for Cappuccino",
+          "totalStock": 268,
+          "createdAt": {
+            "_seconds": 1749906446,
+            "_nanoseconds": 379000000
+          },
+          "totalValue": 316.02,
+          "productName": "Cappuccino",
+          "location": "Main Warehouse",
+          "stockLevels": [
+            {
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749906446,
+                "_nanoseconds": 379000000
+              },
+              "reorderPoint": 25,
+              "size": "S",
+              "maxStock": 200,
+              "currentStock": 132,
+              "cost": 0.69
+            },
+            {
+              "cost": 1.3499999999999999,
+              "currentStock": 83,
+              "size": "M",
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749906446,
+                "_nanoseconds": 379000000
+              },
+              "minStock": 10,
+              "reorderPoint": 25
+            },
+            {
+              "reorderPoint": 25,
+              "cost": 2.13,
+              "minStock": 10,
+              "maxStock": 200,
+              "size": "L",
+              "currentStock": 53,
+              "lastRestocked": {
+                "_seconds": 1749906446,
+                "_nanoseconds": 379000000
+              }
+            }
+          ],
+          "productId": "C3",
+          "productType": "Coffee",
+          "sku": "COFFEE-002",
+          "supplier": "Coffee Roasters Inc.",
+          "lastUpdated": {
+            "_seconds": 1749906446,
+            "_nanoseconds": 379000000
+          },
+          "status": "in_stock"
+        },
+        "metadata": {
+          "id": "6q4f9Yr2GoHgfdufA8fZ",
+          "createTime": {
+            "_seconds": 1749906450,
+            "_nanoseconds": 152017000
+          },
+          "updateTime": {
+            "_seconds": 1749906450,
+            "_nanoseconds": 152017000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "7mJd3HG4j9zXZm1zyoGt": {
+        "data": {
+          "status": "in_stock",
+          "location": "Main Warehouse",
+          "totalStock": 332,
+          "productName": "Latte",
+          "productId": "C5",
+          "productType": "Coffee",
+          "notes": "Auto-generated inventory for Latte",
+          "sku": "COFFEE-004",
+          "totalValue": 459.9,
+          "lastUpdated": {
+            "_seconds": 1749906455,
+            "_nanoseconds": 759000000
+          },
+          "supplier": "Coffee Roasters Inc.",
+          "createdAt": {
+            "_seconds": 1749906455,
+            "_nanoseconds": 759000000
+          },
+          "stockLevels": [
+            {
+              "currentStock": 130,
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749906455,
+                "_nanoseconds": 759000000
+              },
+              "reorderPoint": 25,
+              "size": "S",
+              "cost": 0.69,
+              "minStock": 10
+            },
+            {
+              "minStock": 10,
+              "cost": 1.3499999999999999,
+              "lastRestocked": {
+                "_seconds": 1749906455,
+                "_nanoseconds": 759000000
+              },
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "currentStock": 77,
+              "size": "M"
+            },
+            {
+              "size": "L",
+              "cost": 2.13,
+              "lastRestocked": {
+                "_seconds": 1749906455,
+                "_nanoseconds": 759000000
+              },
+              "minStock": 10,
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "currentStock": 125
+            }
+          ]
+        },
+        "metadata": {
+          "id": "7mJd3HG4j9zXZm1zyoGt",
+          "createTime": {
+            "_seconds": 1749906456,
+            "_nanoseconds": 370495000
+          },
+          "updateTime": {
+            "_seconds": 1749906456,
+            "_nanoseconds": 370495000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "CXYxcjmakxMk2boYM9OA": {
+        "data": {
+          "productId": "B2",
+          "stockLevels": [
+            {
+              "cost": 3.9,
+              "minStock": 10,
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749906461,
+                "_nanoseconds": 403000000
+              },
+              "currentStock": 144,
+              "size": "250gm"
+            },
+            {
+              "lastRestocked": {
+                "_seconds": 1749906461,
+                "_nanoseconds": 403000000
+              },
+              "reorderPoint": 25,
+              "size": "500gm",
+              "currentStock": 136,
+              "minStock": 10,
+              "maxStock": 200,
+              "cost": 7.5
+            },
+            {
+              "minStock": 10,
+              "maxStock": 200,
+              "cost": 12.299999999999999,
+              "lastRestocked": {
+                "_seconds": 1749906461,
+                "_nanoseconds": 403000000
+              },
+              "reorderPoint": 25,
+              "currentStock": 112,
+              "size": "1Kg"
+            }
+          ],
+          "totalValue": 2959.2,
+          "productName": "Arabica Beans",
+          "totalStock": 392,
+          "productType": "Bean",
+          "sku": "BEAN-001",
+          "status": "in_stock",
+          "supplier": "Bean Suppliers Ltd.",
+          "lastUpdated": {
+            "_seconds": 1749906461,
+            "_nanoseconds": 403000000
+          },
+          "location": "Main Warehouse",
+          "createdAt": {
+            "_seconds": 1749906461,
+            "_nanoseconds": 403000000
+          },
+          "notes": "Auto-generated inventory for Arabica Beans"
+        },
+        "metadata": {
+          "id": "CXYxcjmakxMk2boYM9OA",
+          "createTime": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 5440000
+          },
+          "updateTime": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 5440000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "Iy4rg1c8wYhVRiOwrkPY": {
+        "data": {
+          "totalValue": 351.44999999999993,
+          "createdAt": {
+            "_seconds": 1749906456,
+            "_nanoseconds": 143000000
+          },
+          "stockLevels": [
+            {
+              "maxStock": 200,
+              "currentStock": 109,
+              "cost": 0.69,
+              "size": "S",
+              "reorderPoint": 25,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749906456,
+                "_nanoseconds": 143000000
+              }
+            },
+            {
+              "cost": 1.3499999999999999,
+              "minStock": 10,
+              "maxStock": 200,
+              "size": "M",
+              "lastRestocked": {
+                "_seconds": 1749906456,
+                "_nanoseconds": 143000000
+              },
+              "currentStock": 50,
+              "reorderPoint": 25
+            },
+            {
+              "minStock": 10,
+              "currentStock": 98,
+              "size": "L",
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749906456,
+                "_nanoseconds": 143000000
+              },
+              "maxStock": 200,
+              "cost": 2.13
+            }
+          ],
+          "status": "in_stock",
+          "location": "Main Warehouse",
+          "lastUpdated": {
+            "_seconds": 1749906456,
+            "_nanoseconds": 143000000
+          },
+          "totalStock": 257,
+          "productType": "Coffee",
+          "productName": "Macchiato",
+          "sku": "COFFEE-005",
+          "notes": "Auto-generated inventory for Macchiato",
+          "supplier": "Coffee Roasters Inc.",
+          "productId": "C6"
+        },
+        "metadata": {
+          "id": "Iy4rg1c8wYhVRiOwrkPY",
+          "createTime": {
+            "_seconds": 1749906458,
+            "_nanoseconds": 100529000
+          },
+          "updateTime": {
+            "_seconds": 1749906458,
+            "_nanoseconds": 100529000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "Jb0qGCAApXoqMJswvgrW": {
+        "data": {
+          "productId": "C6",
+          "totalValue": 405.45,
+          "supplier": "Coffee Roasters Inc.",
+          "notes": "Auto-generated inventory for Macchiato",
+          "status": "in_stock",
+          "totalStock": 307,
+          "location": "Main Warehouse",
+          "createdAt": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 551000000
+          },
+          "sku": "COFFEE-005",
+          "stockLevels": [
+            {
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 551000000
+              },
+              "minStock": 10,
+              "reorderPoint": 25,
+              "currentStock": 133,
+              "cost": 0.69,
+              "maxStock": 200,
+              "size": "S"
+            },
+            {
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 551000000
+              },
+              "reorderPoint": 25,
+              "size": "M",
+              "minStock": 10,
+              "maxStock": 200,
+              "cost": 1.3499999999999999,
+              "currentStock": 73
+            },
+            {
+              "currentStock": 101,
+              "size": "L",
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 551000000
+              },
+              "minStock": 10,
+              "cost": 2.13
+            }
+          ],
+          "productName": "Macchiato",
+          "productType": "Coffee",
+          "lastUpdated": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 551000000
+          }
+        },
+        "metadata": {
+          "id": "Jb0qGCAApXoqMJswvgrW",
+          "createTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 234936000
+          },
+          "updateTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 234936000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "NA5El2fcalLJqAcfcZJZ": {
+        "data": {
+          "notes": "Auto-generated inventory for Americano",
+          "location": "Main Warehouse",
+          "productName": "Americano",
+          "lastUpdated": {
+            "_seconds": 1749906420,
+            "_nanoseconds": 59000000
+          },
+          "supplier": "Coffee Roasters Inc.",
+          "productType": "Coffee",
+          "totalValue": 340.95,
+          "sku": "COFFEE-000",
+          "status": "in_stock",
+          "createdAt": {
+            "_seconds": 1749906420,
+            "_nanoseconds": 59000000
+          },
+          "stockLevels": [
+            {
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "minStock": 10,
+              "cost": 0.69,
+              "currentStock": 95,
+              "size": "S",
+              "lastRestocked": {
+                "_seconds": 1749906420,
+                "_nanoseconds": 59000000
+              }
+            },
+            {
+              "currentStock": 62,
+              "minStock": 10,
+              "size": "M",
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "cost": 1.3499999999999999,
+              "lastRestocked": {
+                "_seconds": 1749906420,
+                "_nanoseconds": 59000000
+              }
+            },
+            {
+              "minStock": 10,
+              "cost": 2.13,
+              "currentStock": 90,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749906420,
+                "_nanoseconds": 59000000
+              },
+              "size": "L",
+              "maxStock": 200
+            }
+          ],
+          "productId": "C1",
+          "totalStock": 247
+        },
+        "metadata": {
+          "id": "NA5El2fcalLJqAcfcZJZ",
+          "createTime": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 568985000
+          },
+          "updateTime": {
+            "_seconds": 1749906424,
+            "_nanoseconds": 568985000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "OL5hKOgDoFi44ukBfRNy": {
+        "data": {
+          "totalStock": 381,
+          "notes": "Auto-generated inventory for Liberica Beans",
+          "lastUpdated": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 460000000
+          },
+          "productType": "Bean",
+          "productId": "B3",
+          "sku": "BEAN-002",
+          "stockLevels": [
+            {
+              "reorderPoint": 25,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 460000000
+              },
+              "cost": 4.5,
+              "currentStock": 118,
+              "size": "250gm",
+              "maxStock": 200
+            },
+            {
+              "reorderPoint": 25,
+              "minStock": 10,
+              "cost": 8.7,
+              "size": "500gm",
+              "maxStock": 200,
+              "currentStock": 126,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 460000000
+              }
+            },
+            {
+              "minStock": 10,
+              "reorderPoint": 25,
+              "size": "1Kg",
+              "maxStock": 200,
+              "currentStock": 137,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 460000000
+              },
+              "cost": 15.299999999999999
+            }
+          ],
+          "status": "in_stock",
+          "createdAt": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 460000000
+          },
+          "productName": "Liberica Beans",
+          "location": "Main Warehouse",
+          "supplier": "Bean Suppliers Ltd.",
+          "totalValue": 3723.2999999999997
+        },
+        "metadata": {
+          "id": "OL5hKOgDoFi44ukBfRNy",
+          "createTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 78605000
+          },
+          "updateTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 78605000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "Sac9BQUacoNa9YUkNldM": {
+        "data": {
+          "notes": "Auto-generated inventory for Americano",
+          "location": "Main Warehouse",
+          "productName": "Americano",
+          "productType": "Coffee",
+          "lastUpdated": {
+            "_seconds": 1749905403,
+            "_nanoseconds": 644000000
+          },
+          "totalStock": 377,
+          "stockLevels": [
+            {
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "minStock": 10,
+              "cost": 0.69,
+              "currentStock": 126,
+              "lastRestocked": {
+                "_seconds": 1749905403,
+                "_nanoseconds": 643000000
+              },
+              "size": "S"
+            },
+            {
+              "cost": 1.3499999999999999,
+              "size": "M",
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749905403,
+                "_nanoseconds": 643000000
+              },
+              "minStock": 10,
+              "reorderPoint": 25,
+              "currentStock": 148
+            },
+            {
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "currentStock": 103,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749905403,
+                "_nanoseconds": 643000000
+              },
+              "cost": 2.13,
+              "size": "L"
+            }
+          ],
+          "createdAt": {
+            "_seconds": 1749905403,
+            "_nanoseconds": 644000000
+          },
+          "status": "in_stock",
+          "supplier": "Coffee Roasters Inc.",
+          "sku": "COFFEE-000",
+          "totalValue": 506.13,
+          "productId": "C1"
+        },
+        "metadata": {
+          "id": "Sac9BQUacoNa9YUkNldM",
+          "createTime": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 355366000
+          },
+          "updateTime": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 355366000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "UCXB3iYr5OF9AOnHu69e": {
+        "data": {
+          "notes": "Auto-generated inventory for Espresso",
+          "location": "Main Warehouse",
+          "totalValue": 432.93,
+          "productType": "Coffee",
+          "productId": "C4",
+          "lastUpdated": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 793000000
+          },
+          "createdAt": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 793000000
+          },
+          "productName": "Espresso",
+          "status": "in_stock",
+          "sku": "COFFEE-003",
+          "totalStock": 321,
+          "stockLevels": [
+            {
+              "size": "S",
+              "currentStock": 146,
+              "minStock": 10,
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 793000000
+              },
+              "cost": 0.69
+            },
+            {
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 793000000
+              },
+              "cost": 1.3499999999999999,
+              "maxStock": 200,
+              "size": "M",
+              "minStock": 10,
+              "currentStock": 52,
+              "reorderPoint": 25
+            },
+            {
+              "minStock": 10,
+              "currentStock": 123,
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 793000000
+              },
+              "cost": 2.13,
+              "size": "L",
+              "reorderPoint": 25
+            }
+          ],
+          "supplier": "Coffee Roasters Inc."
+        },
+        "metadata": {
+          "id": "UCXB3iYr5OF9AOnHu69e",
+          "createTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 429438000
+          },
+          "updateTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 429438000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "VVoIlgJMLIoc2gJnLJZP": {
+        "data": {
+          "totalValue": 435.50999999999993,
+          "stockLevels": [
+            {
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 324000000
+              },
+              "reorderPoint": 25,
+              "minStock": 10,
+              "currentStock": 81,
+              "cost": 0.69,
+              "size": "S"
+            },
+            {
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 324000000
+              },
+              "currentStock": 125,
+              "minStock": 10,
+              "size": "M",
+              "cost": 1.3499999999999999
+            },
+            {
+              "currentStock": 99,
+              "size": "L",
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 324000000
+              },
+              "cost": 2.13,
+              "maxStock": 200,
+              "minStock": 10,
+              "reorderPoint": 25
+            }
+          ],
+          "productName": "Cappuccino",
+          "supplier": "Coffee Roasters Inc.",
+          "notes": "Auto-generated inventory for Cappuccino",
+          "productId": "C3",
+          "lastUpdated": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 324000000
+          },
+          "status": "in_stock",
+          "createdAt": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 324000000
+          },
+          "productType": "Coffee",
+          "totalStock": 305,
+          "location": "Main Warehouse",
+          "sku": "COFFEE-002"
+        },
+        "metadata": {
+          "id": "VVoIlgJMLIoc2gJnLJZP",
+          "createTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 78986000
+          },
+          "updateTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 78986000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "cMbmVA4e5eZPQy6tL5rd": {
+        "data": {
+          "supplier": "Bean Suppliers Ltd.",
+          "productType": "Bean",
+          "createdAt": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 793000000
+          },
+          "productName": "Excelsa Beans",
+          "status": "in_stock",
+          "location": "Main Warehouse",
+          "totalStock": 297,
+          "stockLevels": [
+            {
+              "size": "250gm",
+              "reorderPoint": 25,
+              "minStock": 10,
+              "cost": 5.1,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 793000000
+              },
+              "currentStock": 147,
+              "maxStock": 200
+            },
+            {
+              "size": "500gm",
+              "minStock": 10,
+              "currentStock": 50,
+              "cost": 9.9,
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 793000000
+              }
+            },
+            {
+              "cost": 17.099999999999998,
+              "size": "1Kg",
+              "minStock": 10,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 793000000
+              },
+              "currentStock": 100,
+              "maxStock": 200
+            }
+          ],
+          "totalValue": 2954.7,
+          "productId": "B4",
+          "lastUpdated": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 793000000
+          },
+          "sku": "BEAN-003",
+          "notes": "Auto-generated inventory for Excelsa Beans"
+        },
+        "metadata": {
+          "id": "cMbmVA4e5eZPQy6tL5rd",
+          "createTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 418416000
+          },
+          "updateTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 418416000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "f1YQtzu5fLoniB5GJBXq": {
+        "data": {
+          "lastUpdated": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 33000000
+          },
+          "notes": "Auto-generated inventory for Black Coffee",
+          "sku": "COFFEE-001",
+          "totalStock": 307,
+          "productName": "Black Coffee",
+          "totalValue": 414.21,
+          "createdAt": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 33000000
+          },
+          "supplier": "Coffee Roasters Inc.",
+          "productType": "Coffee",
+          "location": "Main Warehouse",
+          "status": "in_stock",
+          "stockLevels": [
+            {
+              "cost": 0.69,
+              "maxStock": 200,
+              "currentStock": 89,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 33000000
+              },
+              "size": "S",
+              "minStock": 10
+            },
+            {
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 33000000
+              },
+              "maxStock": 200,
+              "cost": 1.3499999999999999,
+              "currentStock": 143,
+              "size": "M",
+              "minStock": 10,
+              "reorderPoint": 25
+            },
+            {
+              "currentStock": 75,
+              "lastRestocked": {
+                "_seconds": 1749905404,
+                "_nanoseconds": 33000000
+              },
+              "cost": 2.13,
+              "size": "L",
+              "maxStock": 200,
+              "minStock": 10,
+              "reorderPoint": 25
+            }
+          ],
+          "productId": "C2"
+        },
+        "metadata": {
+          "id": "f1YQtzu5fLoniB5GJBXq",
+          "createTime": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 666666000
+          },
+          "updateTime": {
+            "_seconds": 1749905404,
+            "_nanoseconds": 666666000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "gf4E0PyVfwGcFkuJeag4": {
+        "data": {
+          "supplier": "Coffee Roasters Inc.",
+          "stockLevels": [
+            {
+              "cost": 0.69,
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "currentStock": 85,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749906449,
+                "_nanoseconds": 973000000
+              },
+              "size": "S"
+            },
+            {
+              "cost": 1.3499999999999999,
+              "currentStock": 131,
+              "lastRestocked": {
+                "_seconds": 1749906449,
+                "_nanoseconds": 973000000
+              },
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "size": "M",
+              "minStock": 10
+            },
+            {
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749906449,
+                "_nanoseconds": 973000000
+              },
+              "maxStock": 200,
+              "currentStock": 102,
+              "size": "L",
+              "minStock": 10,
+              "cost": 2.13
+            }
+          ],
+          "lastUpdated": {
+            "_seconds": 1749906449,
+            "_nanoseconds": 973000000
+          },
+          "notes": "Auto-generated inventory for Espresso",
+          "productId": "C4",
+          "createdAt": {
+            "_seconds": 1749906449,
+            "_nanoseconds": 973000000
+          },
+          "productName": "Espresso",
+          "location": "Main Warehouse",
+          "productType": "Coffee",
+          "totalStock": 318,
+          "sku": "COFFEE-003",
+          "status": "in_stock",
+          "totalValue": 452.76
+        },
+        "metadata": {
+          "id": "gf4E0PyVfwGcFkuJeag4",
+          "createTime": {
+            "_seconds": 1749906450,
+            "_nanoseconds": 652092000
+          },
+          "updateTime": {
+            "_seconds": 1749906450,
+            "_nanoseconds": 652092000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "iQtq7zA2ravEx4hmsrVj": {
+        "data": {
+          "productId": "B4",
+          "sku": "BEAN-003",
+          "productName": "Excelsa Beans",
+          "supplier": "Bean Suppliers Ltd.",
+          "stockLevels": [
+            {
+              "size": "250gm",
+              "minStock": 10,
+              "reorderPoint": 25,
+              "currentStock": 115,
+              "cost": 5.1,
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 597000000
+              },
+              "maxStock": 200
+            },
+            {
+              "size": "500gm",
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 597000000
+              },
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "currentStock": 132,
+              "minStock": 10,
+              "cost": 9.9
+            },
+            {
+              "reorderPoint": 25,
+              "cost": 17.099999999999998,
+              "minStock": 10,
+              "maxStock": 200,
+              "size": "1Kg",
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 597000000
+              },
+              "currentStock": 108
+            }
+          ],
+          "createdAt": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 597000000
+          },
+          "productType": "Bean",
+          "notes": "Auto-generated inventory for Excelsa Beans",
+          "totalStock": 355,
+          "lastUpdated": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 597000000
+          },
+          "location": "Main Warehouse",
+          "status": "in_stock",
+          "totalValue": 3740.0999999999995
+        },
+        "metadata": {
+          "id": "iQtq7zA2ravEx4hmsrVj",
+          "createTime": {
+            "_seconds": 1749906463,
+            "_nanoseconds": 153998000
+          },
+          "updateTime": {
+            "_seconds": 1749906463,
+            "_nanoseconds": 153998000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "kLFDJ1bgBy6MRpyM4Vq7": {
+        "data": {
+          "supplier": "Bean Suppliers Ltd.",
+          "totalStock": 318,
+          "stockLevels": [
+            {
+              "reorderPoint": 25,
+              "cost": 3.3,
+              "size": "250gm",
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 906000000
+              },
+              "minStock": 10,
+              "currentStock": 117,
+              "maxStock": 200
+            },
+            {
+              "cost": 6.3,
+              "size": "500gm",
+              "currentStock": 60,
+              "maxStock": 200,
+              "minStock": 10,
+              "reorderPoint": 25,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 906000000
+              }
+            },
+            {
+              "cost": 11.1,
+              "currentStock": 141,
+              "reorderPoint": 25,
+              "minStock": 10,
+              "size": "1Kg",
+              "maxStock": 200,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 906000000
+              }
+            }
+          ],
+          "productType": "Bean",
+          "createdAt": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 906000000
+          },
+          "sku": "BEAN-000",
+          "location": "Main Warehouse",
+          "notes": "Auto-generated inventory for Robusta Beans",
+          "totalValue": 2329.2,
+          "status": "in_stock",
+          "productId": "B1",
+          "productName": "Robusta Beans",
+          "lastUpdated": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 906000000
+          }
+        },
+        "metadata": {
+          "id": "kLFDJ1bgBy6MRpyM4Vq7",
+          "createTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 504763000
+          },
+          "updateTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 504763000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "o8ypNTOvf8fZDIo4zr3R": {
+        "data": {
+          "productType": "Coffee",
+          "location": "Main Warehouse",
+          "sku": "COFFEE-004",
+          "productName": "Latte",
+          "totalStock": 329,
+          "status": "in_stock",
+          "supplier": "Coffee Roasters Inc.",
+          "lastUpdated": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 86000000
+          },
+          "totalValue": 506.06999999999994,
+          "createdAt": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 86000000
+          },
+          "stockLevels": [
+            {
+              "cost": 0.69,
+              "size": "S",
+              "reorderPoint": 25,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 86000000
+              },
+              "maxStock": 200,
+              "currentStock": 61
+            },
+            {
+              "maxStock": 200,
+              "reorderPoint": 25,
+              "cost": 1.3499999999999999,
+              "currentStock": 137,
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 86000000
+              },
+              "size": "M"
+            },
+            {
+              "minStock": 10,
+              "currentStock": 131,
+              "cost": 2.13,
+              "lastRestocked": {
+                "_seconds": 1749905405,
+                "_nanoseconds": 86000000
+              },
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "size": "L"
+            }
+          ],
+          "productId": "C5",
+          "notes": "Auto-generated inventory for Latte"
+        },
+        "metadata": {
+          "id": "o8ypNTOvf8fZDIo4zr3R",
+          "createTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 881757000
+          },
+          "updateTime": {
+            "_seconds": 1749905405,
+            "_nanoseconds": 881757000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "pLVNjKjfAnDAVRcjsDI1": {
+        "data": {
+          "productId": "B3",
+          "lastUpdated": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 248000000
+          },
+          "notes": "Auto-generated inventory for Liberica Beans",
+          "supplier": "Bean Suppliers Ltd.",
+          "productType": "Bean",
+          "location": "Main Warehouse",
+          "productName": "Liberica Beans",
+          "totalStock": 379,
+          "status": "in_stock",
+          "totalValue": 3678.8999999999996,
+          "sku": "BEAN-002",
+          "stockLevels": [
+            {
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 248000000
+              },
+              "minStock": 10,
+              "size": "250gm",
+              "cost": 4.5,
+              "reorderPoint": 25,
+              "currentStock": 126,
+              "maxStock": 200
+            },
+            {
+              "currentStock": 115,
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 248000000
+              },
+              "cost": 8.7,
+              "reorderPoint": 25,
+              "size": "500gm",
+              "maxStock": 200,
+              "minStock": 10
+            },
+            {
+              "size": "1Kg",
+              "lastRestocked": {
+                "_seconds": 1749906462,
+                "_nanoseconds": 248000000
+              },
+              "minStock": 10,
+              "maxStock": 200,
+              "cost": 15.299999999999999,
+              "reorderPoint": 25,
+              "currentStock": 138
+            }
+          ],
+          "createdAt": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 248000000
+          }
+        },
+        "metadata": {
+          "id": "pLVNjKjfAnDAVRcjsDI1",
+          "createTime": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 854257000
+          },
+          "updateTime": {
+            "_seconds": 1749906462,
+            "_nanoseconds": 854257000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      },
+      "x7azadZgviQuD3aVhQt3": {
+        "data": {
+          "sku": "BEAN-001",
+          "location": "Main Warehouse",
+          "productId": "B2",
+          "lastUpdated": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 194000000
+          },
+          "createdAt": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 194000000
+          },
+          "status": "in_stock",
+          "totalStock": 278,
+          "supplier": "Bean Suppliers Ltd.",
+          "totalValue": 2211,
+          "productType": "Bean",
+          "notes": "Auto-generated inventory for Arabica Beans",
+          "productName": "Arabica Beans",
+          "stockLevels": [
+            {
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 194000000
+              },
+              "size": "250gm",
+              "reorderPoint": 25,
+              "currentStock": 77,
+              "maxStock": 200,
+              "minStock": 10,
+              "cost": 3.9
+            },
+            {
+              "size": "500gm",
+              "minStock": 10,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 194000000
+              },
+              "currentStock": 117,
+              "cost": 7.5,
+              "maxStock": 200,
+              "reorderPoint": 25
+            },
+            {
+              "minStock": 10,
+              "reorderPoint": 25,
+              "maxStock": 200,
+              "size": "1Kg",
+              "currentStock": 84,
+              "lastRestocked": {
+                "_seconds": 1749905406,
+                "_nanoseconds": 194000000
+              },
+              "cost": 12.299999999999999
+            }
+          ]
+        },
+        "metadata": {
+          "id": "x7azadZgviQuD3aVhQt3",
+          "createTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 796615000
+          },
+          "updateTime": {
+            "_seconds": 1749905406,
+            "_nanoseconds": 796615000
+          },
+          "readTime": {
+            "_seconds": 1750556783,
+            "_nanoseconds": 289950000
+          }
+        }
+      }
+    },
+    "orders": {
+      "2MKAUi7EUPXuaYf5e84O": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "Cash on Delivery",
+          "orderDate": {
+            "_seconds": 1749482954,
+            "_nanoseconds": 846000000
+          },
+          "status": "processing",
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "cod_1749482954568_M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "Somewhere "
+          },
+          "paymentInfo": {
+            "method": "Cash on Delivery",
+            "paymentStatus": "completed",
+            "transactionId": "cod_1749482954568_M4xRbepSSvUqoFX5dZHzrtxwcP92",
+            "paymentDate": {
+              "_seconds": 1749482954,
+              "_nanoseconds": 846000000
+            }
+          },
+          "deliveryInfo": {
+            "estimatedDeliveryDate": {
+              "_seconds": 1749569354,
+              "_nanoseconds": 846000000
+            }
+          },
+          "statusHistory": [
+            {
+              "status": "processing",
+              "timestamp": {
+                "_seconds": 1749482954,
+                "_nanoseconds": 847000000
+              },
+              "updatedBy": "system",
+              "notes": "Order created with Cash on Delivery"
+            }
+          ]
+        },
+        "metadata": {
+          "id": "2MKAUi7EUPXuaYf5e84O",
+          "createTime": {
+            "_seconds": 1749482955,
+            "_nanoseconds": 633644000
+          },
+          "updateTime": {
+            "_seconds": 1749482955,
+            "_nanoseconds": 633644000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "3YuYrsdLXlehmvm59Ung": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "cash",
+          "orderDate": {
+            "_seconds": 1749485618,
+            "_nanoseconds": 242000000
+          },
+          "status": "confirmed",
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "paymentId": "COD_1749485618180_ddhw8o04g",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+          }
+        },
+        "metadata": {
+          "id": "3YuYrsdLXlehmvm59Ung",
+          "createTime": {
+            "_seconds": 1749485619,
+            "_nanoseconds": 68710000
+          },
+          "updateTime": {
+            "_seconds": 1749485619,
+            "_nanoseconds": 68710000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "4Iv7kXmyFQYywtWS5gi3": {
+        "data": {
+          "paymentMethod": "stripe",
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "name": "Macchiato",
+              "description": "",
+              "imageUrlPortrait": "",
+              "favourite": false,
+              "ingredients": "",
+              "ratings_count": "0",
+              "index": 5,
+              "imageUrlSquare": "",
+              "type": "Coffee",
+              "average_rating": 0,
+              "prices": [
+                {
+                  "quantity": 1,
+                  "size": "S",
+                  "price": "1.15",
+                  "currency": "$"
+                }
+              ],
+              "special_ingredient": "With Steamed Milk",
+              "roasted": "Medium Roasted",
+              "id": "C6"
+            }
+          ],
+          "orderDate": {
+            "_seconds": 1749527381,
+            "_nanoseconds": 88000000
+          },
+          "totalAmount": 1.15,
+          "status": "paid",
+          "paymentId": "pi_3RYJBQ7wRtne0I6D0QNLXmLc",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437"
+          },
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+        },
+        "metadata": {
+          "id": "4Iv7kXmyFQYywtWS5gi3",
+          "createTime": {
+            "_seconds": 1749527381,
+            "_nanoseconds": 620271000
+          },
+          "updateTime": {
+            "_seconds": 1749527381,
+            "_nanoseconds": 620271000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "4WV0pdV2gny05L0jWz5z": {
+        "data": {
+          "paymentId": "pi_3RYIhS7wRtne0I6D0ZMxSCOs",
+          "items": [
+            {
+              "special_ingredient": "With Steamed Milk",
+              "prices": [
+                {
+                  "price": "1.15",
+                  "currency": "$",
+                  "size": "S",
+                  "quantity": 1
+                }
+              ],
+              "id": "C1",
+              "type": "Coffee",
+              "index": 0,
+              "name": "Americano",
+              "roasted": "Medium Roasted"
+            }
+          ],
+          "totalAmount": 1.15,
+          "deliveryAddress": "Somewhere ",
+          "paymentMethod": "stripe",
+          "orderDate": {
+            "_seconds": 1749525651,
+            "_nanoseconds": 721000000
+          },
+          "status": "paid",
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "customerInfo": {
+            "phone": "0869374437",
+            "address": "Somewhere ",
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com"
+          }
+        },
+        "metadata": {
+          "id": "4WV0pdV2gny05L0jWz5z",
+          "createTime": {
+            "_seconds": 1749525652,
+            "_nanoseconds": 565763000
+          },
+          "updateTime": {
+            "_seconds": 1749525652,
+            "_nanoseconds": 565763000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "7NK9icrB62AcX9sj9t94": {
+        "data": {
+          "items": [
+            {
+              "ratings_count": "0",
+              "index": 5,
+              "special_ingredient": "With Steamed Milk",
+              "favourite": false,
+              "name": "Macchiato",
+              "description": "",
+              "ingredients": "",
+              "roasted": "Medium Roasted",
+              "imageUrlSquare": "",
+              "prices": [
+                {
+                  "size": "L",
+                  "quantity": 1,
+                  "currency": "$",
+                  "price": "3.55"
+                }
+              ],
+              "average_rating": 0,
+              "imageUrlPortrait": "",
+              "id": "C6",
+              "type": "Coffee"
+            }
+          ],
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "status": "confirmed",
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "paymentMethod": "cash",
+          "customerInfo": {
+            "phone": "0869374437",
+            "email": "albertanhdung49@gmail.com",
+            "name": "albert anhdung"
+          },
+          "paymentId": "COD_1749644516573_ht9hbjipm",
+          "totalAmount": 3.55,
+          "orderDate": {
+            "_seconds": 1749644516,
+            "_nanoseconds": 668000000
+          }
+        },
+        "metadata": {
+          "id": "7NK9icrB62AcX9sj9t94",
+          "createTime": {
+            "_seconds": 1749644517,
+            "_nanoseconds": 766960000
+          },
+          "updateTime": {
+            "_seconds": 1749644517,
+            "_nanoseconds": 766960000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "7gTzX276yidH80y8Z8vC": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "unknown",
+          "orderDate": {
+            "_seconds": 1749485618,
+            "_nanoseconds": 686000000
+          },
+          "status": "pending",
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "COD_1749485618180_ddhw8o04g",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+          }
+        },
+        "metadata": {
+          "id": "7gTzX276yidH80y8Z8vC",
+          "createTime": {
+            "_seconds": 1749485619,
+            "_nanoseconds": 361885000
+          },
+          "updateTime": {
+            "_seconds": 1749485619,
+            "_nanoseconds": 361885000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "A1mvT94GAisLHxqeTeYI": {
+        "data": {
+          "status": "paid",
+          "orderDate": {
+            "_seconds": 1749528402,
+            "_nanoseconds": 386000000
+          },
+          "totalAmount": 1.15,
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "customerInfo": {
+            "phone": "0869374437",
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com"
+          },
+          "paymentMethod": "stripe",
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "paymentId": "pi_3RYJSC7wRtne0I6D09pOstnE",
+          "items": [
+            {
+              "ratings_count": "0",
+              "roasted": "Medium Roasted",
+              "description": "",
+              "prices": [
+                {
+                  "quantity": 1,
+                  "size": "S",
+                  "price": "1.15",
+                  "currency": "$"
+                }
+              ],
+              "index": 5,
+              "average_rating": 0,
+              "imageUrlSquare": "",
+              "special_ingredient": "With Steamed Milk",
+              "id": "C6",
+              "type": "Coffee",
+              "favourite": false,
+              "name": "Macchiato",
+              "imageUrlPortrait": "",
+              "ingredients": ""
+            }
+          ]
+        },
+        "metadata": {
+          "id": "A1mvT94GAisLHxqeTeYI",
+          "createTime": {
+            "_seconds": 1749528402,
+            "_nanoseconds": 929112000
+          },
+          "updateTime": {
+            "_seconds": 1749528402,
+            "_nanoseconds": 929112000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "GfsXw2UUJiIQ3rcRr18G": {
+        "data": {
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "status": "confirmed",
+          "paymentMethod": "cash",
+          "customerInfo": {
+            "email": "albertanhdung49@gmail.com",
+            "name": "albert anhdung",
+            "phone": "0869374437"
+          },
+          "items": [
+            {
+              "ratings_count": "0",
+              "imageUrlSquare": "",
+              "roasted": "Medium Roasted",
+              "ingredients": "",
+              "average_rating": 0,
+              "special_ingredient": "From South America",
+              "id": "B2",
+              "prices": [
+                {
+                  "currency": "$",
+                  "price": "6.50",
+                  "quantity": 1,
+                  "size": "250gm"
+                }
+              ],
+              "description": "",
+              "type": "Bean",
+              "index": 1,
+              "favourite": false,
+              "imageUrlPortrait": "",
+              "name": "Arabica Beans"
+            }
+          ],
+          "paymentId": "COD_1749527488305_jmim4mtgj",
+          "orderDate": {
+            "_seconds": 1749527488,
+            "_nanoseconds": 376000000
+          },
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "totalAmount": 6.5
+        },
+        "metadata": {
+          "id": "GfsXw2UUJiIQ3rcRr18G",
+          "createTime": {
+            "_seconds": 1749527489,
+            "_nanoseconds": 226553000
+          },
+          "updateTime": {
+            "_seconds": 1749527489,
+            "_nanoseconds": 226553000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "KSJXyHAdBXuqrkSW7R87": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "Credit/Debit Card",
+          "orderDate": {
+            "_seconds": 1749479288,
+            "_nanoseconds": 713000000
+          },
+          "status": "processing",
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "pi_mock_1749479286704",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "Somewhere "
+          },
+          "paymentInfo": {
+            "method": "Credit/Debit Card",
+            "paymentStatus": "completed",
+            "transactionId": "pi_mock_1749479286704",
+            "paymentDate": {
+              "_seconds": 1749479288,
+              "_nanoseconds": 713000000
+            }
+          },
+          "deliveryInfo": {
+            "estimatedDeliveryDate": {
+              "_seconds": 1749565688,
+              "_nanoseconds": 713000000
+            },
+            "deliveryInstructions": ""
+          },
+          "statusHistory": [
+            {
+              "status": "processing",
+              "timestamp": {
+                "_seconds": 1749479288,
+                "_nanoseconds": 716000000
+              },
+              "updatedBy": "system",
+              "notes": "Order created with Credit/Debit Card"
+            }
+          ]
+        },
+        "metadata": {
+          "id": "KSJXyHAdBXuqrkSW7R87",
+          "createTime": {
+            "_seconds": 1749479289,
+            "_nanoseconds": 395773000
+          },
+          "updateTime": {
+            "_seconds": 1749479289,
+            "_nanoseconds": 395773000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "KsKrX0tJwCWZW4NxHYEp": {
+        "data": {
+          "customerInfo": {
+            "phone": "0869374437",
+            "email": "albertanhdung49@gmail.com",
+            "name": "albert anhdung"
+          },
+          "orderDate": {
+            "_seconds": 1749528835,
+            "_nanoseconds": 895000000
+          },
+          "paymentMethod": "cash",
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "items": [
+            {
+              "id": "C5",
+              "ingredients": "",
+              "index": 4,
+              "special_ingredient": "With Steamed Milk",
+              "imageUrlPortrait": "",
+              "ratings_count": "0",
+              "type": "Coffee",
+              "description": "",
+              "average_rating": 0,
+              "name": "Latte",
+              "favourite": false,
+              "roasted": "Medium Roasted",
+              "imageUrlSquare": "",
+              "prices": [
+                {
+                  "quantity": 1,
+                  "currency": "$",
+                  "size": "S",
+                  "price": "1.15"
+                }
+              ]
+            }
+          ],
+          "status": "confirmed",
+          "totalAmount": 1.15,
+          "paymentId": "COD_1749528835840_t1qu5t138",
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+        },
+        "metadata": {
+          "id": "KsKrX0tJwCWZW4NxHYEp",
+          "createTime": {
+            "_seconds": 1749528836,
+            "_nanoseconds": 386871000
+          },
+          "updateTime": {
+            "_seconds": 1749528836,
+            "_nanoseconds": 386871000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "bxtaBHiNIVaGUL5tBVcJ": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "Cash on Delivery",
+          "orderDate": {
+            "_seconds": 1749483494,
+            "_nanoseconds": 846000000
+          },
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "cod_1749483494325_M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "Somewhere "
+          },
+          "paymentInfo": {
+            "method": "Cash on Delivery",
+            "paymentStatus": "completed",
+            "transactionId": "cod_1749483494325_M4xRbepSSvUqoFX5dZHzrtxwcP92",
+            "paymentDate": {
+              "_seconds": 1749483494,
+              "_nanoseconds": 846000000
+            }
+          },
+          "deliveryInfo": {
+            "estimatedDeliveryDate": {
+              "_seconds": 1749569894,
+              "_nanoseconds": 846000000
+            }
+          },
+          "statusHistory": [
+            {
+              "status": "processing",
+              "timestamp": {
+                "_seconds": 1749483494,
+                "_nanoseconds": 846000000
+              },
+              "updatedBy": "system",
+              "notes": "Order created with Cash on Delivery"
+            }
+          ],
+          "createdAt": {
+            "_seconds": 1749483494,
+            "_nanoseconds": 851000000
+          },
+          "updatedAt": {
+            "_seconds": 1749483494,
+            "_nanoseconds": 851000000
+          },
+          "status": "completed"
+        },
+        "metadata": {
+          "id": "bxtaBHiNIVaGUL5tBVcJ",
+          "createTime": {
+            "_seconds": 1749483495,
+            "_nanoseconds": 553463000
+          },
+          "updateTime": {
+            "_seconds": 1749483963,
+            "_nanoseconds": 707801000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "dTrsF9NEQtzgSiRDhn5K": {
+        "data": {
+          "userId": "8n05vsMKjugdpwllS4XjK7Sa2Mg2",
+          "orderDate": {
+            "_seconds": 1749650121,
+            "_nanoseconds": 2000000
+          },
+          "paymentId": "COD_1749650120907_ctaojmwys",
+          "items": [
+            {
+              "type": "Coffee",
+              "imageUrlSquare": "",
+              "average_rating": 0,
+              "favourite": false,
+              "special_ingredient": "With Steamed Milk",
+              "name": "Macchiato",
+              "roasted": "Medium Roasted",
+              "imageUrlPortrait": "",
+              "description": "",
+              "ingredients": "",
+              "ratings_count": "0",
+              "prices": [
+                {
+                  "price": "1.15",
+                  "size": "S",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ],
+              "index": 5,
+              "id": "C6"
+            }
+          ],
+          "status": "confirmed",
+          "totalAmount": 1.15,
+          "paymentMethod": "cash",
+          "customerInfo": {
+            "email": "dungfopba2@gmail.com",
+            "phone": "0869374437",
+            "name": "Tiến Dũng  Nguyễn "
+          },
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam"
+        },
+        "metadata": {
+          "id": "dTrsF9NEQtzgSiRDhn5K",
+          "createTime": {
+            "_seconds": 1749650121,
+            "_nanoseconds": 908423000
+          },
+          "updateTime": {
+            "_seconds": 1749650121,
+            "_nanoseconds": 908423000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "eYHxpMqEtanV2sQj9FJz": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "Credit/Debit Card",
+          "orderDate": {
+            "_seconds": 1749478097,
+            "_nanoseconds": 761000000
+          },
+          "status": "processing",
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "pi_mock_1749478095750",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "Somewhere "
+          },
+          "paymentInfo": {
+            "method": "Credit/Debit Card",
+            "paymentStatus": "completed",
+            "transactionId": "pi_mock_1749478095750",
+            "paymentDate": {
+              "_seconds": 1749478097,
+              "_nanoseconds": 761000000
+            }
+          },
+          "deliveryInfo": {
+            "estimatedDeliveryDate": {
+              "_seconds": 1749564497,
+              "_nanoseconds": 761000000
+            },
+            "deliveryInstructions": ""
+          },
+          "statusHistory": [
+            {
+              "status": "processing",
+              "timestamp": {
+                "_seconds": 1749478097,
+                "_nanoseconds": 761000000
+              },
+              "updatedBy": "system",
+              "notes": "Order created with Credit/Debit Card"
+            }
+          ]
+        },
+        "metadata": {
+          "id": "eYHxpMqEtanV2sQj9FJz",
+          "createTime": {
+            "_seconds": 1749478098,
+            "_nanoseconds": 522299000
+          },
+          "updateTime": {
+            "_seconds": 1749478098,
+            "_nanoseconds": 522299000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "j3ZMvQZul8mCoKg01Rzl": {
+        "data": {
+          "items": [
+            {
+              "prices": [
+                {
+                  "currency": "$",
+                  "quantity": 1,
+                  "price": "1.15",
+                  "size": "S"
+                }
+              ],
+              "name": "Americano",
+              "type": "Coffee",
+              "special_ingredient": "With Steamed Milk",
+              "index": 0,
+              "roasted": "Medium Roasted",
+              "id": "C1"
+            }
+          ],
+          "orderDate": {
+            "_seconds": 1749525652,
+            "_nanoseconds": 185000000
+          },
+          "customerInfo": {
+            "address": "Somewhere ",
+            "email": "albertanhdung49@gmail.com",
+            "name": "albert anhdung",
+            "phone": "0869374437"
+          },
+          "paymentId": "pi_3RYIhS7wRtne0I6D0ZMxSCOs",
+          "deliveryAddress": "Somewhere ",
+          "status": "pending",
+          "paymentMethod": "unknown",
+          "totalAmount": 1.15,
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92"
+        },
+        "metadata": {
+          "id": "j3ZMvQZul8mCoKg01Rzl",
+          "createTime": {
+            "_seconds": 1749525652,
+            "_nanoseconds": 772853000
+          },
+          "updateTime": {
+            "_seconds": 1749525652,
+            "_nanoseconds": 772853000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "lF0fku07uhjMVrqTo3Xg": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C1",
+              "index": 0,
+              "name": "Americano",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Steamed Milk",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "currency": "$",
+                  "price": "1.15",
+                  "size": "S",
+                  "quantity": 2
+                }
+              ]
+            }
+          ],
+          "totalAmount": 2.3,
+          "paymentMethod": "unknown",
+          "orderDate": {
+            "_seconds": 1749229786,
+            "_nanoseconds": 533000000
+          },
+          "status": "pending",
+          "deliveryAddress": "",
+          "paymentId": null,
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": ""
+          }
+        },
+        "metadata": {
+          "id": "lF0fku07uhjMVrqTo3Xg",
+          "createTime": {
+            "_seconds": 1749229790,
+            "_nanoseconds": 220209000
+          },
+          "updateTime": {
+            "_seconds": 1749229790,
+            "_nanoseconds": 220209000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "m5ZjeCtA4emot1hib8ru": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "items": [
+            {
+              "id": "C2",
+              "index": 1,
+              "name": "Black Coffee",
+              "roasted": "Medium Roasted",
+              "special_ingredient": "With Sugar",
+              "type": "Coffee",
+              "prices": [
+                {
+                  "size": "L",
+                  "price": "3.55",
+                  "currency": "$",
+                  "quantity": 1
+                }
+              ]
+            }
+          ],
+          "totalAmount": 3.55,
+          "paymentMethod": "Credit/Debit Card",
+          "orderDate": {
+            "_seconds": 1749481800,
+            "_nanoseconds": 243000000
+          },
+          "status": "processing",
+          "deliveryAddress": "Somewhere ",
+          "paymentId": "pi_mock_1749481798231",
+          "customerInfo": {
+            "name": "albert anhdung",
+            "email": "albertanhdung49@gmail.com",
+            "phone": "0869374437",
+            "address": "Somewhere "
+          },
+          "paymentInfo": {
+            "method": "Credit/Debit Card",
+            "paymentStatus": "completed",
+            "transactionId": "pi_mock_1749481798231",
+            "paymentDate": {
+              "_seconds": 1749481800,
+              "_nanoseconds": 243000000
+            }
+          },
+          "deliveryInfo": {
+            "estimatedDeliveryDate": {
+              "_seconds": 1749568200,
+              "_nanoseconds": 243000000
+            },
+            "deliveryInstructions": ""
+          },
+          "statusHistory": [
+            {
+              "status": "processing",
+              "timestamp": {
+                "_seconds": 1749481800,
+                "_nanoseconds": 245000000
+              },
+              "updatedBy": "system",
+              "notes": "Order created with Credit/Debit Card"
+            }
+          ]
+        },
+        "metadata": {
+          "id": "m5ZjeCtA4emot1hib8ru",
+          "createTime": {
+            "_seconds": 1749481802,
+            "_nanoseconds": 225368000
+          },
+          "updateTime": {
+            "_seconds": 1749481802,
+            "_nanoseconds": 225368000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "n5KxtiWTNYRT4VFatKAf": {
+        "data": {
+          "customerInfo": {
+            "name": "Cần Đường",
+            "email": "cuonglequang539@gmail.com",
+            "phone": "0869374437"
+          },
+          "paymentId": "COD_1749991800099_hpxv2toxi",
+          "items": [
+            {
+              "imageUrlSquare": "",
+              "imageUrlPortrait": "",
+              "special_ingredient": "With Sugar",
+              "id": "C2",
+              "type": "Coffee",
+              "index": 1,
+              "prices": [
+                {
+                  "size": "S",
+                  "currency": "$",
+                  "price": "1.15",
+                  "quantity": 1
+                }
+              ],
+              "average_rating": 0,
+              "ratings_count": "0",
+              "favourite": false,
+              "ingredients": "",
+              "roasted": "Medium Roasted",
+              "description": "",
+              "name": "Black Coffee"
+            }
+          ],
+          "paymentMethod": "cash",
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "userId": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+          "totalAmount": 1.15,
+          "status": "confirmed",
+          "orderDate": {
+            "_seconds": 1749991800,
+            "_nanoseconds": 222000000
+          }
+        },
+        "metadata": {
+          "id": "n5KxtiWTNYRT4VFatKAf",
+          "createTime": {
+            "_seconds": 1749991801,
+            "_nanoseconds": 684545000
+          },
+          "updateTime": {
+            "_seconds": 1749991801,
+            "_nanoseconds": 684545000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "sample": {
+        "data": {
+          "userId": "sample-user",
+          "items": [],
+          "totalAmount": 0,
+          "paymentMethod": "card",
+          "status": "delivered",
+          "deliveryAddress": "Sample Address",
+          "orderDate": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 336000000
+          }
+        },
+        "metadata": {
+          "id": "sample",
+          "createTime": {
+            "_seconds": 1749137896,
+            "_nanoseconds": 764772000
+          },
+          "updateTime": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 355083000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "wWxbXcWoMfiC5jBNmtDz": {
+        "data": {
+          "status": "pending",
+          "paymentMethod": "momo",
+          "totalAmount": 1.15,
+          "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "paymentId": "ORDER_1749526639607",
+          "items": [
+            {
+              "ratings_count": "0",
+              "id": "C6",
+              "favourite": false,
+              "special_ingredient": "With Steamed Milk",
+              "prices": [
+                {
+                  "price": "1.15",
+                  "size": "S",
+                  "quantity": 1,
+                  "currency": "$"
+                }
+              ],
+              "ingredients": "",
+              "type": "Coffee",
+              "description": "",
+              "imageUrlPortrait": "",
+              "average_rating": 0,
+              "roasted": "Medium Roasted",
+              "name": "Macchiato",
+              "imageUrlSquare": "",
+              "index": 5
+            }
+          ],
+          "orderDate": {
+            "_seconds": 1749526640,
+            "_nanoseconds": 773000000
+          },
+          "customerInfo": {
+            "name": "albert anhdung",
+            "phone": "0869374437",
+            "email": "albertanhdung49@gmail.com"
+          }
+        },
+        "metadata": {
+          "id": "wWxbXcWoMfiC5jBNmtDz",
+          "createTime": {
+            "_seconds": 1749526642,
+            "_nanoseconds": 242981000
+          },
+          "updateTime": {
+            "_seconds": 1749526642,
+            "_nanoseconds": 242981000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      },
+      "xXUTbrkB1zdijSanCfGd": {
+        "data": {
+          "paymentId": "pi_3RYJ1l7wRtne0I6D0qc6I3VY",
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "totalAmount": 1.15,
+          "paymentMethod": "stripe",
+          "deliveryAddress": "Somewhere ",
+          "items": [
+            {
+              "description": "",
+              "ingredients": "",
+              "ratings_count": "0",
+              "index": 5,
+              "special_ingredient": "With Steamed Milk",
+              "imageUrlSquare": "",
+              "average_rating": 0,
+              "type": "Coffee",
+              "roasted": "Medium Roasted",
+              "name": "Macchiato",
+              "id": "C6",
+              "prices": [
+                {
+                  "quantity": 1,
+                  "currency": "$",
+                  "price": "1.15",
+                  "size": "S"
+                }
+              ],
+              "imageUrlPortrait": "",
+              "favourite": false
+            }
+          ],
+          "customerInfo": {
+            "email": "albertanhdung49@gmail.com",
+            "name": "albert anhdung",
+            "phone": "0869374437"
+          },
+          "orderDate": {
+            "_seconds": 1749526770,
+            "_nanoseconds": 570000000
+          },
+          "status": "paid"
+        },
+        "metadata": {
+          "id": "xXUTbrkB1zdijSanCfGd",
+          "createTime": {
+            "_seconds": 1749526771,
+            "_nanoseconds": 450876000
+          },
+          "updateTime": {
+            "_seconds": 1749526771,
+            "_nanoseconds": 450876000
+          },
+          "readTime": {
+            "_seconds": 1750556785,
+            "_nanoseconds": 346836000
+          }
+        }
+      }
+    },
+    "products": {
+      "B1": {
+        "data": {
+          "name": "Robusta Beans",
+          "description": "Robusta beans are larger and more rounded than the other bean varieties. These plants typically grow much larger than Arabica plants, measuring between 15 and 20 feet. Robusta beans are typically considered to be hardier because they can grow at lower altitudes and resist diseases. But recent research suggests that they don't handle heat as well as was previously thought.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/robusta_coffee_beans/robusta_coffee_beans_portrait.png",
+          "ingredients": "Africa",
+          "special_ingredient": "From Africa",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "5.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "10.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "18.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.7,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Bean",
+          "index": 0,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 551000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 551000000
+          }
+        },
+        "metadata": {
+          "id": "B1",
+          "createTime": {
+            "_seconds": 1749137898,
+            "_nanoseconds": 695043000
+          },
+          "updateTime": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 573947000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "B2": {
+        "data": {
+          "name": "Arabica Beans",
+          "description": "Arabica coffee is a species of coffee made from the beans of the Coffea arabica plant. Arabica originated in the southwestern highlands of Ethiopia and is the most popular kind of coffee worldwide, making up 60% or more of coffee production.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/arabica_coffee_beans/arabica_coffee_beans_portrait.png",
+          "ingredients": "South America",
+          "special_ingredient": "From South America",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "6.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "12.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "20.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.5,
+          "ratings_count": "4,267",
+          "favourite": false,
+          "type": "Bean",
+          "index": 1,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 880000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 880000000
+          }
+        },
+        "metadata": {
+          "id": "B2",
+          "createTime": {
+            "_seconds": 1749137900,
+            "_nanoseconds": 54153000
+          },
+          "updateTime": {
+            "_seconds": 1749138714,
+            "_nanoseconds": 897501000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "B3": {
+        "data": {
+          "name": "Liberica Beans",
+          "description": "Liberica coffee is a species of coffee. It is a very hardy plant that can tolerate hot climates. It is characterized by its unique aroma and taste profile.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/liberica_coffee_beans/liberica_coffee_beans_portrait.png",
+          "ingredients": "West Africa",
+          "special_ingredient": "From West Africa",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "7.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "14.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "25.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.2,
+          "ratings_count": "2,439",
+          "favourite": false,
+          "type": "Bean",
+          "index": 2,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 188000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 188000000
+          }
+        },
+        "metadata": {
+          "id": "B3",
+          "createTime": {
+            "_seconds": 1749137901,
+            "_nanoseconds": 352621000
+          },
+          "updateTime": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 205895000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "B4": {
+        "data": {
+          "name": "Excelsa Beans",
+          "description": "Excelsa beans are grown primarily in Southeast Asia and account for a very small fraction of the world's coffee consumption. These beans grow on large 20-30 foot coffee plants at medium altitudes.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/excelsa_coffee_beans/excelsa_coffee_beans_portrait.png",
+          "ingredients": "Southeast Asia",
+          "special_ingredient": "From Southeast Asia",
+          "prices": [
+            {
+              "size": "250gm",
+              "price": "8.50",
+              "currency": "$"
+            },
+            {
+              "size": "500gm",
+              "price": "16.50",
+              "currency": "$"
+            },
+            {
+              "size": "1Kg",
+              "price": "28.50",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.3,
+          "ratings_count": "1,969",
+          "favourite": false,
+          "type": "Bean",
+          "index": 3,
+          "category": "bean",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 422000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 422000000
+          }
+        },
+        "metadata": {
+          "id": "B4",
+          "createTime": {
+            "_seconds": 1749137902,
+            "_nanoseconds": 543471000
+          },
+          "updateTime": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 448527000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C1": {
+        "data": {
+          "name": "Americano",
+          "description": "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee.",
+          "roasted": "Medium Roasted",
+          "ingredients": "Espresso, Hot Water",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,986",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 0,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 678000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 678000000
+          },
+          "imageUrlSquare": "../assets/coffee_assets/americano/square/americano_pic_1_square.png",
+          "imageUrlPortrait": "../assets/coffee_assets/americano/portrait/americano_pic_1_portrait.png"
+        },
+        "metadata": {
+          "id": "C1",
+          "createTime": {
+            "_seconds": 1749137903,
+            "_nanoseconds": 924860000
+          },
+          "updateTime": {
+            "_seconds": 1749997432,
+            "_nanoseconds": 638805000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C2": {
+        "data": {
+          "name": "Black Coffee",
+          "description": "Black coffee is as simple as it gets with ground coffee beans steeped in hot water, served warm. And if you want to sound fancy, you can call black coffee by its proper name: cafe noir.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/black_coffee/square/black_coffee_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/black_coffee/portrait/black_coffee_pic_1_portrait.png",
+          "ingredients": "Water, Coffee",
+          "special_ingredient": "With Sugar",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "favourite": false,
+          "type": "Coffee",
+          "index": 1,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138715,
+            "_nanoseconds": 926000000
+          },
+          "average_rating": 5,
+          "ratings_count": "1",
+          "updatedAt": {
+            "_seconds": 1749991847,
+            "_nanoseconds": 137000000
+          }
+        },
+        "metadata": {
+          "id": "C2",
+          "createTime": {
+            "_seconds": 1749137905,
+            "_nanoseconds": 90651000
+          },
+          "updateTime": {
+            "_seconds": 1749991847,
+            "_nanoseconds": 153839000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C3": {
+        "data": {
+          "name": "Cappuccino",
+          "description": "A cappuccino is an espresso-based coffee drink that originated in Italy, and is traditionally prepared with steamed milk foam (microfoam).",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/cappuccino/square/cappuccino_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/cappuccino/portrait/cappuccino_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 2,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 142000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 142000000
+          }
+        },
+        "metadata": {
+          "id": "C3",
+          "createTime": {
+            "_seconds": 1749137906,
+            "_nanoseconds": 236436000
+          },
+          "updateTime": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 148874000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C4": {
+        "data": {
+          "name": "Espresso",
+          "description": "Espresso is coffee of Italian origin, brewed by forcing a small amount of nearly boiling water under pressure through finely ground coffee beans.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/espresso/square/espresso_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/espresso/portrait/espresso_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 3,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 371000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 371000000
+          }
+        },
+        "metadata": {
+          "id": "C4",
+          "createTime": {
+            "_seconds": 1749137907,
+            "_nanoseconds": 366914000
+          },
+          "updateTime": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 378382000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C5": {
+        "data": {
+          "name": "Latte",
+          "description": "A latte is a coffee drink of Italian origin made with espresso and steamed milk.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/latte/square/latte_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/latte/portrait/latte_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "average_rating": 4.6,
+          "ratings_count": "6,879",
+          "favourite": false,
+          "type": "Coffee",
+          "index": 4,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 586000000
+          },
+          "updatedAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 586000000
+          }
+        },
+        "metadata": {
+          "id": "C5",
+          "createTime": {
+            "_seconds": 1749137908,
+            "_nanoseconds": 566218000
+          },
+          "updateTime": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 596088000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      },
+      "C6": {
+        "data": {
+          "name": "Macchiato",
+          "description": "A macchiato is an espresso coffee drink with a small amount of milk, usually foamed.",
+          "roasted": "Medium Roasted",
+          "imageUrlSquare": "src/assets/coffee_assets/macchiato/square/macchiato_pic_1_square.png",
+          "imageUrlPortrait": "src/assets/coffee_assets/macchiato/portrait/macchiato_pic_1_portrait.png",
+          "ingredients": "Espresso, Steamed Milk",
+          "special_ingredient": "With Steamed Milk",
+          "prices": [
+            {
+              "size": "S",
+              "price": "1.15",
+              "currency": "$"
+            },
+            {
+              "size": "M",
+              "price": "2.25",
+              "currency": "$"
+            },
+            {
+              "size": "L",
+              "price": "3.55",
+              "currency": "$"
+            }
+          ],
+          "favourite": false,
+          "type": "Coffee",
+          "index": 5,
+          "category": "coffee",
+          "createdAt": {
+            "_seconds": 1749138716,
+            "_nanoseconds": 806000000
+          },
+          "average_rating": 4,
+          "ratings_count": "1",
+          "updatedAt": {
+            "_seconds": 1749651556,
+            "_nanoseconds": 266000000
+          }
+        },
+        "metadata": {
+          "id": "C6",
+          "createTime": {
+            "_seconds": 1749137910,
+            "_nanoseconds": 151134000
+          },
+          "updateTime": {
+            "_seconds": 1749651556,
+            "_nanoseconds": 298675000
+          },
+          "readTime": {
+            "_seconds": 1750556787,
+            "_nanoseconds": 390770000
+          }
+        }
+      }
+    },
+    "reviews": {
+      "P9ks6YsRsg22SshQcTdB": {
+        "data": {
+          "userName": "Cần Đường",
+          "content": "hhhhhhhhhhhhhhhhhhhhhhhhhhh",
+          "rating": 5,
+          "userId": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+          "videos": [],
+          "title": "hhhhhhhhhhhhhhhhh",
+          "dislikes": [],
+          "replies": 0,
+          "likes": [],
+          "images": [],
+          "userEmail": "cuonglequang539@gmail.com",
+          "gifs": [],
+          "verified": true,
+          "productId": "C2",
+          "helpful": [],
+          "createdAt": {
+            "_seconds": 1749991846,
+            "_nanoseconds": 5000000
+          },
+          "updatedAt": {
+            "_seconds": 1749991846,
+            "_nanoseconds": 5000000
+          }
+        },
+        "metadata": {
+          "id": "P9ks6YsRsg22SshQcTdB",
+          "createTime": {
+            "_seconds": 1749991846,
+            "_nanoseconds": 16501000
+          },
+          "updateTime": {
+            "_seconds": 1749991846,
+            "_nanoseconds": 16501000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 481974000
+          }
+        }
+      },
+      "kUhniP3KKZ805Klpzqkn": {
+        "data": {
+          "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "content": "Hhhhhhhhhhhhhhhhhh",
+          "productId": "C6",
+          "title": "Hhhhhh",
+          "userName": "albert anhdung",
+          "images": [],
+          "replies": 0,
+          "verified": true,
+          "gifs": [],
+          "videos": [],
+          "helpful": [],
+          "userEmail": "albertanhdung49@gmail.com",
+          "rating": 4,
+          "dislikes": [],
+          "likes": [],
+          "createdAt": {
+            "_seconds": 1749649737,
+            "_nanoseconds": 720000000
+          },
+          "updatedAt": {
+            "_seconds": 1749649737,
+            "_nanoseconds": 720000000
+          }
+        },
+        "metadata": {
+          "id": "kUhniP3KKZ805Klpzqkn",
+          "createTime": {
+            "_seconds": 1749649737,
+            "_nanoseconds": 737021000
+          },
+          "updateTime": {
+            "_seconds": 1749649737,
+            "_nanoseconds": 737021000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 481974000
+          }
+        }
+      }
+    },
+    "stockAlerts": {
+      "HTYlHQvAAvnUyZXSmw6I": {
+        "data": {
+          "currentStock": 8,
+          "alertType": "low_stock",
+          "productName": "Americano",
+          "size": "S",
+          "threshold": 10,
+          "productId": "C1",
+          "inventoryItemId": "sample-inventory-1",
+          "severity": "medium",
+          "createdAt": {
+            "_seconds": 1749906463,
+            "_nanoseconds": 385000000
+          },
+          "isRead": true
+        },
+        "metadata": {
+          "id": "HTYlHQvAAvnUyZXSmw6I",
+          "createTime": {
+            "_seconds": 1749906464,
+            "_nanoseconds": 488476000
+          },
+          "updateTime": {
+            "_seconds": 1749909674,
+            "_nanoseconds": 302376000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 771113000
+          }
+        }
+      },
+      "KYYI7VseCkPTn3uAwFPX": {
+        "data": {
+          "severity": "critical",
+          "createdAt": {
+            "_seconds": 1749906463,
+            "_nanoseconds": 385000000
+          },
+          "productName": "Robusta Beans",
+          "alertType": "out_of_stock",
+          "size": "250gm",
+          "threshold": 5,
+          "currentStock": 0,
+          "productId": "B1",
+          "inventoryItemId": "sample-inventory-2",
+          "isRead": true
+        },
+        "metadata": {
+          "id": "KYYI7VseCkPTn3uAwFPX",
+          "createTime": {
+            "_seconds": 1749906507,
+            "_nanoseconds": 55513000
+          },
+          "updateTime": {
+            "_seconds": 1749909678,
+            "_nanoseconds": 758706000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 771113000
+          }
+        }
+      },
+      "oLTRACjZhHDuVKHzZzye": {
+        "data": {
+          "createdAt": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 94000000
+          },
+          "productName": "Americano",
+          "severity": "medium",
+          "alertType": "low_stock",
+          "threshold": 10,
+          "productId": "C1",
+          "size": "S",
+          "inventoryItemId": "sample-inventory-1",
+          "currentStock": 8,
+          "isRead": true
+        },
+        "metadata": {
+          "id": "oLTRACjZhHDuVKHzZzye",
+          "createTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 668511000
+          },
+          "updateTime": {
+            "_seconds": 1749909677,
+            "_nanoseconds": 921890000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 771113000
+          }
+        }
+      },
+      "ybtsZoBq6y7aXNQ4RSOM": {
+        "data": {
+          "severity": "critical",
+          "threshold": 5,
+          "currentStock": 0,
+          "inventoryItemId": "sample-inventory-2",
+          "productName": "Robusta Beans",
+          "alertType": "out_of_stock",
+          "createdAt": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 94000000
+          },
+          "productId": "B1",
+          "size": "250gm",
+          "isRead": true
+        },
+        "metadata": {
+          "id": "ybtsZoBq6y7aXNQ4RSOM",
+          "createTime": {
+            "_seconds": 1749905407,
+            "_nanoseconds": 973532000
+          },
+          "updateTime": {
+            "_seconds": 1749909676,
+            "_nanoseconds": 723907000
+          },
+          "readTime": {
+            "_seconds": 1750556788,
+            "_nanoseconds": 771113000
+          }
+        }
+      }
+    },
+    "userPreferences": {
+      "N6wHWEDl0gCsxwWbaCIS": {
+        "data": {
+          "orderHistory": [
+            "n5KxtiWTNYRT4VFatKAf"
+          ],
+          "userId": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+          "recentSearches": [],
+          "favorites": [
+            "C5",
+            "C3"
+          ]
+        },
+        "metadata": {
+          "id": "N6wHWEDl0gCsxwWbaCIS",
+          "createTime": {
+            "_seconds": 1749991803,
+            "_nanoseconds": 876646000
+          },
+          "updateTime": {
+            "_seconds": 1749992191,
+            "_nanoseconds": 415111000
+          },
+          "readTime": {
+            "_seconds": 1750556789,
+            "_nanoseconds": 258392000
+          }
+        }
+      }
+    },
+    "users": {
+      "2P7itE3tsfNO4WzpC1TmrXfSYGB3": {
+        "data": {
+          "avatarInitials": "LC",
+          "orderHistory": [],
+          "orders": [],
+          "favoriteItems": [],
+          "email": "cuonglequang5394@gmail.com",
+          "firstName": "Lê Quang",
+          "displayName": "Lê Quang Cường",
+          "avatarBackgroundColor": "#DDA0DD",
+          "cartItems": [],
+          "uid": "2P7itE3tsfNO4WzpC1TmrXfSYGB3",
+          "lastName": "Cường",
+          "preferences": {
+            "theme": "dark",
+            "notifications": true
+          },
+          "createdAt": {
+            "_seconds": 1750090047,
+            "_nanoseconds": 211000000
+          },
+          "lastLoginAt": {
+            "_seconds": 1750556295,
+            "_nanoseconds": 471000000
+          },
+          "updatedAt": {
+            "_seconds": 1750556295,
+            "_nanoseconds": 471000000
+          }
+        },
+        "metadata": {
+          "id": "2P7itE3tsfNO4WzpC1TmrXfSYGB3",
+          "createTime": {
+            "_seconds": 1750090047,
+            "_nanoseconds": 236847000
+          },
+          "updateTime": {
+            "_seconds": 1750556295,
+            "_nanoseconds": 565399000
+          },
+          "readTime": {
+            "_seconds": 1750556789,
+            "_nanoseconds": 457846000
+          }
+        }
+      },
+      "8n05vsMKjugdpwllS4XjK7Sa2Mg2": {
+        "data": {
+          "uid": "8n05vsMKjugdpwllS4XjK7Sa2Mg2",
+          "favoriteItems": [],
+          "firstName": "Tiến Dũng ",
+          "cartItems": [],
+          "preferences": {
+            "theme": "dark",
+            "notifications": true
+          },
+          "lastName": "Nguyễn ",
+          "email": "dungfopba2@gmail.com",
+          "displayName": "Tiến Dũng  Nguyễn ",
+          "createdAt": {
+            "_seconds": 1749649932,
+            "_nanoseconds": 109000000
+          },
+          "orderHistory": [
+            "dTrsF9NEQtzgSiRDhn5K"
+          ],
+          "orders": [
+            "dTrsF9NEQtzgSiRDhn5K"
+          ],
+          "updatedAt": {
+            "_seconds": 1749650123,
+            "_nanoseconds": 271000000
+          }
+        },
+        "metadata": {
+          "id": "8n05vsMKjugdpwllS4XjK7Sa2Mg2",
+          "createTime": {
+            "_seconds": 1749649932,
+            "_nanoseconds": 128573000
+          },
+          "updateTime": {
+            "_seconds": 1749650123,
+            "_nanoseconds": 306217000
+          },
+          "readTime": {
+            "_seconds": 1750556789,
+            "_nanoseconds": 457846000
+          }
+        },
+        "subcollections": {
+          "orders": {
+            "dTrsF9NEQtzgSiRDhn5K": {
+              "data": {
+                "orderId": "dTrsF9NEQtzgSiRDhn5K",
+                "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+                "items": [
+                  {
+                    "id": "C6",
+                    "imageUrlPortrait": "",
+                    "ingredients": "",
+                    "prices": [
+                      {
+                        "currency": "$",
+                        "size": "S",
+                        "quantity": 1,
+                        "price": "1.15"
+                      }
+                    ],
+                    "average_rating": 0,
+                    "index": 5,
+                    "description": "",
+                    "special_ingredient": "With Steamed Milk",
+                    "name": "Macchiato",
+                    "favourite": false,
+                    "roasted": "Medium Roasted",
+                    "ratings_count": "0",
+                    "imageUrlSquare": "",
+                    "type": "Coffee"
+                  }
+                ],
+                "paymentMethod": "cash",
+                "paymentId": "COD_1749650120907_ctaojmwys",
+                "id": "dTrsF9NEQtzgSiRDhn5K",
+                "userId": "8n05vsMKjugdpwllS4XjK7Sa2Mg2",
+                "totalAmount": 1.15,
+                "customerInfo": {
+                  "name": "Tiến Dũng  Nguyễn ",
+                  "phone": "0869374437",
+                  "email": "dungfopba2@gmail.com"
+                },
+                "orderDate": {
+                  "_seconds": 1749650121,
+                  "_nanoseconds": 2000000
+                },
+                "status": "confirmed",
+                "createdAt": {
+                  "_seconds": 1749650122,
+                  "_nanoseconds": 139000000
+                },
+                "updatedAt": {
+                  "_seconds": 1749650122,
+                  "_nanoseconds": 139000000
+                }
+              },
+              "metadata": {
+                "id": "dTrsF9NEQtzgSiRDhn5K",
+                "createTime": {
+                  "_seconds": 1749650122,
+                  "_nanoseconds": 180534000
+                },
+                "updateTime": {
+                  "_seconds": 1749650122,
+                  "_nanoseconds": 180534000
+                },
+                "readTime": {
+                  "_seconds": 1750556789,
+                  "_nanoseconds": 782827000
+                }
+              }
+            }
+          }
+        }
+      },
+      "M4xRbepSSvUqoFX5dZHzrtxwcP92": {
+        "data": {
+          "uid": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "email": "albertanhdung49@gmail.com",
+          "displayName": "albert anhdung",
+          "firstName": "albert",
+          "lastName": "anhdung",
+          "favoriteItems": [],
+          "cartItems": [],
+          "preferences": {
+            "notifications": true,
+            "theme": "dark"
+          },
+          "createdAt": {
+            "_seconds": 1749180402,
+            "_nanoseconds": 436000000
+          },
+          "address": "Somewhere ",
+          "phone": "0869374437",
+          "orderHistory": [
+            "lF0fku07uhjMVrqTo3Xg",
+            "7gTzX276yidH80y8Z8vC",
+            "j3ZMvQZul8mCoKg01Rzl",
+            "A1mvT94GAisLHxqeTeYI",
+            "KsKrX0tJwCWZW4NxHYEp",
+            "7NK9icrB62AcX9sj9t94"
+          ],
+          "lastLoginAt": {
+            "_seconds": 1750001026,
+            "_nanoseconds": 25000000
+          },
+          "updatedAt": {
+            "_seconds": 1750001026,
+            "_nanoseconds": 25000000
+          }
+        },
+        "metadata": {
+          "id": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+          "createTime": {
+            "_seconds": 1749180402,
+            "_nanoseconds": 478764000
+          },
+          "updateTime": {
+            "_seconds": 1750001026,
+            "_nanoseconds": 48026000
+          },
+          "readTime": {
+            "_seconds": 1750556789,
+            "_nanoseconds": 457846000
+          }
+        },
+        "subcollections": {
+          "orders": {
+            "7NK9icrB62AcX9sj9t94": {
+              "data": {
+                "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+                "status": "confirmed",
+                "orderId": "7NK9icrB62AcX9sj9t94",
+                "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+                "totalAmount": 3.55,
+                "paymentMethod": "cash",
+                "paymentId": "COD_1749644516573_ht9hbjipm",
+                "customerInfo": {
+                  "name": "albert anhdung",
+                  "email": "albertanhdung49@gmail.com",
+                  "phone": "0869374437"
+                },
+                "orderDate": {
+                  "_seconds": 1749644516,
+                  "_nanoseconds": 667000000
+                },
+                "id": "7NK9icrB62AcX9sj9t94",
+                "items": [
+                  {
+                    "roasted": "Medium Roasted",
+                    "type": "Coffee",
+                    "favourite": false,
+                    "name": "Macchiato",
+                    "imageUrlSquare": "",
+                    "id": "C6",
+                    "ratings_count": "0",
+                    "prices": [
+                      {
+                        "price": "3.55",
+                        "currency": "$",
+                        "size": "L",
+                        "quantity": 1
+                      }
+                    ],
+                    "index": 5,
+                    "average_rating": 0,
+                    "special_ingredient": "With Steamed Milk",
+                    "imageUrlPortrait": "",
+                    "description": "",
+                    "ingredients": ""
+                  }
+                ],
+                "createdAt": {
+                  "_seconds": 1749644518,
+                  "_nanoseconds": 92000000
+                },
+                "updatedAt": {
+                  "_seconds": 1749644518,
+                  "_nanoseconds": 92000000
+                }
+              },
+              "metadata": {
+                "id": "7NK9icrB62AcX9sj9t94",
+                "createTime": {
+                  "_seconds": 1749644518,
+                  "_nanoseconds": 113876000
+                },
+                "updateTime": {
+                  "_seconds": 1749644518,
+                  "_nanoseconds": 113876000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "AZssJeLgW6BU9Njc9clm": {
+              "data": {
+                "orderId": "2MKAUi7EUPXuaYf5e84O",
+                "orderDate": {
+                  "_seconds": 1749482954,
+                  "_nanoseconds": 846000000
+                },
+                "totalAmount": 3.55,
+                "paymentMethod": "Cash on Delivery",
+                "status": "completed"
+              },
+              "metadata": {
+                "id": "AZssJeLgW6BU9Njc9clm",
+                "createTime": {
+                  "_seconds": 1749482955,
+                  "_nanoseconds": 831982000
+                },
+                "updateTime": {
+                  "_seconds": 1749483914,
+                  "_nanoseconds": 279834000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "KsKrX0tJwCWZW4NxHYEp": {
+              "data": {
+                "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+                "totalAmount": 1.15,
+                "paymentMethod": "cash",
+                "userId": "M4xRbepSSvUqoFX5dZHzrtxwcP92",
+                "status": "confirmed",
+                "orderDate": {
+                  "_seconds": 1749528835,
+                  "_nanoseconds": 894000000
+                },
+                "customerInfo": {
+                  "name": "albert anhdung",
+                  "phone": "0869374437",
+                  "email": "albertanhdung49@gmail.com"
+                },
+                "items": [
+                  {
+                    "name": "Latte",
+                    "imageUrlSquare": "",
+                    "description": "",
+                    "id": "C5",
+                    "roasted": "Medium Roasted",
+                    "average_rating": 0,
+                    "ingredients": "",
+                    "favourite": false,
+                    "special_ingredient": "With Steamed Milk",
+                    "index": 4,
+                    "prices": [
+                      {
+                        "price": "1.15",
+                        "currency": "$",
+                        "size": "S",
+                        "quantity": 1
+                      }
+                    ],
+                    "type": "Coffee",
+                    "ratings_count": "0",
+                    "imageUrlPortrait": ""
+                  }
+                ],
+                "orderId": "KsKrX0tJwCWZW4NxHYEp",
+                "id": "KsKrX0tJwCWZW4NxHYEp",
+                "paymentId": "COD_1749528835840_t1qu5t138",
+                "createdAt": {
+                  "_seconds": 1749528836,
+                  "_nanoseconds": 494000000
+                },
+                "updatedAt": {
+                  "_seconds": 1749528836,
+                  "_nanoseconds": 494000000
+                }
+              },
+              "metadata": {
+                "id": "KsKrX0tJwCWZW4NxHYEp",
+                "createTime": {
+                  "_seconds": 1749528836,
+                  "_nanoseconds": 514569000
+                },
+                "updateTime": {
+                  "_seconds": 1749528836,
+                  "_nanoseconds": 514569000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "MiKPvKJ5m2D2a9o0a9jy": {
+              "data": {
+                "orderId": "eYHxpMqEtanV2sQj9FJz",
+                "orderDate": {
+                  "_seconds": 1749478097,
+                  "_nanoseconds": 761000000
+                },
+                "totalAmount": 3.55,
+                "status": "processing",
+                "paymentMethod": "Credit/Debit Card"
+              },
+              "metadata": {
+                "id": "MiKPvKJ5m2D2a9o0a9jy",
+                "createTime": {
+                  "_seconds": 1749478098,
+                  "_nanoseconds": 683795000
+                },
+                "updateTime": {
+                  "_seconds": 1749478098,
+                  "_nanoseconds": 683795000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "PT7zYPlhRexa2XepRqv2": {
+              "data": {
+                "orderId": "KSJXyHAdBXuqrkSW7R87",
+                "orderDate": {
+                  "_seconds": 1749479288,
+                  "_nanoseconds": 713000000
+                },
+                "totalAmount": 3.55,
+                "status": "processing",
+                "paymentMethod": "Credit/Debit Card"
+              },
+              "metadata": {
+                "id": "PT7zYPlhRexa2XepRqv2",
+                "createTime": {
+                  "_seconds": 1749479289,
+                  "_nanoseconds": 713632000
+                },
+                "updateTime": {
+                  "_seconds": 1749479289,
+                  "_nanoseconds": 713632000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "SHGu2mefjO3Rp1DHm23u": {
+              "data": {
+                "orderId": "bxtaBHiNIVaGUL5tBVcJ",
+                "orderDate": {
+                  "_seconds": 1749483494,
+                  "_nanoseconds": 846000000
+                },
+                "totalAmount": 3.55,
+                "paymentMethod": "Cash on Delivery",
+                "createdAt": {
+                  "_seconds": 1749483495,
+                  "_nanoseconds": 160000000
+                },
+                "status": "completed"
+              },
+              "metadata": {
+                "id": "SHGu2mefjO3Rp1DHm23u",
+                "createTime": {
+                  "_seconds": 1749483495,
+                  "_nanoseconds": 724586000
+                },
+                "updateTime": {
+                  "_seconds": 1749483931,
+                  "_nanoseconds": 76747000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            },
+            "h9OpHiG6r0os42uUcj9P": {
+              "data": {
+                "orderId": "m5ZjeCtA4emot1hib8ru",
+                "orderDate": {
+                  "_seconds": 1749481800,
+                  "_nanoseconds": 243000000
+                },
+                "totalAmount": 3.55,
+                "status": "processing",
+                "paymentMethod": "Credit/Debit Card"
+              },
+              "metadata": {
+                "id": "h9OpHiG6r0os42uUcj9P",
+                "createTime": {
+                  "_seconds": 1749481802,
+                  "_nanoseconds": 491756000
+                },
+                "updateTime": {
+                  "_seconds": 1749481802,
+                  "_nanoseconds": 491756000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 2913000
+                }
+              }
+            }
+          }
+        }
+      },
+      "X3K24hYrPih5yn4kOa17AUZmWNv2": {
+        "data": {
+          "email": "cuonglequang539@gmail.com",
+          "favoriteItems": [],
+          "preferences": {
+            "notifications": true,
+            "theme": "dark"
+          },
+          "uid": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+          "cartItems": [],
+          "createdAt": {
+            "_seconds": 1749990995,
+            "_nanoseconds": 585000000
+          },
+          "orderHistory": [
+            "n5KxtiWTNYRT4VFatKAf"
+          ],
+          "orders": [
+            "n5KxtiWTNYRT4VFatKAf"
+          ],
+          "lastLoginAt": {
+            "_seconds": 1750087507,
+            "_nanoseconds": 666000000
+          },
+          "firstName": "Lê Quang ",
+          "lastName": "Cường ",
+          "address": "Something ",
+          "phone": "0869374437",
+          "displayName": "Lê Quang  Cường ",
+          "updatedAt": {
+            "_seconds": 1750087557,
+            "_nanoseconds": 738000000
+          }
+        },
+        "metadata": {
+          "id": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+          "createTime": {
+            "_seconds": 1749990995,
+            "_nanoseconds": 622145000
+          },
+          "updateTime": {
+            "_seconds": 1750087557,
+            "_nanoseconds": 776124000
+          },
+          "readTime": {
+            "_seconds": 1750556789,
+            "_nanoseconds": 457846000
+          }
+        },
+        "subcollections": {
+          "orders": {
+            "n5KxtiWTNYRT4VFatKAf": {
+              "data": {
+                "id": "n5KxtiWTNYRT4VFatKAf",
+                "orderId": "n5KxtiWTNYRT4VFatKAf",
+                "totalAmount": 1.15,
+                "deliveryAddress": "phường Tân Đông Hiệp, Dĩ An, Bình Dương, Việt Nam",
+                "items": [
+                  {
+                    "id": "C2",
+                    "ingredients": "",
+                    "favourite": false,
+                    "imageUrlPortrait": "",
+                    "name": "Black Coffee",
+                    "index": 1,
+                    "special_ingredient": "With Sugar",
+                    "ratings_count": "0",
+                    "type": "Coffee",
+                    "prices": [
+                      {
+                        "currency": "$",
+                        "quantity": 1,
+                        "size": "S",
+                        "price": "1.15"
+                      }
+                    ],
+                    "imageUrlSquare": "",
+                    "average_rating": 0,
+                    "description": "",
+                    "roasted": "Medium Roasted"
+                  }
+                ],
+                "status": "confirmed",
+                "paymentMethod": "cash",
+                "userId": "X3K24hYrPih5yn4kOa17AUZmWNv2",
+                "orderDate": {
+                  "_seconds": 1749991800,
+                  "_nanoseconds": 222000000
+                },
+                "paymentId": "COD_1749991800099_hpxv2toxi",
+                "customerInfo": {
+                  "phone": "0869374437",
+                  "email": "cuonglequang539@gmail.com",
+                  "name": "Cần Đường"
+                },
+                "createdAt": {
+                  "_seconds": 1749991801,
+                  "_nanoseconds": 909000000
+                },
+                "updatedAt": {
+                  "_seconds": 1749991801,
+                  "_nanoseconds": 909000000
+                }
+              },
+              "metadata": {
+                "id": "n5KxtiWTNYRT4VFatKAf",
+                "createTime": {
+                  "_seconds": 1749991801,
+                  "_nanoseconds": 942281000
+                },
+                "updateTime": {
+                  "_seconds": 1749991801,
+                  "_nanoseconds": 942281000
+                },
+                "readTime": {
+                  "_seconds": 1750556790,
+                  "_nanoseconds": 218422000
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
