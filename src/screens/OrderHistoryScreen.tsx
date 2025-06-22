@@ -275,7 +275,9 @@ const OrderHistoryScreen = ({navigation}: any) => {
   // Load order history on mount
   useEffect(() => {
     if (useFirebase && isAuthenticated) {
-      loadOrderHistory();
+      loadOrderHistory().catch((error: any) => {
+        console.error('Failed to load order history:', error);
+      });
     }
   }, [useFirebase, isAuthenticated, loadOrderHistory]);
 
@@ -395,19 +397,39 @@ const OrderHistoryScreen = ({navigation}: any) => {
     <View style={styles.emptyStateContainer}>
       <EmptyListAnimation title="No Order History" />
       <Text style={styles.emptyStateText}>
-        {!useFirebase 
+        {error
+          ? `Error loading orders: ${error}`
+          : !useFirebase 
           ? 'Enable Firebase to view your order history'
           : !isAuthenticated
           ? 'Sign in to view your order history'
+          : isLoadingOrders
+          ? 'Loading your orders...'
           : 'You haven\'t placed any orders yet'
         }
       </Text>
-      <TouchableOpacity
-        style={styles.emptyStateButton}
-        onPress={() => navigation.navigate('Tab', {screen: 'Home'})}
-        activeOpacity={0.8}>
-        <Text style={styles.emptyStateButtonText}>Start Shopping</Text>
-      </TouchableOpacity>
+      {!error && (
+        <TouchableOpacity
+          style={styles.emptyStateButton}
+          onPress={() => navigation.navigate('Tab', {screen: 'Home'})}
+          activeOpacity={0.8}>
+          <Text style={styles.emptyStateButtonText}>Start Shopping</Text>
+        </TouchableOpacity>
+      )}
+      {error && (
+        <TouchableOpacity
+          style={[styles.emptyStateButton, {backgroundColor: COLORS.primaryOrangeHex}]}
+          onPress={() => {
+            if (useFirebase && isAuthenticated) {
+              loadOrderHistory().catch((error: any) => {
+                console.error('Retry failed:', error);
+              });
+            }
+          }}
+          activeOpacity={0.8}>
+          <Text style={styles.emptyStateButtonText}>Retry</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
