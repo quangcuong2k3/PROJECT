@@ -6,6 +6,7 @@ import {
   //Text,
   View,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {useStore} from '../store/firebaseStore';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -34,11 +35,31 @@ const CartScreen = ({navigation}: any) => {
   const incrementCartItemQuantityHandler = (id: string, size: string) => {
     incrementCartItemQuantity(id, size);
     calculateCartPrice();
+    
+    // Find the item name for better feedback
+    const item = CartList.find((cartItem: any) => cartItem.id === id);
+    const itemName = item ? item.name : 'Item';
+    
+    // Show subtle feedback for quantity increase
+    ToastAndroid.show(
+      `${itemName} (${size}) quantity increased`,
+      ToastAndroid.SHORT,
+    );
   };
 
   const decrementCartItemQuantityHandler = (id: string, size: string) => {
     decrementCartItemQuantity(id, size);
     calculateCartPrice();
+    
+    // Find the item name for better feedback
+    const item = CartList.find((cartItem: any) => cartItem.id === id);
+    const itemName = item ? item.name : 'Item';
+    
+    // Show subtle feedback for quantity decrease
+    ToastAndroid.show(
+      `${itemName} (${size}) quantity decreased`,
+      ToastAndroid.SHORT,
+    );
   };
   return (
     <View style={styles.ScreenContainer}>
