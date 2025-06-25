@@ -12,13 +12,19 @@ import {
   Easing,
   RefreshControl,
   Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  ToastAndroid,
+  Vibration,
+  ActivityIndicator,
 } from 'react-native';
-import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
+import {BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import UserAvatar from '../components/UserAvatar';
 import CustomIcon from '../components/CustomIcon';
 import {useStore} from '../store/firebaseStore';
 import authService from '../services/authService';
+import locationService, {DetailedAddress} from '../services/locationService';
 
 interface AnimatedCardProps {
   children: React.ReactNode;
@@ -92,9 +98,144 @@ const ProfileScreen = ({navigation}: any) => {
   const [notifications, setNotifications] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  
+  // Form validation states
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [validationStatus, setValidationStatus] = useState<{[key: string]: boolean}>({});
+  
+  // Location states
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<DetailedAddress | null>(null);
+  const [locationPermissionGranted, setLocationPermissionGranted] = useState<boolean | null>(null);
 
   const buttonPressAnim = useRef(new Animated.Value(1)).current;
   const toggleAnim = useRef(new Animated.Value(0)).current;
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+  const successAnim = useRef(new Animated.Value(0)).current;
+
+  // Validation functions
+  const validateFirstName = (name: string): {isValid: boolean, error: string} => {
+    if (!name.trim()) return {isValid: false, error: 'First name is required'};
+    if (name.trim().length < 2) return {isValid: false, error: 'First name must be at least 2 characters'};
+    if (!/^[a-zA-Z\s]+$/.test(name.trim())) return {isValid: false, error: 'First name can only contain letters'};
+    return {isValid: true, error: ''};
+  };
+
+  const validateLastName = (name: string): {isValid: boolean, error: string} => {
+    if (!name.trim()) return {isValid: false, error: 'Last name is required'};
+    if (name.trim().length < 2) return {isValid: false, error: 'Last name must be at least 2 characters'};
+    if (!/^[a-zA-Z\s]+$/.test(name.trim())) return {isValid: false, error: 'Last name can only contain letters'};
+    return {isValid: true, error: ''};
+  };
+
+  const validatePhone = (phoneNumber: string): {isValid: boolean, error: string} => {
+    if (!phoneNumber.trim()) return {isValid: false, error: 'Phone number is required'};
+    
+    // Remove all non-digit characters for validation
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    
+    // Vietnamese phone number patterns
+    const vietnamesePatterns = [
+      /^(84|0)(3[2-9]|5[689]|7[06-9]|8[1-689]|9[0-46-9])[0-9]{7}$/, // Mobile
+      /^(84|0)(2[0-9])[0-9]{8}$/, // Landline
+    ];
+    
+    const isValidVietnamese = vietnamesePatterns.some(pattern => pattern.test(cleanPhone));
+    
+    if (!isValidVietnamese) {
+      return {isValid: false, error: 'Please enter a valid Vietnamese phone number'};
+    }
+    
+    return {isValid: true, error: ''};
+  };
+
+  const validateAddress = (addr: string): {isValid: boolean, error: string} => {
+    if (!addr.trim()) return {isValid: false, error: 'Address is required'};
+    if (addr.trim().length < 10) return {isValid: false, error: 'Please enter a complete address (at least 10 characters)'};
+    return {isValid: true, error: ''};
+  };
+
+  // Format phone number for display
+  const formatPhoneNumber = (phoneNumber: string): string => {
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    
+    if (cleaned.startsWith('84')) {
+      // Format: +84 xxx xxx xxx
+      const match = cleaned.match(/^84(\d{3})(\d{3})(\d{3})$/);
+      if (match) return `+84 ${match[1]} ${match[2]} ${match[3]}`;
+    } else if (cleaned.startsWith('0')) {
+      // Format: 0xxx xxx xxx
+      const match = cleaned.match(/^0(\d{3})(\d{3})(\d{3})$/);
+      if (match) return `0${match[1]} ${match[2]} ${match[3]}`;
+    }
+    
+    return phoneNumber;
+  };
+
+  // Validate field on change
+  const validateField = (field: string, value: string) => {
+    let validation;
+    switch (field) {
+      case 'firstName':
+        validation = validateFirstName(value);
+        break;
+      case 'lastName':
+        validation = validateLastName(value);
+        break;
+      case 'phone':
+        validation = validatePhone(value);
+        break;
+      case 'address':
+        validation = validateAddress(value);
+        break;
+      default:
+        return;
+    }
+
+    setErrors(prev => ({
+      ...prev,
+      [field]: validation.error,
+    }));
+
+    setValidationStatus(prev => ({
+      ...prev,
+      [field]: validation.isValid,
+    }));
+  };
+
+  // Check for unsaved changes
+  const checkForChanges = () => {
+    const hasChanges = 
+      firstName !== (userProfile?.firstName || '') ||
+      lastName !== (userProfile?.lastName || '') ||
+      phone !== (userProfile?.phone || '') ||
+      address !== (userProfile?.address || '') ||
+      notifications !== (userProfile?.preferences?.notifications ?? true);
+    
+    setHasUnsavedChanges(hasChanges);
+  };
+
+  // Shake animation for errors
+  const triggerShakeAnimation = () => {
+    Vibration.vibrate(100);
+    Animated.sequence([
+      Animated.timing(shakeAnim, {toValue: 10, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnim, {toValue: -10, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnim, {toValue: 10, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnim, {toValue: 0, duration: 100, useNativeDriver: true}),
+    ]).start();
+  };
+
+  // Success animation
+  const triggerSuccessAnimation = () => {
+    Animated.sequence([
+      Animated.timing(successAnim, {toValue: 1, duration: 300, useNativeDriver: true}),
+      Animated.delay(1500),
+      Animated.timing(successAnim, {toValue: 0, duration: 300, useNativeDriver: true}),
+    ]).start();
+  };
 
   useEffect(() => {
     if (userProfile) {
@@ -103,8 +244,35 @@ const ProfileScreen = ({navigation}: any) => {
       setPhone(userProfile.phone || '');
       setAddress(userProfile.address || '');
       setNotifications(userProfile.preferences?.notifications ?? true);
+      
+      // Reset form state when profile loads
+      setErrors({});
+      setValidationStatus({});
+      setHasUnsavedChanges(false);
     }
   }, [userProfile]);
+
+  // Keyboard listeners
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  // Check for changes when form values change
+  useEffect(() => {
+    if (userProfile) {
+      checkForChanges();
+    }
+  }, [firstName, lastName, phone, address, notifications, userProfile]);
 
   useEffect(() => {
     Animated.timing(toggleAnim, {
@@ -132,14 +300,46 @@ const ProfileScreen = ({navigation}: any) => {
   const handleSaveProfile = async () => {
     if (!user || !userProfile) return;
 
+    // Validate all fields before saving
+    const firstNameValidation = validateFirstName(firstName);
+    const lastNameValidation = validateLastName(lastName);
+    const phoneValidation = validatePhone(phone);
+    const addressValidation = validateAddress(address);
+
+    const newErrors = {
+      firstName: firstNameValidation.error,
+      lastName: lastNameValidation.error,
+      phone: phoneValidation.error,
+      address: addressValidation.error,
+    };
+
+    const newValidationStatus = {
+      firstName: firstNameValidation.isValid,
+      lastName: lastNameValidation.isValid,
+      phone: phoneValidation.isValid,
+      address: addressValidation.isValid,
+    };
+
+    setErrors(newErrors);
+    setValidationStatus(newValidationStatus);
+
+    // Check if all fields are valid
+    const isFormValid = Object.values(newValidationStatus).every(status => status);
+
+    if (!isFormValid) {
+      triggerShakeAnimation();
+      ToastAndroid.show('Please fix the errors before saving', ToastAndroid.SHORT);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const updates = {
-        firstName,
-        lastName,
-        phone,
-        address,
-        displayName: `${firstName} ${lastName}`,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phone: formatPhoneNumber(phone),
+        address: address.trim(),
+        displayName: `${firstName.trim()} ${lastName.trim()}`,
         preferences: {
           ...userProfile.preferences,
           notifications,
@@ -156,19 +356,156 @@ const ProfileScreen = ({navigation}: any) => {
         } else {
           setUserProfile({...userProfile, ...updates});
         }
+        
         setIsEditing(false);
-        Alert.alert('✅ Success', 'Profile updated successfully!', [
-          {text: 'OK', style: 'default'},
-        ]);
+        setHasUnsavedChanges(false);
+        triggerSuccessAnimation();
+        
+        ToastAndroid.showWithGravity(
+          'Profile updated successfully! ✨',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+
       } else {
-        Alert.alert('❌ Error', result.error || 'Failed to update profile');
+        triggerShakeAnimation();
+        ToastAndroid.show(result.error || 'Failed to update profile', ToastAndroid.SHORT);
       }
     } catch (error: any) {
-      Alert.alert('❌ Error', error.message || 'Failed to update profile');
+      triggerShakeAnimation();
+      ToastAndroid.show(error.message || 'Failed to update profile', ToastAndroid.SHORT);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleCancelEdit = () => {
+    if (hasUnsavedChanges) {
+      Alert.alert(
+        '⚠️ Unsaved Changes',
+        'You have unsaved changes. Are you sure you want to cancel?',
+        [
+          {text: 'Keep Editing', style: 'cancel'},
+          {
+            text: 'Discard Changes',
+            style: 'destructive',
+            onPress: () => {
+              // Reset to original values
+              if (userProfile) {
+                setFirstName(userProfile.firstName || '');
+                setLastName(userProfile.lastName || '');
+                setPhone(userProfile.phone || '');
+                setAddress(userProfile.address || '');
+                setNotifications(userProfile.preferences?.notifications ?? true);
+              }
+              setIsEditing(false);
+              setErrors({});
+              setValidationStatus({});
+              setHasUnsavedChanges(false);
+            },
+          },
+        ],
+        {cancelable: true}
+      );
+    } else {
+      setIsEditing(false);
+      setErrors({});
+      setValidationStatus({});
+    }
+  };
+
+  // Enhanced input handlers with validation
+  const handleFirstNameChange = (text: string) => {
+    setFirstName(text);
+    validateField('firstName', text);
+  };
+
+  const handleLastNameChange = (text: string) => {
+    setLastName(text);
+    validateField('lastName', text);
+  };
+
+  const handlePhoneChange = (text: string) => {
+    setPhone(text);
+    validateField('phone', text);
+  };
+
+  const handleAddressChange = (text: string) => {
+    setAddress(text);
+    validateField('address', text);
+  };
+
+  // Location functions
+  const handleUseCurrentLocation = async () => {
+    if (!isEditing) return;
+
+    setIsLoadingLocation(true);
+    try {
+      // First check permissions
+      const hasPermission = await locationService.requestLocationPermission();
+      setLocationPermissionGranted(hasPermission);
+      
+      if (!hasPermission) {
+        ToastAndroid.show(
+          'Location permission required to use this feature',
+          ToastAndroid.LONG
+        );
+        return;
+      }
+
+      // Get current location
+      const location = await locationService.getCurrentDetailedAddress();
+      
+      if (location) {
+        setCurrentLocation(location);
+        setAddress(location.formattedAddress);
+        validateField('address', location.formattedAddress);
+        
+        // Success feedback
+        Vibration.vibrate([100, 50, 100]);
+        ToastAndroid.showWithGravity(
+          '📍 Location detected successfully!',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      } else {
+        ToastAndroid.show(
+          'Unable to get your location. Please try again or enter manually.',
+          ToastAndroid.LONG
+        );
+      }
+    } catch (error: any) {
+      console.error('Error getting location:', error);
+      ToastAndroid.show(
+        'Failed to get location. Please enter address manually.',
+        ToastAndroid.SHORT
+      );
+    } finally {
+      setIsLoadingLocation(false);
+    }
+  };
+
+  const handleRefreshLocation = async () => {
+    if (!isEditing || isLoadingLocation) return;
+    
+    // Clear current location and get fresh one
+    setCurrentLocation(null);
+    await handleUseCurrentLocation();
+  };
+
+  // Check location permission on component mount
+  useEffect(() => {
+    const checkLocationPermission = async () => {
+      try {
+        // Just check if we have permission without requesting
+        const location = await locationService.getCurrentLocation();
+        setLocationPermissionGranted(!!location);
+      } catch (error) {
+        setLocationPermissionGranted(false);
+      }
+    };
+    checkLocationPermission();
+  }, []);
 
   const handleSignOut = () => {
     Alert.alert(
@@ -234,11 +571,44 @@ const ProfileScreen = ({navigation}: any) => {
   }
 
   return (
-    <View style={styles.ScreenContainer}>
+    <KeyboardAvoidingView 
+      style={styles.ScreenContainer}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} barStyle="light-content" />
+      
+      {/* Success overlay */}
+      <Animated.View 
+        style={[
+          styles.SuccessOverlay,
+          {
+            opacity: successAnim,
+            transform: [
+              {
+                scale: successAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.8, 1],
+                }),
+              },
+            ],
+          },
+        ]}
+        pointerEvents="none">
+        <View style={styles.SuccessContainer}>
+          <CustomIcon
+            name="checkmark-circle"
+            color={COLORS.primaryWhiteHex}
+            size={FONTSIZE.size_30}
+          />
+          <Text style={styles.SuccessText}>Profile Updated! ✨</Text>
+        </View>
+      </Animated.View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.ScrollViewFlex}
+        contentContainerStyle={[
+          styles.ScrollViewFlex,
+          keyboardVisible && styles.ScrollViewKeyboard
+        ]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -293,7 +663,9 @@ const ProfileScreen = ({navigation}: any) => {
                 <Animated.View style={{transform: [{scale: buttonPressAnim}]}}>
                   <TouchableOpacity
                     style={styles.EditButton}
-                    onPress={() => animateButtonPress(() => setIsEditing(!isEditing))}
+                    onPress={() => animateButtonPress(() => 
+                      isEditing ? handleCancelEdit() : setIsEditing(true)
+                    )}
                     activeOpacity={0.8}>
                     <View style={[
                       styles.EditButtonGradient,
@@ -307,6 +679,15 @@ const ProfileScreen = ({navigation}: any) => {
                       <Text style={styles.EditButtonText}>
                         {isEditing ? 'Cancel' : 'Edit Profile'}
                       </Text>
+                      {hasUnsavedChanges && (
+                        <View style={styles.UnsavedChangesIndicator}>
+                          <CustomIcon
+                            name="ellipse"
+                            color={COLORS.primaryOrangeHex}
+                            size={FONTSIZE.size_8}
+                          />
+                        </View>
+                      )}
                     </View>
                   </TouchableOpacity>
                 </Animated.View>
@@ -326,116 +707,289 @@ const ProfileScreen = ({navigation}: any) => {
                 <Text style={styles.SectionTitle}>Personal Information</Text>
               </View>
 
-              {/* Enhanced Input Fields */}
-              <View style={styles.InputRow}>
-                <View style={[styles.InputContainer, {flex: 1, marginRight: SPACING.space_8}]}>
-                  <Text style={styles.InputLabel}>First Name</Text>
-                  <View style={styles.InputWrapper}>
-                    <TextInput
-                      style={[
-                        styles.TextInputContainer,
-                        !isEditing && styles.TextInputDisabled,
-                        isEditing && styles.TextInputActive,
-                      ]}
-                      value={firstName}
-                      onChangeText={setFirstName}
-                      placeholder="Enter first name"
-                      placeholderTextColor={COLORS.primaryLightGreyHex}
-                      editable={isEditing}
-                    />
-                    {isEditing && (
-                      <CustomIcon
-                        name="pencil"
-                        color={COLORS.primaryOrangeHex}
-                        size={FONTSIZE.size_14}
-                        style={styles.InputIcon}
+              {/* Enhanced Input Fields with Validation */}
+              <Animated.View style={{transform: [{translateX: shakeAnim}]}}>
+                <View style={styles.InputRow}>
+                  <View style={[styles.InputContainer, {flex: 1, marginRight: SPACING.space_8}]}>
+                    <Text style={styles.InputLabel}>First Name</Text>
+                    <View style={styles.InputWrapper}>
+                      <TextInput
+                        style={[
+                          styles.TextInputContainer,
+                          !isEditing && styles.TextInputDisabled,
+                          isEditing && styles.TextInputActive,
+                          errors.firstName && isEditing && styles.TextInputError,
+                          validationStatus.firstName && isEditing && styles.TextInputSuccess,
+                        ]}
+                        value={firstName}
+                        onChangeText={handleFirstNameChange}
+                        placeholder="Enter first name"
+                        placeholderTextColor={COLORS.primaryLightGreyHex}
+                        editable={isEditing}
+                        autoCapitalize="words"
+                        maxLength={30}
                       />
+                      {isEditing && (
+                        <View style={styles.InputIconContainer}>
+                          {validationStatus.firstName ? (
+                            <CustomIcon
+                              name="checkmark-circle"
+                              color="#4CAF50"
+                              size={FONTSIZE.size_16}
+                            />
+                          ) : errors.firstName ? (
+                            <CustomIcon
+                              name="close-circle"
+                              color={COLORS.primaryRedHex}
+                              size={FONTSIZE.size_16}
+                            />
+                          ) : (
+                            <CustomIcon
+                              name="pencil"
+                              color={COLORS.primaryOrangeHex}
+                              size={FONTSIZE.size_14}
+                            />
+                          )}
+                        </View>
+                      )}
+                    </View>
+                    {errors.firstName && isEditing && (
+                      <Text style={styles.ErrorText}>{errors.firstName}</Text>
+                    )}
+                  </View>
+
+                  <View style={[styles.InputContainer, {flex: 1, marginLeft: SPACING.space_8}]}>
+                    <Text style={styles.InputLabel}>Last Name</Text>
+                    <View style={styles.InputWrapper}>
+                      <TextInput
+                        style={[
+                          styles.TextInputContainer,
+                          !isEditing && styles.TextInputDisabled,
+                          isEditing && styles.TextInputActive,
+                          errors.lastName && isEditing && styles.TextInputError,
+                          validationStatus.lastName && isEditing && styles.TextInputSuccess,
+                        ]}
+                        value={lastName}
+                        onChangeText={handleLastNameChange}
+                        placeholder="Enter last name"
+                        placeholderTextColor={COLORS.primaryLightGreyHex}
+                        editable={isEditing}
+                        autoCapitalize="words"
+                        maxLength={30}
+                      />
+                      {isEditing && (
+                        <View style={styles.InputIconContainer}>
+                          {validationStatus.lastName ? (
+                            <CustomIcon
+                              name="checkmark-circle"
+                              color="#4CAF50"
+                              size={FONTSIZE.size_16}
+                            />
+                          ) : errors.lastName ? (
+                            <CustomIcon
+                              name="close-circle"
+                              color={COLORS.primaryRedHex}
+                              size={FONTSIZE.size_16}
+                            />
+                          ) : (
+                            <CustomIcon
+                              name="pencil"
+                              color={COLORS.primaryOrangeHex}
+                              size={FONTSIZE.size_14}
+                            />
+                          )}
+                        </View>
+                      )}
+                    </View>
+                    {errors.lastName && isEditing && (
+                      <Text style={styles.ErrorText}>{errors.lastName}</Text>
                     )}
                   </View>
                 </View>
 
-                <View style={[styles.InputContainer, {flex: 1, marginLeft: SPACING.space_8}]}>
-                  <Text style={styles.InputLabel}>Last Name</Text>
+                {/* Phone Input */}
+                <View style={styles.InputContainer}>
+                  <Text style={styles.InputLabel}>Phone Number</Text>
                   <View style={styles.InputWrapper}>
+                    <CustomIcon
+                      name="call"
+                      color={isEditing ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex}
+                      size={FONTSIZE.size_16}
+                      style={styles.InputPrefixIcon}
+                    />
                     <TextInput
                       style={[
                         styles.TextInputContainer,
+                        styles.TextInputWithIcon,
                         !isEditing && styles.TextInputDisabled,
                         isEditing && styles.TextInputActive,
+                        errors.phone && isEditing && styles.TextInputError,
+                        validationStatus.phone && isEditing && styles.TextInputSuccess,
                       ]}
-                      value={lastName}
-                      onChangeText={setLastName}
-                      placeholder="Enter last name"
+                      value={phone}
+                      onChangeText={handlePhoneChange}
+                      placeholder="0901234567"
                       placeholderTextColor={COLORS.primaryLightGreyHex}
+                      keyboardType="phone-pad"
                       editable={isEditing}
+                      maxLength={15}
                     />
                     {isEditing && (
-                      <CustomIcon
-                        name="pencil"
-                        color={COLORS.primaryOrangeHex}
-                        size={FONTSIZE.size_14}
-                        style={styles.InputIcon}
-                      />
+                      <View style={styles.InputIconContainer}>
+                        {validationStatus.phone ? (
+                          <CustomIcon
+                            name="checkmark-circle"
+                            color="#4CAF50"
+                            size={FONTSIZE.size_16}
+                          />
+                        ) : errors.phone ? (
+                          <CustomIcon
+                            name="close-circle"
+                            color={COLORS.primaryRedHex}
+                            size={FONTSIZE.size_16}
+                          />
+                        ) : null}
+                      </View>
                     )}
                   </View>
+                  {errors.phone && isEditing && (
+                    <Text style={styles.ErrorText}>{errors.phone}</Text>
+                  )}
                 </View>
-              </View>
 
-              {/* Phone Input */}
-              <View style={styles.InputContainer}>
-                <Text style={styles.InputLabel}>Phone Number</Text>
-                <View style={styles.InputWrapper}>
-                  <CustomIcon
-                    name="call"
-                    color={isEditing ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex}
-                    size={FONTSIZE.size_16}
-                    style={styles.InputPrefixIcon}
-                  />
-                  <TextInput
-                    style={[
-                      styles.TextInputContainer,
-                      styles.TextInputWithIcon,
-                      !isEditing && styles.TextInputDisabled,
-                      isEditing && styles.TextInputActive,
-                    ]}
-                    value={phone}
-                    onChangeText={setPhone}
-                    placeholder="Enter phone number"
-                    placeholderTextColor={COLORS.primaryLightGreyHex}
-                    keyboardType="phone-pad"
-                    editable={isEditing}
-                  />
-                </View>
-              </View>
+                {/* Enhanced Address Input with Location */}
+                <View style={styles.InputContainer}>
+                  <View style={styles.AddressLabelContainer}>
+                    <Text style={styles.InputLabel}>Delivery Address</Text>
+                    {currentLocation && (
+                      <View style={styles.LocationIndicator}>
+                        <CustomIcon
+                          name="location"
+                          color="#4CAF50"
+                          size={FONTSIZE.size_12}
+                        />
+                        <Text style={styles.LocationIndicatorText}>Location detected</Text>
+                      </View>
+                    )}
+                  </View>
+                  
+                  <View style={styles.InputWrapper}>
+                    <CustomIcon
+                      name="location"
+                      color={isEditing ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex}
+                      size={FONTSIZE.size_16}
+                      style={styles.InputPrefixIcon}
+                    />
+                    <TextInput
+                      style={[
+                        styles.TextInputContainer,
+                        styles.TextInputWithIcon,
+                        styles.TextInputMultiline,
+                        !isEditing && styles.TextInputDisabled,
+                        isEditing && styles.TextInputActive,
+                        errors.address && isEditing && styles.TextInputError,
+                        validationStatus.address && isEditing && styles.TextInputSuccess,
+                      ]}
+                      value={address}
+                      onChangeText={handleAddressChange}
+                      placeholder="Enter your complete delivery address"
+                      placeholderTextColor={COLORS.primaryLightGreyHex}
+                      multiline
+                      numberOfLines={3}
+                      editable={isEditing}
+                      maxLength={200}
+                    />
+                    {isEditing && (
+                      <View style={[styles.InputIconContainer, styles.InputIconMultiline]}>
+                        {validationStatus.address ? (
+                          <CustomIcon
+                            name="checkmark-circle"
+                            color="#4CAF50"
+                            size={FONTSIZE.size_16}
+                          />
+                        ) : errors.address ? (
+                          <CustomIcon
+                            name="close-circle"
+                            color={COLORS.primaryRedHex}
+                            size={FONTSIZE.size_16}
+                          />
+                        ) : null}
+                      </View>
+                    )}
+                  </View>
 
-              {/* Address Input */}
-              <View style={styles.InputContainer}>
-                <Text style={styles.InputLabel}>Delivery Address</Text>
-                <View style={styles.InputWrapper}>
-                  <CustomIcon
-                    name="location"
-                    color={isEditing ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex}
-                    size={FONTSIZE.size_16}
-                    style={styles.InputPrefixIcon}
-                  />
-                  <TextInput
-                    style={[
-                      styles.TextInputContainer,
-                      styles.TextInputWithIcon,
-                      styles.TextInputMultiline,
-                      !isEditing && styles.TextInputDisabled,
-                      isEditing && styles.TextInputActive,
-                    ]}
-                    value={address}
-                    onChangeText={setAddress}
-                    placeholder="Enter delivery address"
-                    placeholderTextColor={COLORS.primaryLightGreyHex}
-                    multiline
-                    numberOfLines={3}
-                    editable={isEditing}
-                  />
+                  {/* Location Action Buttons */}
+                  {isEditing && (
+                    <View style={styles.LocationButtonsContainer}>
+                      <TouchableOpacity
+                        style={[
+                          styles.LocationActionButton,
+                          styles.PrimaryLocationButton,
+                          isLoadingLocation && styles.LocationButtonDisabled,
+                        ]}
+                        onPress={handleUseCurrentLocation}
+                        disabled={isLoadingLocation}
+                        activeOpacity={0.8}>
+                        {isLoadingLocation ? (
+                          <ActivityIndicator size="small" color={COLORS.primaryWhiteHex} />
+                        ) : (
+                          <CustomIcon
+                            name="locate"
+                            size={FONTSIZE.size_16}
+                            color={COLORS.primaryWhiteHex}
+                          />
+                        )}
+                        <Text style={styles.PrimaryLocationButtonText}>
+                          {isLoadingLocation ? 'Getting Location...' : 'Use My Location'}
+                        </Text>
+                      </TouchableOpacity>
+
+                      {currentLocation && (
+                        <TouchableOpacity
+                          style={[
+                            styles.LocationActionButton,
+                            styles.SecondaryLocationButton,
+                            isLoadingLocation && styles.LocationButtonDisabled,
+                          ]}
+                          onPress={handleRefreshLocation}
+                          disabled={isLoadingLocation}
+                          activeOpacity={0.8}>
+                          <CustomIcon
+                            name="refresh"
+                            size={FONTSIZE.size_16}
+                            color={COLORS.primaryOrangeHex}
+                          />
+                          <Text style={styles.SecondaryLocationButtonText}>Refresh</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
+
+                  {/* Location Info Display */}
+                  {currentLocation && isEditing && (
+                    <View style={styles.LocationInfoContainer}>
+                      <View style={styles.LocationInfoHeader}>
+                        <CustomIcon
+                          name="information-circle"
+                          color={COLORS.primaryOrangeHex}
+                          size={FONTSIZE.size_14}
+                        />
+                        <Text style={styles.LocationInfoTitle}>Detected Location</Text>
+                      </View>
+                      <Text style={styles.LocationInfoText}>
+                        📍 {locationService.formatAddressForDisplay(currentLocation)}
+                      </Text>
+                      <Text style={styles.LocationInfoSubtext}>
+                        Accuracy: ±{currentLocation.coordinates.accuracy?.toFixed(0) || '10'}m
+                      </Text>
+                    </View>
+                  )}
+
+                  {errors.address && isEditing && (
+                    <Text style={styles.ErrorText}>{errors.address}</Text>
+                  )}
                 </View>
-              </View>
+              </Animated.View>
 
               {isEditing && (
                 <TouchableOpacity
@@ -542,7 +1096,7 @@ const ProfileScreen = ({navigation}: any) => {
           </AnimatedCard>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -919,6 +1473,188 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_16,
     color: COLORS.primaryRedHex,
+  },
+
+  // Success overlay styles
+  SuccessOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  SuccessContainer: {
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: SPACING.space_20,
+    padding: SPACING.space_30,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.primaryBlackHex,
+        shadowOffset: {width: 0, height: 8},
+        shadowOpacity: 0.4,
+        shadowRadius: 20,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  SuccessText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_18,
+    color: COLORS.primaryWhiteHex,
+    marginTop: SPACING.space_12,
+    textAlign: 'center',
+  },
+
+  // Keyboard handling
+  ScrollViewKeyboard: {
+    paddingBottom: 200,
+  },
+
+  // Unsaved changes indicator
+  UnsavedChangesIndicator: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.primaryOrangeHex,
+  },
+
+  // Enhanced input validation styles
+  TextInputError: {
+    borderColor: COLORS.primaryRedHex,
+    borderWidth: 2,
+    backgroundColor: 'rgba(255, 69, 58, 0.1)',
+  },
+  TextInputSuccess: {
+    borderColor: '#4CAF50',
+    borderWidth: 2,
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+  },
+  InputIconContainer: {
+    position: 'absolute',
+    right: SPACING.space_12,
+    top: SPACING.space_12,
+    zIndex: 1,
+  },
+  InputIconMultiline: {
+    top: SPACING.space_16,
+  },
+  ErrorText: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryRedHex,
+    marginTop: SPACING.space_4,
+    marginLeft: SPACING.space_4,
+  },
+
+  // Location feature styles
+  AddressLabelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.space_8,
+  },
+  LocationIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+    paddingHorizontal: SPACING.space_8,
+    paddingVertical: SPACING.space_4,
+    borderRadius: BORDERRADIUS.radius_10,
+    gap: SPACING.space_4,
+  },
+  LocationIndicatorText: {
+    fontFamily: FONTFAMILY.poppins_medium,
+    fontSize: FONTSIZE.size_10,
+    color: '#4CAF50',
+  },
+  LocationButtonsContainer: {
+    flexDirection: 'row',
+    gap: SPACING.space_12,
+    marginTop: SPACING.space_12,
+  },
+  LocationActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.space_12,
+    paddingHorizontal: SPACING.space_16,
+    borderRadius: BORDERRADIUS.radius_15,
+    gap: SPACING.space_8,
+    flex: 1,
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.primaryBlackHex,
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  PrimaryLocationButton: {
+    backgroundColor: COLORS.primaryOrangeHex,
+  },
+  SecondaryLocationButton: {
+    backgroundColor: COLORS.primaryGreyHex,
+    borderWidth: 1,
+    borderColor: COLORS.primaryOrangeHex,
+  },
+  LocationButtonDisabled: {
+    opacity: 0.6,
+  },
+  PrimaryLocationButtonText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryWhiteHex,
+  },
+  SecondaryLocationButtonText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+  },
+  LocationInfoContainer: {
+    backgroundColor: 'rgba(209, 120, 66, 0.1)',
+    borderRadius: BORDERRADIUS.radius_15,
+    padding: SPACING.space_16,
+    marginTop: SPACING.space_12,
+    borderWidth: 1,
+    borderColor: 'rgba(209, 120, 66, 0.2)',
+  },
+  LocationInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.space_8,
+    gap: SPACING.space_8,
+  },
+  LocationInfoTitle: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+  },
+  LocationInfoText: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryWhiteHex,
+    lineHeight: 18,
+    marginBottom: SPACING.space_4,
+  },
+  LocationInfoSubtext: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_10,
+    color: COLORS.primaryLightGreyHex,
+    fontStyle: 'italic',
   },
 });
 
