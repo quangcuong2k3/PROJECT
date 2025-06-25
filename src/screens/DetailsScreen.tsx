@@ -7,6 +7,7 @@ import {
   View,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {useStore} from '../store/firebaseStore';
 import {
@@ -112,7 +113,18 @@ const DetailsScreen = ({navigation, route}: any) => {
       prices: [{...price, quantity: 1}],
     });
     calculateCartPrice();
-    navigation.navigate('Cart');
+    
+    // Show success notification
+    ToastAndroid.showWithGravity(
+      `${name} (${price.size}) added to Cart`,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
+    
+    // Navigate to cart after a brief delay to show the toast
+    setTimeout(() => {
+      navigation.navigate('Cart');
+    }, 500);
   };
 
   return (
