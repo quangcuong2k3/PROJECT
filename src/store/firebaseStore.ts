@@ -699,42 +699,41 @@ export const useStore = create<Store>()(
             // Load user preferences after successful login
             get().loadUserPreferences(result.user.uid);
           } else {
+            // Handle enhanced error structure with severity and suggestions
+            const errorMessage = result.error?.message || result.error || 'Failed to sign in';
+            console.log('Login error details:', result.error); // For debugging
             set({
               isAuthLoading: false,
-              authError: result.error || 'Failed to sign in',
+              authError: errorMessage,
             });
           }
         } catch (error: any) {
+          console.error('Login catch error:', error);
           set({
             isAuthLoading: false,
             authError: error.message || 'Failed to sign in',
           });
         }
       },
+
       signOut: async () => {
-        set({isAuthLoading: true});
+        set({isAuthLoading: true, authError: null});
         try {
-          const result = await authService.logoutUser();
-          if (result.success) {
-            set({
-              user: null,
-              userProfile: null,
-              isAuthenticated: false,
-              isAuthLoading: false,
-              userId: 'default-user',
-              userPreferences: null,
-              FavoritesList: [],
-              CartList: [],
-              OrderHistoryList: [],
-              authError: null,
-            });
-          } else {
-            set({
-              isAuthLoading: false,
-              authError: result.error || 'Failed to sign out',
-            });
-          }
+          await authService.logoutUser();
+          set({
+            user: null,
+            userProfile: null,
+            isAuthenticated: false,
+            isAuthLoading: false,
+            userId: '',
+            authError: null,
+            // Clear user-specific data
+            FavoritesList: [],
+            CartList: [],
+            OrderHistoryList: [],
+          });
         } catch (error: any) {
+          console.error('Logout error:', error);
           set({
             isAuthLoading: false,
             authError: error.message || 'Failed to sign out',
@@ -772,12 +771,16 @@ export const useStore = create<Store>()(
             // Load user preferences after successful registration
             get().loadUserPreferences(result.user.uid);
           } else {
+            // Handle enhanced error structure with comprehensive details
+            const errorMessage = result.error?.message || result.error || 'Failed to register';
+            console.log('Registration error details:', result.error); // For debugging
             set({
               isAuthLoading: false,
-              authError: result.error || 'Failed to register',
+              authError: errorMessage,
             });
           }
         } catch (error: any) {
+          console.error('Registration catch error:', error);
           set({
             isAuthLoading: false,
             authError: error.message || 'Failed to register',
@@ -789,14 +792,24 @@ export const useStore = create<Store>()(
         set({isAuthLoading: true, authError: null});
         try {
           const result = await authService.sendPasswordReset(email);
-          set({
-            isAuthLoading: false,
-            authError: result.success
-              ? null
-              : result.error || 'Failed to send password reset',
-          });
-          return result.success;
+          if (result.success) {
+            set({
+              isAuthLoading: false,
+              authError: null,
+            });
+            return true;
+          } else {
+            // Handle enhanced error structure
+            const errorMessage = result.error?.message || result.error || 'Failed to send password reset';
+            console.log('Password reset error details:', result.error); // For debugging
+            set({
+              isAuthLoading: false,
+              authError: errorMessage,
+            });
+            return false;
+          }
         } catch (error: any) {
+          console.error('Password reset catch error:', error);
           set({
             isAuthLoading: false,
             authError: error.message || 'Failed to send password reset',
