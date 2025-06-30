@@ -520,10 +520,39 @@ class AuthService {
     return { isValid: true };
   }
 
-  // Enhanced error mapping for Firebase errors with contextual suggestions
-  mapFirebaseError(firebaseError: any): { code: string; message: string; suggestion: string; severity: 'error' | 'warning' | 'info' } {
+  // Enhanced error mapping for Firebase errors with user-friendly messages
+  mapFirebaseError(firebaseError: any, operation: 'login' | 'register' | 'reset' = 'login'): { code: string; message: string; suggestion: string; severity: 'error' | 'warning' | 'info' } {
     const errorCode = firebaseError.code || firebaseError.message || '';
     
+    // For login operations, use generic auth error to avoid exposing system details
+    if (operation === 'login') {
+      switch (errorCode) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-email':
+        case 'auth/user-disabled':
+        case 'auth/invalid-credential':
+          return {
+            code: 'INVALID_CREDENTIALS',
+            message: 'Incorrect email or password.',
+            suggestion: 'Double-check your credentials or try resetting your password',
+            severity: 'error' as const,
+          };
+        case 'auth/too-many-requests':
+          return AUTH_ERRORS.TOO_MANY_REQUESTS;
+        case 'auth/network-request-failed':
+          return AUTH_ERRORS.NETWORK_ERROR;
+        default:
+          return {
+            code: 'INVALID_CREDENTIALS',
+            message: 'Incorrect email or password.',
+            suggestion: 'Double-check your credentials or try resetting your password',
+            severity: 'error' as const,
+          };
+      }
+    }
+    
+    // For other operations, provide specific error messages
     switch (errorCode) {
       case 'auth/user-not-found':
         return AUTH_ERRORS.USER_NOT_FOUND;
@@ -636,7 +665,7 @@ class AuthService {
       return {success: true, user};
     } catch (error: any) {
       console.error('Registration error:', error);
-      const mappedError = this.mapFirebaseError(error);
+      const mappedError = this.mapFirebaseError(error, 'register');
       return {success: false, error: mappedError};
     }
   }
@@ -702,7 +731,7 @@ class AuthService {
       // Track failed attempt for progressive lockout
       await this.trackFailedLoginAttempt(email);
       
-      const mappedError = this.mapFirebaseError(error);
+      const mappedError = this.mapFirebaseError(error, 'login');
       return {success: false, error: mappedError};
     }
   }
@@ -721,7 +750,7 @@ class AuthService {
       return {success: true};
     } catch (error: any) {
       console.error('Password reset error:', error);
-      const mappedError = this.mapFirebaseError(error);
+      const mappedError = this.mapFirebaseError(error, 'reset');
       return {success: false, error: mappedError};
     }
   }
@@ -738,7 +767,7 @@ class AuthService {
       return {success: true};
     } catch (error: any) {
       console.error('Logout error:', error);
-      const mappedError = this.mapFirebaseError(error);
+      const mappedError = this.mapFirebaseError(error, 'login');
       return {success: false, error: mappedError};
     }
   }
