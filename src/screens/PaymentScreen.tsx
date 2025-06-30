@@ -344,7 +344,17 @@ const PaymentScreen = ({navigation, route}: any) => {
 
       setTimeout(() => {
         setShowAnimation(false);
-        navigation.navigate('Cart');
+        try {
+          // Navigate back to the main Tab navigator with Cart focused
+          navigation.navigate('Tab', { 
+            screen: 'Cart',
+            initial: false 
+          });
+        } catch (navError) {
+          console.log('Primary navigation failed, using fallback:', navError);
+          // Fallback: Try to go back to previous screen (which should be Cart)
+          navigation.goBack();
+        }
       }, 2500);
     } catch (error) {
       console.error('❌ Error handling successful payment:', error);
@@ -384,6 +394,17 @@ const PaymentScreen = ({navigation, route}: any) => {
                     text2: 'Your order has been cancelled.',
                     visibilityTime: 3000,
                   });
+                  // Optional: Navigate back to cart after cancellation
+                  setTimeout(() => {
+                    try {
+                      navigation.navigate('Tab', { 
+                        screen: 'Cart',
+                        initial: false 
+                      });
+                    } catch (navError) {
+                      navigation.goBack();
+                    }
+                  }, 1000);
                 },
               },
               {

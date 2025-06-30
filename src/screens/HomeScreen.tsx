@@ -207,8 +207,10 @@ const HomeScreen = ({navigation}: any) => {
       trackProductView(id);
     }
 
+    // Show enhanced notification with size info
+    const defaultSize = prices && prices.length > 0 ? prices[2]?.size || prices[0]?.size : '';
     ToastAndroid.showWithGravity(
-      `${name} is Added to Cart`,
+      `${name}${defaultSize ? ` (${defaultSize})` : ''} added to Cart`,
       ToastAndroid.SHORT,
       ToastAndroid.CENTER,
     );
