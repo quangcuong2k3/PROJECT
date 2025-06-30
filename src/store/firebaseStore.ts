@@ -699,8 +699,8 @@ export const useStore = create<Store>()(
             // Load user preferences after successful login
             get().loadUserPreferences(result.user.uid);
           } else {
-            // Handle enhanced error structure with severity and suggestions
-            const errorMessage = result.error?.message || result.error || 'Failed to sign in';
+            // Handle enhanced error structure - use clean user-friendly message
+            const errorMessage = result.error?.message || result.error || 'Incorrect email or password.';
             console.log('Login error details:', result.error); // For debugging
             set({
               isAuthLoading: false,
@@ -711,7 +711,7 @@ export const useStore = create<Store>()(
           console.error('Login catch error:', error);
           set({
             isAuthLoading: false,
-            authError: error.message || 'Failed to sign in',
+            authError: 'Incorrect email or password.',
           });
         }
       },
