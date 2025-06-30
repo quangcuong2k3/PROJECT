@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {COLORS} from '../theme/theme';
-import {BlurView} from 'expo-blur';
+import { StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { COLORS } from '../theme/theme';
+import { BlurView } from 'expo-blur';
 import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import CartScreen from '../screens/CartScreen';
@@ -33,7 +33,7 @@ const TabNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="home"
               size={25}
@@ -49,7 +49,7 @@ const TabNavigator = () => {
         name="Cart"
         component={CartScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="basket"
               size={25}
@@ -65,7 +65,7 @@ const TabNavigator = () => {
         name="Favorite"
         component={FavoritesScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="heart"
               size={25}
@@ -81,7 +81,7 @@ const TabNavigator = () => {
         name="History"
         component={OrderHistoryScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="notifications"
               size={25}
@@ -97,7 +97,7 @@ const TabNavigator = () => {
         name="Admin"
         component={AdminScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="settings"
               size={25}
@@ -113,7 +113,7 @@ const TabNavigator = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <CustomIcon
               name="person"
               size={25}

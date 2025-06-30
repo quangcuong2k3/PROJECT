@@ -9,11 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@firebase/app": "^0.13.1",
-    "@firebase/auth": "^1.10.6",
-    "@firebase/firestore": "^4.7.17",
     "@google/genai": "^1.5.1",
-    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-community/geolocation": "^3.4.0",
     "@react-native-voice/voice": "^3.2.4",
     "@react-native/metro-config": "^0.79.3",
@@ -41,7 +38,7 @@
     "lottie-react-native": "7.2.2",
     "nodemon": "^3.1.10",
     "react": "19.0.0",
-    "react-native": "0.79.3",
+    "react-native": "0.79.4",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
