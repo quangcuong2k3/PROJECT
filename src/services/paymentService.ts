@@ -1,15 +1,15 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import {
   initPaymentSheet,
   presentPaymentSheet,
   createToken,
 } from '@stripe/stripe-react-native';
-import {addOrder, Order} from './firebaseServices';
+import { addOrder, Order } from './firebaseServices';
 import authService from './authService';
 
 // Constants for payment configuration
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg';
-export const BACKEND_URL = 'http://192.168.1.7:3000'; // Local development server
+export const BACKEND_URL = 'http://192.168.90.33:3000'; // Local development server
 
 export interface PaymentDetails {
   paymentMethod: 'stripe' | 'momo' | 'cash';
@@ -34,7 +34,7 @@ export interface PaymentResult {
 }
 
 // Enhanced Order Status Management
-export type OrderStatus = 
+export type OrderStatus =
   | 'pending'       // Just created, awaiting payment
   | 'paid'          // Payment confirmed
   | 'confirmed'     // Order confirmed (for COD or after payment)
@@ -64,7 +64,7 @@ class PaymentService {
   // Initialize Stripe
   async initializeStripe(): Promise<void> {
     if (this.isInitialized) return;
-    
+
     try {
       // Stripe is initialized in App.tsx through StripeProvider
       this.isInitialized = true;
@@ -165,7 +165,7 @@ class PaymentService {
       );
 
       // Initialize payment sheet
-      const {error: initError} = await initPaymentSheet({
+      const { error: initError } = await initPaymentSheet({
         merchantDisplayName: 'The Coffee House',
         paymentIntentClientSecret: paymentIntent.client_secret,
         allowsDelayedPaymentMethods: true,
@@ -195,7 +195,7 @@ class PaymentService {
       }
 
       // Present payment sheet
-      const {error: presentError} = await presentPaymentSheet();
+      const { error: presentError } = await presentPaymentSheet();
 
       if (presentError) {
         if (presentError.code === 'Canceled') {
@@ -227,18 +227,18 @@ class PaymentService {
     try {
       // Convert USD to VND (approximate rate: 1 USD = 24,000 VND)
       const vndAmount = Math.round(paymentDetails.amount * 24000);
-      
+
       // Ensure minimum amount (MoMo requires minimum 1,000 VND)
       const finalAmount = Math.max(vndAmount, 1000);
 
       const orderId = 'COFFEE_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      
+
       console.log('Creating MoMo payment with:', {
         usdAmount: paymentDetails.amount,
         vndAmount: finalAmount,
         orderId
       });
-      
+
       const requestBody = {
         amount: finalAmount,
         orderInfo: `The Coffee House - ${paymentDetails.orderItems.length} items`,
@@ -257,7 +257,7 @@ class PaymentService {
           currency: paymentDetails.currency
         }
       };
-      
+
       console.log('MoMo request body:', requestBody);
 
       const response = await fetch(`${BACKEND_URL}/momo/create-payment`, {
@@ -310,8 +310,8 @@ class PaymentService {
   async processCashOnDelivery(paymentDetails: PaymentDetails): Promise<PaymentResult> {
     try {
       // Validate required information for COD
-      const {customerInfo} = paymentDetails;
-      
+      const { customerInfo } = paymentDetails;
+
       if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
         return {
           success: false,
@@ -377,12 +377,12 @@ class PaymentService {
   async verifyPaymentStatus(paymentId: string, method: string): Promise<PaymentResult> {
     try {
       console.log('Verifying payment:', { paymentId, method });
-      
+
       if (method === 'momo') {
         // For MoMo, we need both orderId and requestId
         // Extract requestId from paymentId if it contains it, or generate one
         const requestId = paymentId + Date.now();
-        
+
         const response = await fetch(`${BACKEND_URL}/momo/verify-payment`, {
           method: 'POST',
           headers: {
@@ -411,7 +411,7 @@ class PaymentService {
 
         const data = JSON.parse(responseText);
         console.log('MoMo verify data:', data);
-        
+
         return {
           success: data.success && data.resultCode === 0,
           paymentId: data.paymentId || paymentId,
@@ -492,7 +492,7 @@ class PaymentService {
   ): Promise<string> {
     try {
       let orderStatus: OrderStatus;
-      
+
       // Determine initial order status based on payment method and result
       if (paymentDetails.paymentMethod === 'cash') {
         orderStatus = 'confirmed'; // COD orders are immediately confirmed
@@ -525,7 +525,7 @@ class PaymentService {
 
       // Create order in main orders collection
       const orderId = await addOrder(orderData);
-      
+
       // Also add the complete order to the user's orders subcollection and orderHistory
       if (userId && userId !== 'default-user') {
         try {
@@ -539,7 +539,7 @@ class PaymentService {
           // Don't throw here - the order was created successfully, this is just additional data
         }
       }
-      
+
       return orderId;
     } catch (error) {
       console.error('Error creating order:', error);

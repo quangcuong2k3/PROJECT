@@ -19,9 +19,9 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore';
-import {auth, firestore} from '../../firebaseconfig';
+import { auth, firestore } from '../../firebaseconfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {generateInitials, generateAvatarColor, sanitizeNameForAvatar} from '../utils/avatarUtils';
+import { generateInitials, generateAvatarColor, sanitizeNameForAvatar } from '../utils/avatarUtils';
 
 // Enhanced validation patterns and constraints
 export const AUTH_CONSTRAINTS = {
@@ -557,7 +557,11 @@ class AuthService {
     password: string,
     firstName: string,
     lastName: string,
+<<<<<<< HEAD
+  ): Promise<{ success: boolean; user?: User; error?: string }> {
+=======
   ): Promise<{success: boolean; user?: User; error?: any}> {
+>>>>>>> 1aaca72e2b61d6dee7d00e13971af89fa0c9d1dd
     try {
       // Comprehensive validation
       const emailValidation = this.validateEmail(email);
@@ -633,11 +637,15 @@ class AuthService {
 
       console.log(`✅ User registered successfully: ${avatarInitials} (${avatarBackgroundColor})`);
 
-      return {success: true, user};
+      return { success: true, user };
     } catch (error: any) {
       console.error('Registration error:', error);
+<<<<<<< HEAD
+      return { success: false, error: error.message };
+=======
       const mappedError = this.mapFirebaseError(error);
       return {success: false, error: mappedError};
+>>>>>>> 1aaca72e2b61d6dee7d00e13971af89fa0c9d1dd
     }
   }
 
@@ -645,7 +653,11 @@ class AuthService {
   async loginUser(
     email: string,
     password: string,
+<<<<<<< HEAD
+  ): Promise<{ success: boolean; user?: User; error?: string }> {
+=======
   ): Promise<{success: boolean; user?: User; error?: any}> {
+>>>>>>> 1aaca72e2b61d6dee7d00e13971af89fa0c9d1dd
     try {
       // Pre-validation
       const emailValidation = this.validateEmail(email);
@@ -695,9 +707,41 @@ class AuthService {
         updatedAt: serverTimestamp(),
       });
 
-      return {success: true, user};
+      return { success: true, user };
     } catch (error: any) {
       console.error('Login error:', error);
+<<<<<<< HEAD
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Logout user
+  async logoutUser(): Promise<{ success: boolean; error?: string }> {
+    try {
+      await signOut(auth);
+      // Clear cached session
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('userProfile');
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Send password reset email
+  async sendPasswordReset(
+    email: string,
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      return { success: false, error: error.message };
+=======
       
       // Track failed attempt for progressive lockout
       await this.trackFailedLoginAttempt(email);
@@ -789,6 +833,7 @@ class AuthService {
       }
     } catch (error) {
       console.error('Error tracking failed login attempt:', error);
+>>>>>>> 1aaca72e2b61d6dee7d00e13971af89fa0c9d1dd
     }
   }
 
@@ -815,31 +860,31 @@ class AuthService {
   async updateUserProfile(
     uid: string,
     updates: Partial<UserProfile>,
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       // If firstName or lastName is being updated, regenerate avatar data
       if (updates.firstName || updates.lastName) {
         const currentProfile = await this.getUserProfile(uid);
         const firstName = updates.firstName || currentProfile?.firstName || '';
         const lastName = updates.lastName || currentProfile?.lastName || '';
-        
+
         // Keep original names but generate avatar from sanitized versions
         const sanitizedFirstName = sanitizeNameForAvatar(firstName);
         const sanitizedLastName = sanitizeNameForAvatar(lastName);
         const avatarInitials = generateInitials(sanitizedFirstName, sanitizedLastName);
         const avatarBackgroundColor = generateAvatarColor(avatarInitials);
-        
+
         // Store original names, not sanitized ones
         updates.firstName = firstName.trim();
         updates.lastName = lastName.trim();
         updates.avatarInitials = avatarInitials;
         updates.avatarBackgroundColor = avatarBackgroundColor;
-        
+
         // Update display name with original names
         if (firstName.trim() && lastName.trim()) {
           updates.displayName = `${firstName.trim()} ${lastName.trim()}`;
         }
-        
+
         console.log(`✅ Avatar updated: ${avatarInitials} (${avatarBackgroundColor}) for ${firstName.trim()} ${lastName.trim()}`);
       }
 
@@ -847,10 +892,10 @@ class AuthService {
         ...updates,
         updatedAt: serverTimestamp(),
       });
-      return {success: true};
+      return { success: true };
     } catch (error: any) {
       console.error('Error updating user profile:', error);
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -871,10 +916,10 @@ class AuthService {
           userEmail,
         };
       }
-      return {isAuthenticated: false};
+      return { isAuthenticated: false };
     } catch (error) {
       console.error('Error checking user session:', error);
-      return {isAuthenticated: false};
+      return { isAuthenticated: false };
     }
   }
 
@@ -887,22 +932,22 @@ class AuthService {
   async addToFavorites(
     uid: string,
     itemId: string,
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const userProfile = await this.getUserProfile(uid);
       if (!userProfile) {
-        return {success: false, error: 'User profile not found'};
+        return { success: false, error: 'User profile not found' };
       }
 
       const updatedFavorites = [...userProfile.favoriteItems];
       if (!updatedFavorites.includes(itemId)) {
         updatedFavorites.push(itemId);
-        await this.updateUserProfile(uid, {favoriteItems: updatedFavorites});
+        await this.updateUserProfile(uid, { favoriteItems: updatedFavorites });
       }
 
-      return {success: true};
+      return { success: true };
     } catch (error: any) {
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -910,21 +955,21 @@ class AuthService {
   async removeFromFavorites(
     uid: string,
     itemId: string,
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const userProfile = await this.getUserProfile(uid);
       if (!userProfile) {
-        return {success: false, error: 'User profile not found'};
+        return { success: false, error: 'User profile not found' };
       }
 
       const updatedFavorites = userProfile.favoriteItems.filter(
         id => id !== itemId,
       );
-      await this.updateUserProfile(uid, {favoriteItems: updatedFavorites});
+      await this.updateUserProfile(uid, { favoriteItems: updatedFavorites });
 
-      return {success: true};
+      return { success: true };
     } catch (error: any) {
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -932,12 +977,12 @@ class AuthService {
   async updateUserCart(
     uid: string,
     cartItems: any[],
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
-      await this.updateUserProfile(uid, {cartItems});
-      return {success: true};
+      await this.updateUserProfile(uid, { cartItems });
+      return { success: true };
     } catch (error: any) {
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -946,14 +991,14 @@ class AuthService {
     uid: string,
     orderId: string,
     orderData: any,
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       console.log(`🔄 Adding order ${orderId} to user ${uid} subcollection...`);
 
       // Add order to user's orders subcollection
       const userOrdersCollection = collection(firestore, 'users', uid, 'orders');
       const orderDocRef = doc(userOrdersCollection, orderId);
-      
+
       await setDoc(orderDocRef, {
         ...orderData,
         orderId: orderId,
@@ -966,10 +1011,10 @@ class AuthService {
       // Also add to orderHistory array for backward compatibility
       await this.addOrderToHistory(uid, orderId);
 
-      return {success: true};
+      return { success: true };
     } catch (error: any) {
       console.error(`❌ Error adding order to user collection:`, error);
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -977,15 +1022,15 @@ class AuthService {
   async addOrderToHistory(
     uid: string,
     orderId: string,
-  ): Promise<{success: boolean; error?: string}> {
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const userProfile = await this.getUserProfile(uid);
       if (!userProfile) {
-        return {success: false, error: 'User profile not found'};
+        return { success: false, error: 'User profile not found' };
       }
 
       const updatedOrderHistory = [...userProfile.orderHistory, orderId];
-      
+
       // Update both orderHistory array and orders field (if it exists)
       const updateData: any = {
         orderHistory: updatedOrderHistory,
@@ -1005,9 +1050,9 @@ class AuthService {
 
       await this.updateUserProfile(uid, updateData);
 
-      return {success: true};
+      return { success: true };
     } catch (error: any) {
-      return {success: false, error: error.message};
+      return { success: false, error: error.message };
     }
   }
 
@@ -1015,16 +1060,16 @@ class AuthService {
   async getUserOrders(uid: string): Promise<any[]> {
     try {
       console.log(`🔄 Fetching orders for user ${uid} from subcollection...`);
-      
+
       const userOrdersCollection = collection(firestore, 'users', uid, 'orders');
       const ordersQuery = query(userOrdersCollection, orderBy('createdAt', 'desc'));
       const ordersSnapshot = await getDocs(ordersQuery);
-      
+
       const orders = ordersSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-      
+
       console.log(`✅ Found ${orders.length} orders for user ${uid}`);
       return orders;
     } catch (error) {
