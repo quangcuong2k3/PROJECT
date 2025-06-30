@@ -309,7 +309,11 @@ const LoginScreen = ({navigation}: any) => {
                     />
                   </View>
                   <View style={styles.ErrorTextContainer}>
-                    <Text style={styles.GlobalErrorText}>{authError}</Text>
+                    <Text style={styles.GlobalErrorText}>
+                      {authError.includes('Firebase:') || authError.includes('auth/') 
+                        ? 'Incorrect email or password.' 
+                        : authError}
+                    </Text>
                     <Text style={styles.ErrorHelpText}>
                       Double-check your credentials or try resetting your password
                     </Text>
