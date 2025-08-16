@@ -8,6 +8,7 @@ import {
   Animated,
   Alert,
   Platform,
+  TextInput,
 } from 'react-native';
 import {
   COLORS,
@@ -34,6 +35,8 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
   const [transcript, setTranscript] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [textInput, setTextInput] = useState('');
   const [moduleStatus, setModuleStatus] = useState<{
     voiceLoaded: boolean;
     speechLoaded: boolean;
@@ -50,10 +53,8 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
 
   useEffect(() => {
     if (visible) {
-      console.log('🎤 VoiceSearchModal: Modal opened');
       initializeModal();
     } else {
-      console.log('🎤 VoiceSearchModal: Modal closed');
       cleanup();
     }
   }, [visible]);
@@ -71,33 +72,38 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
     // Get module status for debugging
     const status = voiceSearchService.getModuleStatus();
     setModuleStatus(status);
-    console.log('🎤 VoiceSearchModal: Module status:', status);
     
     // Reset states
     setErrorMessage('');
     setTranscript('');
     setIsProcessing(false);
+    setShowTextInput(false);
+    setTextInput('');
 
     // Check voice availability
     await checkVoiceAvailability();
   };
 
   const checkVoiceAvailability = async () => {
-    console.log('🎤 VoiceSearchModal: Checking voice availability...');
-    
     try {
+      // Check if running on simulator first
+      if (voiceSearchService.isSimulator()) {
+        const errorMsg = 'Voice recognition does not work on simulators or emulators. Please test on a physical device.';
+        setErrorMessage(errorMsg);
+        return;
+      }
+
       // Check if modules are loaded
       if (!moduleStatus.voiceLoaded) {
-        const errorMsg = 'Voice recognition module is not available. Please ensure you are testing on a physical device.';
+        const errorDetails = voiceSearchService.getErrorDetails();
+        const errorMsg = errorDetails || 'Voice recognition is not available on this device. Please ensure you are testing on a physical device.';
         setErrorMessage(errorMsg);
-        console.warn('❌ Voice module not loaded');
         return;
       }
 
       if (!moduleStatus.initialized) {
         const errorMsg = 'Voice recognition service is not properly initialized. Please restart the app.';
         setErrorMessage(errorMsg);
-        console.warn('❌ Voice service not initialized');
         return;
       }
 
@@ -105,18 +111,10 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
       if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
         const errorMsg = 'Voice recognition is only supported on Android and iOS devices.';
         setErrorMessage(errorMsg);
-        console.warn('❌ Unsupported platform');
         return;
       }
 
-      // Check if running on simulator
-      if (__DEV__ && Platform.OS === 'ios') {
-        // Note: This is a basic check, more sophisticated detection would require native code
-        console.warn('⚠️ If you are running on iOS Simulator, voice recognition will not work');
-      }
-
       const isAvailable = await voiceSearchService.isVoiceAvailable();
-      console.log('🎤 VoiceSearchModal: Voice available:', isAvailable);
       
       if (!isAvailable) {
         let errorMsg = 'Voice recognition is not available on this device.';
@@ -133,14 +131,14 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
           'Voice Search Unavailable',
           errorMsg,
           [
-            { text: 'Use Text Search Instead', onPress: onClose },
+            { text: 'Use Text Search Instead', onPress: () => setShowTextInput(true) },
             { text: 'Try Anyway', onPress: () => setErrorMessage('') },
             { text: 'Cancel', onPress: onClose }
           ]
         );
       }
     } catch (error) {
-      console.error('❌ Error checking voice availability:', error);
+      console.error('Error checking voice availability:', error);
       setErrorMessage(`Voice check failed: ${error}`);
     }
   };
@@ -153,12 +151,22 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
     setTranscript('');
     setIsProcessing(false);
     setErrorMessage('');
+    setShowTextInput(false);
+    setTextInput('');
     stopAnimations();
   };
 
   const handleClose = async () => {
     await cleanup();
     onClose();
+  };
+
+  const handleTextSearch = () => {
+    if (textInput.trim()) {
+      const processedQuery = voiceSearchService.processVoiceQuery(textInput.trim());
+      onSearchResults(processedQuery.searchTerms, processedQuery.originalQuery);
+      handleClose();
+    }
   };
 
   const startPulseAnimation = () => {
@@ -197,7 +205,6 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
 
   const handleStartListening = async () => {
     try {
-      console.log('🎤 VoiceSearchModal: Starting voice recognition...');
       setIsListening(true);
       setTranscript('');
       setIsProcessing(false);
@@ -209,23 +216,20 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         partialResults: true,
       });
 
-      console.log('🎤 VoiceSearchModal: Voice recognition result:', result);
       setIsListening(false);
 
       if (result.success && result.transcript) {
-        console.log('🎤 VoiceSearchModal: Voice recognition successful:', result.transcript);
         setTranscript(result.transcript);
         setIsProcessing(true);
 
         // Process the voice query
         const processedQuery = voiceSearchService.processVoiceQuery(result.transcript);
-        console.log('🎤 VoiceSearchModal: Processed query:', processedQuery);
         
         // Provide audio feedback
         try {
           await voiceSearchService.speak(`Searching for ${result.transcript}`);
         } catch (speechError) {
-          console.warn('⚠️ Text-to-speech feedback failed:', speechError);
+          // Silently handle speech errors
         }
 
         // Return search results
@@ -236,7 +240,6 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
           handleClose();
         }, 1500);
       } else {
-        console.log('🎤 VoiceSearchModal: Voice recognition failed:', result.error);
         setErrorMessage(result.error || 'Voice recognition failed');
         
         // Show user-friendly error dialog
@@ -247,7 +250,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
             'Voice Recognition Setup Required',
             result.error || 'Voice recognition dependencies are missing.',
             [
-              { text: 'Use Text Search', onPress: handleClose },
+              { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
               { text: 'OK', onPress: () => setErrorMessage('') }
             ]
           );
@@ -256,7 +259,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
             'Voice Recognition Failed',
             result.error || 'Could not understand your voice. Please try again.',
             [
-              { text: 'Use Text Search', onPress: handleClose },
+              { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
               { text: 'Try Again', onPress: () => {
                 setErrorMessage('');
                 setTimeout(handleStartListening, 500);
@@ -267,7 +270,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         }
       }
     } catch (error) {
-      console.error('🎤 VoiceSearchModal: Voice search error:', error);
+      console.error('Voice search error:', error);
       setIsListening(false);
       setErrorMessage(`Voice search failed: ${error}`);
       
@@ -275,7 +278,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         'Voice Search Error', 
         `Voice search encountered an error: ${error}\n\nThis feature requires:\n• Physical device (not simulator)\n• Microphone permissions\n• Voice recognition dependencies`,
         [
-          { text: 'Use Text Search', onPress: handleClose },
+          { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
           { text: 'OK', onPress: () => setErrorMessage('') }
         ]
       );
@@ -283,9 +286,48 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
   };
 
   const handleStopListening = async () => {
-    console.log('🛑 VoiceSearchModal: Stopping voice recognition');
     await voiceSearchService.stopListening();
     setIsListening(false);
+  };
+
+  const renderTextInputFallback = () => {
+    if (!showTextInput) return null;
+
+    return (
+      <View style={styles.textInputContainer}>
+        <Text style={styles.textInputTitle}>Text Search</Text>
+        <Text style={styles.textInputSubtitle}>
+          Since voice search is not available, you can type your search query instead.
+        </Text>
+        
+        <TextInput
+          style={styles.textInput}
+          placeholder="Type your search query..."
+          placeholderTextColor={COLORS.primaryLightGreyHex}
+          value={textInput}
+          onChangeText={setTextInput}
+          autoFocus
+          multiline
+        />
+        
+        <View style={styles.textInputButtons}>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => setShowTextInput(false)}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={handleTextSearch}
+            disabled={!textInput.trim()}
+          >
+            <Text style={styles.searchButtonText}>Search</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
   };
 
   const renderErrorState = () => {
@@ -314,7 +356,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
           
           <TouchableOpacity
             style={styles.textSearchButton}
-            onPress={handleClose}
+            onPress={() => setShowTextInput(true)}
           >
             <Text style={styles.textSearchButtonText}>Use Text Search</Text>
           </TouchableOpacity>
@@ -328,6 +370,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
             <Text style={styles.debugText}>Speech Loaded: {moduleStatus.speechLoaded ? '✅' : '❌'}</Text>
             <Text style={styles.debugText}>Initialized: {moduleStatus.initialized ? '✅' : '❌'}</Text>
             <Text style={styles.debugText}>Platform: {Platform.OS}</Text>
+            <Text style={styles.debugText}>Simulator: {voiceSearchService.isSimulator() ? '⚠️ Yes' : '✅ No'}</Text>
             {moduleStatus.error && (
               <Text style={styles.debugText}>Error: {moduleStatus.error}</Text>
             )}
@@ -338,6 +381,10 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
   };
 
   const renderListeningState = () => {
+    if (showTextInput) {
+      return renderTextInputFallback();
+    }
+
     if (errorMessage) {
       return renderErrorState();
     }
@@ -484,7 +531,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         ) : (
           <TouchableOpacity
             style={styles.textSearchButton}
-            onPress={handleClose}
+            onPress={() => setShowTextInput(true)}
           >
             <Text style={styles.textSearchButtonText}>Use Text Search Instead</Text>
           </TouchableOpacity>
@@ -510,7 +557,9 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
               color={COLORS.primaryWhiteHex}
             />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Voice Search</Text>
+          <Text style={styles.headerTitle}>
+            {showTextInput ? 'Text Search' : 'Voice Search'}
+          </Text>
           <View style={styles.headerSpacer} />
         </View>
 
@@ -520,13 +569,15 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         </View>
 
         {/* Tips */}
-        <View style={styles.tipsContainer}>
-          <Text style={styles.tipsTitle}>Voice Search Tips:</Text>
-          <Text style={styles.tipText}>• Say coffee names: "cappuccino", "latte", "americano"</Text>
-          <Text style={styles.tipText}>• Mention roast levels: "dark roast", "medium roast"</Text>
-          <Text style={styles.tipText}>• Specify bean types: "arabica beans", "robusta"</Text>
-          <Text style={styles.tipText}>• Use descriptive words: "strong coffee", "mild beans"</Text>
-        </View>
+        {!showTextInput && (
+          <View style={styles.tipsContainer}>
+            <Text style={styles.tipsTitle}>Voice Search Tips:</Text>
+            <Text style={styles.tipText}>• Say coffee names: "cappuccino", "latte", "americano"</Text>
+            <Text style={styles.tipText}>• Mention roast levels: "dark roast", "medium roast"</Text>
+            <Text style={styles.tipText}>• Specify bean types: "arabica beans", "robusta"</Text>
+            <Text style={styles.tipText}>• Use descriptive words: "strong coffee", "mild beans"</Text>
+          </View>
+        )}
       </View>
     </Modal>
   );
@@ -745,6 +796,68 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     marginBottom: SPACING.space_4,
     lineHeight: 16,
+  },
+  textInputContainer: {
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: BORDERRADIUS.radius_15,
+    padding: SPACING.space_20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  textInputTitle: {
+    fontSize: FONTSIZE.size_18,
+    fontFamily: FONTFAMILY.poppins_semibold,
+    color: COLORS.primaryWhiteHex,
+    marginBottom: SPACING.space_8,
+  },
+  textInputSubtitle: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.primaryLightGreyHex,
+    textAlign: 'center',
+    marginBottom: SPACING.space_16,
+    lineHeight: 20,
+  },
+  textInput: {
+    width: '100%',
+    height: 100,
+    backgroundColor: COLORS.primaryLightGreyHex,
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingHorizontal: SPACING.space_12,
+    paddingVertical: SPACING.space_10,
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.primaryBlackHex,
+    textAlignVertical: 'top',
+    marginBottom: SPACING.space_16,
+  },
+  textInputButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    gap: SPACING.space_12,
+  },
+  cancelButton: {
+    backgroundColor: COLORS.primaryRedHex,
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_12,
+  },
+  cancelButtonText: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryWhiteHex,
+  },
+  searchButton: {
+    backgroundColor: COLORS.primaryOrangeHex,
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_12,
+  },
+  searchButtonText: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryWhiteHex,
   },
 });
 
