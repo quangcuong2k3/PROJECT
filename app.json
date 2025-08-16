@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "TheCoffee",
+    "slug": "TheCoffee",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon/play_store_512.png",
+    "scheme": "thecoffee",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "main": "index.ts",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.TheCoffee"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@stripe/stripe-react-native",
+        {
+          "publishableKey": "pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg",
+          "merchantIdentifier": "merchant.com.anonymous.TheCoffee"
+        }
+      ]
+    ]
+  }
+}
