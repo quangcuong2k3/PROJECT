@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
-  Platform,
   TextInput,
 } from 'react-native';
 import {
@@ -18,7 +17,7 @@ import {
   BORDERRADIUS,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
-import voiceSearchService, {VoiceSearchResult} from '../services/voiceSearchService';
+import voiceSearchService, {VoiceSearchResult, VoiceSearchState} from '../services/voiceSearchService';
 
 interface VoiceSearchModalProps {
   visible: boolean;
@@ -37,17 +36,12 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInput, setTextInput] = useState('');
-  const [moduleStatus, setModuleStatus] = useState<{
-    voiceLoaded: boolean;
-    speechLoaded: boolean;
-    initialized: boolean;
-    error?: string;
-  }>({
-    voiceLoaded: false,
-    speechLoaded: false,
-    initialized: false,
-    error: undefined,
+  const [voiceState, setVoiceState] = useState<VoiceSearchState>({
+    isListening: false,
+    isAvailable: false,
+    isSupported: false,
   });
+  
   const [pulseAnim] = useState(new Animated.Value(1));
   const [waveAnim] = useState(new Animated.Value(0));
 
@@ -69,9 +63,12 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
   }, [isListening]);
 
   const initializeModal = async () => {
-    // Get module status for debugging
-    const status = voiceSearchService.getModuleStatus();
-    setModuleStatus(status);
+    // Get initial voice state
+    const state = voiceSearchService.getState();
+    setVoiceState(state);
+    
+    // Set up state change listener
+    voiceSearchService.onStateChange(setVoiceState);
     
     // Reset states
     setErrorMessage('');
@@ -80,66 +77,55 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
     setShowTextInput(false);
     setTextInput('');
 
+    // Small delay to ensure service is fully initialized
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     // Check voice availability
     await checkVoiceAvailability();
   };
 
   const checkVoiceAvailability = async () => {
     try {
-      // Check if running on simulator first
-      if (voiceSearchService.isSimulator()) {
-        const errorMsg = 'Voice recognition does not work on simulators or emulators. Please test on a physical device.';
-        setErrorMessage(errorMsg);
-        return;
-      }
-
-      // Check if modules are loaded
-      if (!moduleStatus.voiceLoaded) {
-        const errorDetails = voiceSearchService.getErrorDetails();
-        const errorMsg = errorDetails || 'Voice recognition is not available on this device. Please ensure you are testing on a physical device.';
-        setErrorMessage(errorMsg);
-        return;
-      }
-
-      if (!moduleStatus.initialized) {
-        const errorMsg = 'Voice recognition service is not properly initialized. Please restart the app.';
-        setErrorMessage(errorMsg);
-        return;
-      }
-
-      // Check device compatibility
-      if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
-        const errorMsg = 'Voice recognition is only supported on Android and iOS devices.';
-        setErrorMessage(errorMsg);
-        return;
-      }
-
-      const isAvailable = await voiceSearchService.isVoiceAvailable();
+      console.log('🔍 Checking voice availability...', voiceState);
       
-      if (!isAvailable) {
-        let errorMsg = 'Voice recognition is not available on this device.';
-        
-        if (Platform.OS === 'android') {
-          errorMsg += '\n\nPlease ensure:\n• You are using a physical device\n• Microphone permission is granted\n• Google app is installed and up to date';
-        } else if (Platform.OS === 'ios') {
-          errorMsg += '\n\nPlease ensure:\n• You are using a physical device (not simulator)\n• Microphone permission is granted\n• Speech recognition is enabled in Settings';
+      // Wait a bit for the service to initialize
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Get fresh state
+      const currentState = voiceSearchService.getState();
+      setVoiceState(currentState);
+      
+      console.log('🔍 Current voice state:', currentState);
+      
+      // Check if speech recognition is supported
+      if (!currentState.isSupported) {
+        console.log('❌ Voice recognition not supported');
+        if (voiceSearchService.isFallbackMode()) {
+          // In fallback mode, we can still work
+          setErrorMessage('');
+          console.log('✅ Using fallback mode - voice search available');
+          return;
+        } else {
+          const errorMsg = 'Voice recognition is not supported on this device. You can use text search instead.';
+          setErrorMessage(errorMsg);
+          return;
         }
-        
-        setErrorMessage(errorMsg);
-        
-        Alert.alert(
-          'Voice Search Unavailable',
-          errorMsg,
-          [
-            { text: 'Use Text Search Instead', onPress: () => setShowTextInput(true) },
-            { text: 'Try Anyway', onPress: () => setErrorMessage('') },
-            { text: 'Cancel', onPress: onClose }
-          ]
-        );
       }
+
+      // Check if available
+      if (!currentState.isAvailable && !voiceSearchService.isFallbackMode()) {
+        console.log('⚠️ Voice recognition unavailable');
+        const errorMsg = 'Voice recognition is temporarily unavailable. Please try again in a moment.';
+        setErrorMessage(errorMsg);
+        return;
+      }
+
+      // Clear any previous errors
+      console.log('✅ Voice recognition is available');
+      setErrorMessage('');
     } catch (error) {
       console.error('Error checking voice availability:', error);
-      setErrorMessage(`Voice check failed: ${error}`);
+      setErrorMessage(`Voice availability check failed: ${error}`);
     }
   };
 
@@ -205,58 +191,79 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
 
   const handleStartListening = async () => {
     try {
-      setIsListening(true);
+      console.log('🎤 Starting voice listening...');
+      
+      // Clear any previous states
       setTranscript('');
       setIsProcessing(false);
       setErrorMessage('');
+      
+      // Check availability first
+      await checkVoiceAvailability();
+      
+      if (errorMessage) {
+        console.log('❌ Voice not available, skipping start');
+        return;
+      }
+      
+      setIsListening(true);
 
+      // Add a safety timeout to prevent hanging
+      const searchTimeout = setTimeout(() => {
+        console.log('⏰ Voice search safety timeout triggered');
+        if (isListening) {
+          setIsListening(false);
+          setErrorMessage('Voice search took too long. Please try again.');
+        }
+      }, 20000); // 20 second safety timeout
+
+      console.log('🎤 Calling voiceSearchService.startListening...');
       const result: VoiceSearchResult = await voiceSearchService.startListening({
         language: 'en-US',
-        timeout: 10000,
-        partialResults: true,
+        timeout: 15000, // 15 second timeout for the service
+        continuous: false,
+        interimResults: true,
       });
 
+      console.log('🎤 Voice search result:', result);
+      clearTimeout(searchTimeout);
       setIsListening(false);
 
       if (result.success && result.transcript) {
-        setTranscript(result.transcript);
+        const cleanTranscript = result.transcript.trim();
+        console.log('✅ Voice transcript received:', cleanTranscript);
+        
+        setTranscript(cleanTranscript);
         setIsProcessing(true);
 
         // Process the voice query
-        const processedQuery = voiceSearchService.processVoiceQuery(result.transcript);
+        const processedQuery = voiceSearchService.processVoiceQuery(cleanTranscript);
         
-        // Provide audio feedback
-        try {
-          await voiceSearchService.speak(`Searching for ${result.transcript}`);
-        } catch (speechError) {
-          // Silently handle speech errors
+        console.log('🎤 Voice query processed:', processedQuery);
+        
+        // Check if we have valid search terms
+        if (processedQuery.searchTerms && processedQuery.searchTerms.length > 0) {
+          console.log('✅ Valid search terms found, calling onSearchResults');
+          // Return search results
+          onSearchResults(processedQuery.searchTerms, processedQuery.originalQuery);
+          
+          // Close modal after a brief delay
+          setTimeout(() => {
+            handleClose();
+          }, 1000);
+        } else {
+          console.log('❌ No valid search terms extracted');
+          setIsProcessing(false);
+          setErrorMessage('Could not understand what you said. Please try speaking more clearly or use text search.');
         }
-
-        // Return search results
-        onSearchResults(processedQuery.searchTerms, processedQuery.originalQuery);
-        
-        // Close modal after a brief delay
-        setTimeout(() => {
-          handleClose();
-        }, 1500);
       } else {
+        console.log('❌ Voice recognition failed:', result.error);
         setErrorMessage(result.error || 'Voice recognition failed');
         
-        // Show user-friendly error dialog
-        const isModuleError = result.error?.includes('install') || result.error?.includes('module') || result.error?.includes('available');
-        
-        if (isModuleError) {
+        // Show user-friendly error dialog only for real errors
+        if (result.error && !result.error.includes('timeout') && !result.error.includes('No speech')) {
           Alert.alert(
-            'Voice Recognition Setup Required',
-            result.error || 'Voice recognition dependencies are missing.',
-            [
-              { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
-              { text: 'OK', onPress: () => setErrorMessage('') }
-            ]
-          );
-        } else {
-          Alert.alert(
-            'Voice Recognition Failed',
+            'Voice Recognition Issue',
             result.error || 'Could not understand your voice. Please try again.',
             [
               { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
@@ -272,11 +279,12 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
     } catch (error) {
       console.error('Voice search error:', error);
       setIsListening(false);
+      setIsProcessing(false);
       setErrorMessage(`Voice search failed: ${error}`);
       
       Alert.alert(
         'Voice Search Error', 
-        `Voice search encountered an error: ${error}\n\nThis feature requires:\n• Physical device (not simulator)\n• Microphone permissions\n• Voice recognition dependencies`,
+        `Voice search encountered an error.\n\nPlease check:\n• Microphone permissions\n• Internet connection\n• Try using text search instead`,
         [
           { text: 'Use Text Search', onPress: () => setShowTextInput(true) },
           { text: 'OK', onPress: () => setErrorMessage('') }
@@ -360,19 +368,29 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
           >
             <Text style={styles.textSearchButtonText}>Use Text Search</Text>
           </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.retryVoiceButton}
+            onPress={() => {
+              setErrorMessage('');
+              setTimeout(handleStartListening, 500);
+            }}
+          >
+            <Text style={styles.retryVoiceButtonText}>Retry Voice</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Debug info in development */}
         {__DEV__ && (
           <View style={styles.debugInfo}>
             <Text style={styles.debugTitle}>Debug Info:</Text>
-            <Text style={styles.debugText}>Voice Loaded: {moduleStatus.voiceLoaded ? '✅' : '❌'}</Text>
-            <Text style={styles.debugText}>Speech Loaded: {moduleStatus.speechLoaded ? '✅' : '❌'}</Text>
-            <Text style={styles.debugText}>Initialized: {moduleStatus.initialized ? '✅' : '❌'}</Text>
-            <Text style={styles.debugText}>Platform: {Platform.OS}</Text>
-            <Text style={styles.debugText}>Simulator: {voiceSearchService.isSimulator() ? '⚠️ Yes' : '✅ No'}</Text>
-            {moduleStatus.error && (
-              <Text style={styles.debugText}>Error: {moduleStatus.error}</Text>
+            <Text style={styles.debugText}>Supported: {voiceState.isSupported ? '✅' : '❌'}</Text>
+            <Text style={styles.debugText}>Available: {voiceState.isAvailable ? '✅' : '❌'}</Text>
+            <Text style={styles.debugText}>Listening: {voiceState.isListening ? '✅' : '❌'}</Text>
+            <Text style={styles.debugText}>Fallback Mode: {voiceSearchService.isFallbackMode() ? '⚠️ Yes' : '✅ No'}</Text>
+            <Text style={styles.debugText}>Platform: {voiceSearchService.getPlatformInfo().platform}</Text>
+            {voiceState.error && (
+              <Text style={styles.debugText}>Error: {voiceState.error}</Text>
             )}
           </View>
         )}
@@ -499,34 +517,42 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
       <View style={styles.stateContainer}>
         <View style={[
           styles.microphoneContainer,
-          !moduleStatus.voiceLoaded && styles.microphoneContainerDisabled
+          !voiceState.isSupported && styles.microphoneContainerDisabled
         ]}>
           <CustomIcon
             name="mic"
             size={FONTSIZE.size_30}
-            color={moduleStatus.voiceLoaded ? COLORS.primaryLightGreyHex : COLORS.primaryRedHex}
+            color={voiceState.isSupported ? COLORS.primaryLightGreyHex : COLORS.primaryRedHex}
           />
         </View>
         
         <Text style={styles.stateTitle}>Voice Search</Text>
         <Text style={styles.stateSubtitle}>
-          {moduleStatus.voiceLoaded 
-            ? "Tap the microphone and speak to search for coffee products"
-            : "Voice search is not available on this device"
+          {voiceState.isSupported 
+            ? voiceSearchService.isFallbackMode()
+              ? "Demo mode: Tap to test voice search with sample results"
+              : "Tap the microphone and speak clearly to search for coffee"
+            : "Voice search requires microphone access and Web Speech API support"
           }
         </Text>
         
-        {moduleStatus.voiceLoaded ? (
+        {voiceState.isSupported ? (
           <TouchableOpacity
             style={styles.startButton}
             onPress={handleStartListening}
+            disabled={isListening}
           >
             <CustomIcon
               name="mic"
               size={FONTSIZE.size_20}
-              color={COLORS.primaryWhiteHex}
+              color={isListening ? COLORS.primaryGreyHex : COLORS.primaryWhiteHex}
             />
-            <Text style={styles.startButtonText}>Start Listening</Text>
+            <Text style={[
+              styles.startButtonText,
+              isListening && { color: COLORS.primaryGreyHex }
+            ]}>
+              {isListening ? 'Initializing...' : 'Start Listening'}
+            </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -572,10 +598,16 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({
         {!showTextInput && (
           <View style={styles.tipsContainer}>
             <Text style={styles.tipsTitle}>Voice Search Tips:</Text>
-            <Text style={styles.tipText}>• Say coffee names: "cappuccino", "latte", "americano"</Text>
+            <Text style={styles.tipText}>• Say coffee names clearly: "cappuccino", "latte", "americano"</Text>
             <Text style={styles.tipText}>• Mention roast levels: "dark roast", "medium roast"</Text>
-            <Text style={styles.tipText}>• Specify bean types: "arabica beans", "robusta"</Text>
+            <Text style={styles.tipText}>• Specify bean types: "arabica beans", "robusta beans"</Text>
             <Text style={styles.tipText}>• Use descriptive words: "strong coffee", "mild beans"</Text>
+            {voiceSearchService.isFallbackMode() && (
+              <Text style={styles.tipText}>• Demo mode: Shows random coffee suggestions for testing</Text>
+            )}
+            <Text style={styles.tipText}>• Speak slowly and clearly for best results</Text>
+            <Text style={styles.tipText}>• Ensure microphone permissions are enabled</Text>
+            <Text style={styles.tipText}>• Use text search if voice recognition fails</Text>
           </View>
         )}
       </View>
@@ -743,9 +775,10 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.space_24,
   },
   errorButtons: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: SPACING.space_12,
     marginBottom: SPACING.space_24,
+    alignItems: 'center',
   },
   tryAgainButton: {
     backgroundColor: COLORS.primaryOrangeHex,
@@ -855,6 +888,17 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.space_12,
   },
   searchButtonText: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryWhiteHex,
+  },
+  retryVoiceButton: {
+    backgroundColor: COLORS.primaryOrangeHex,
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_12,
+  },
+  retryVoiceButtonText: {
     fontSize: FONTSIZE.size_14,
     fontFamily: FONTFAMILY.poppins_medium,
     color: COLORS.primaryWhiteHex,

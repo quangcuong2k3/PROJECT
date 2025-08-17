@@ -341,23 +341,101 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   const handleVoiceSearchResults = async (searchTerms: string[], transcript: string) => {
     console.log('🎤 Voice search results received:', { searchTerms, transcript });
     
+    // Add timeout to prevent hanging
+    const searchTimeout = setTimeout(() => {
+      console.log('⏰ Voice search processing timeout');
+      setIsSearching(false);
+      ToastAndroid.show('Search took too long. Showing local results.', ToastAndroid.SHORT);
+      
+      // Show local results as fallback
+      const localResults = applyAdvancedFilters(allProducts, searchFilters, transcript);
+      setFilteredResults(localResults);
+      setSearchText(transcript);
+      setSearchMetadata({ searchType: 'voice (local fallback)', totalMatches: localResults.length });
+    }, 10000); // 10 second timeout
+    
     try {
       // Show loading state
       setIsSearching(true);
       setFilteredResults([]);
       setSearchMetadata(null);
       
-      // Use AI-enhanced search to find related products from database
-      const { products, searchMetadata: metadata, relevanceScores: scores } = await searchProductsWithAI(
-        transcript,
-        searchTerms,
-        'voice',
-        {
-          minRelevanceScore: 0.1,
-          maxResults: 20,
-          boostPopular: true,
+      // Check if we have valid search terms
+      if (!searchTerms || searchTerms.length === 0) {
+        console.log('❌ No search terms provided');
+        clearTimeout(searchTimeout);
+        ToastAndroid.show('No search terms generated from voice input', ToastAndroid.SHORT);
+        setIsSearching(false);
+        
+        // Fallback to simple local search with transcript
+        if (transcript && transcript.trim()) {
+          const localResults = applyAdvancedFilters(allProducts, searchFilters, transcript);
+          setFilteredResults(localResults);
+          setSearchText(transcript);
+          setSearchMetadata({ searchType: 'voice (simple fallback)', totalMatches: localResults.length });
         }
-      );
+        return;
+      }
+
+      console.log('🔍 Starting AI search for voice query...');
+      
+      // Try AI-enhanced search with timeout protection
+      let searchResults;
+      if (useFirebase) {
+        try {
+          searchResults = await Promise.race([
+            searchProductsWithAI(
+              transcript,
+              searchTerms,
+              'voice',
+              {
+                minRelevanceScore: 0.1,
+                maxResults: 20,
+                boostPopular: true,
+              }
+            ),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('AI search timeout')), 8000)
+            )
+          ]);
+        } catch (aiError) {
+          console.log('⚠️ AI search failed or timed out, using local search:', aiError);
+          // Fallback to local search
+          const localResults = applyAdvancedFilters(allProducts, searchFilters, transcript);
+          searchResults = {
+            products: localResults,
+            searchMetadata: { 
+              originalQuery: transcript,
+              searchType: 'voice (local)', 
+              totalMatches: localResults.length,
+              processedTerms: searchTerms 
+            },
+            relevanceScores: {}
+          };
+        }
+      } else {
+        // Use local search when Firebase is disabled
+        console.log('🏠 Using local search (Firebase disabled)');
+        const localResults = applyAdvancedFilters(allProducts, searchFilters, transcript);
+        searchResults = {
+          products: localResults,
+          searchMetadata: { 
+            originalQuery: transcript,
+            searchType: 'voice (local)', 
+            totalMatches: localResults.length,
+            processedTerms: searchTerms 
+          },
+          relevanceScores: {}
+        };
+      }
+      
+      clearTimeout(searchTimeout);
+      
+      const { products, searchMetadata: metadata, relevanceScores: scores } = searchResults as {
+        products: any[];
+        searchMetadata: any;
+        relevanceScores: { [key: string]: number };
+      };
       
       console.log(`🎤 Found ${products.length} related products for voice search`);
       console.log('Search metadata:', metadata);
@@ -366,7 +444,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       setSearchText(transcript);
       setFilteredResults(products);
       setSearchMetadata(metadata);
-      setRelevanceScores(scores);
+      setRelevanceScores(scores || {});
       
       // Show success message
       ToastAndroid.show(
@@ -382,13 +460,14 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       }
     } catch (error) {
       console.error('Error processing voice search results:', error);
-      ToastAndroid.show('Failed to search products. Please try again.', ToastAndroid.SHORT);
+      clearTimeout(searchTimeout);
+      ToastAndroid.show('Search failed. Showing local results.', ToastAndroid.SHORT);
       
       // Fallback to local search
       const results = applyAdvancedFilters(allProducts, searchFilters, transcript);
       setFilteredResults(results);
       setSearchText(transcript);
-      setSearchMetadata({ searchType: 'voice (fallback)', totalMatches: results.length });
+      setSearchMetadata({ searchType: 'voice (error fallback)', totalMatches: results.length });
     } finally {
       setIsSearching(false);
     }
@@ -678,6 +757,24 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
               {searchMetadata?.searchType === 'image' && 'Analyzing your image'}
               {!searchMetadata?.searchType && 'Finding the best matches'}
             </Text>
+            
+            {/* Add a timeout indicator for voice search */}
+            {searchMetadata?.searchType === 'voice' && (
+              <View style={styles.timeoutContainer}>
+                <Text style={styles.timeoutText}>
+                  If search takes too long, try using text search instead
+                </Text>
+                <TouchableOpacity
+                  style={styles.timeoutButton}
+                  onPress={() => {
+                    setIsSearching(false);
+                    setShowVoiceSearch(true);
+                  }}
+                >
+                  <Text style={styles.timeoutButtonText}>Switch to Text Search</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         ) : (
           <FlatList
@@ -954,6 +1051,30 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     textAlign: 'center',
     marginBottom: SPACING.space_24,
+  },
+  timeoutContainer: {
+    marginTop: SPACING.space_16,
+    alignItems: 'center',
+  },
+  timeoutText: {
+    fontSize: FONTSIZE.size_12,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.primaryLightGreyHex,
+    textAlign: 'center',
+    marginBottom: SPACING.space_12,
+  },
+  timeoutButton: {
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    paddingHorizontal: SPACING.space_16,
+    paddingVertical: SPACING.space_8,
+    borderRadius: BORDERRADIUS.radius_8,
+    borderWidth: 1,
+    borderColor: COLORS.primaryGreyHex,
+  },
+  timeoutButtonText: {
+    fontSize: FONTSIZE.size_12,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.primaryOrangeHex,
   },
 });
 
