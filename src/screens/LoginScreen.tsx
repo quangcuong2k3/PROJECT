@@ -11,8 +11,10 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING, BORDERRADIUS} from '../theme/theme';
+import {LinearGradient} from 'expo-linear-gradient';
 import GradientBGIcon from '../components/GradientBGIcon';
 import CustomIcon from '../components/CustomIcon';
 import EnhancedInput from '../components/EnhancedInput';
@@ -168,243 +170,237 @@ const LoginScreen = ({navigation}: any) => {
   const isButtonDisabled = !isFormValid || isAuthLoading;
 
   return (
-    <View style={styles.ScreenContainer}>
+    <SafeAreaView style={styles.ScreenContainer}>
       <StatusBar 
         backgroundColor={COLORS.primaryBlackHex} 
         barStyle="light-content"
         translucent={false}
       />
       
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.KeyboardAvoidingView}
+      <LinearGradient
+        colors={[COLORS.primaryBlackHex, COLORS.primaryDarkGreyHex]}
+        style={styles.GradientBackground}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.ScrollViewFlex}
-          keyboardShouldPersistTaps="handled"
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.KeyboardAvoidingView}
         >
-          <Animated.View 
-            style={[
-              styles.InnerViewContainer,
-              {
-                opacity: fadeAnim,
-                transform: [
-                  { translateY: slideAnim },
-                  { scale: scaleAnim },
-                ],
-              },
-            ]}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.ScrollViewFlex}
+            keyboardShouldPersistTaps="handled"
           >
-            {/* Header Section */}
-            <View style={styles.HeaderContainer}>
-              <View style={styles.LogoContainer}>
-                <Animated.View
-                  style={{
-                    transform: [
+            <Animated.View 
+              style={[
+                styles.InnerViewContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [
+                    { translateY: slideAnim },
+                    { scale: scaleAnim },
+                  ],
+                },
+              ]}
+            >
+              {/* Floating Header Card */}
+              <View style={styles.HeaderCard}>
+                <View style={styles.LogoSection}>
+                  <Animated.View
+                    style={[
+                      styles.LogoContainer,
                       {
-                        rotate: logoRotateAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: ['0deg', '360deg'],
-                        }),
+                        transform: [
+                          {
+                            rotate: logoRotateAnim.interpolate({
+                              inputRange: [0, 1],
+                              outputRange: ['0deg', '360deg'],
+                            }),
+                          },
+                        ],
                       },
-                    ],
-                  }}
-                >
-                  <GradientBGIcon
-                    name="cafe"
-                    color={COLORS.primaryOrangeHex}
-                    size={FONTSIZE.size_30}
-                  />
-                </Animated.View>
-                <View style={styles.WelcomeRing} />
-                <View style={styles.WelcomeRingOuter} />
-              </View>
-              
-              <Text style={styles.WelcomeText}>Welcome Back</Text>
-              <Text style={styles.SubHeaderText}>
-                Sign in to your coffee account and enjoy your personalized experience
-              </Text>
-
-              {/* Quick Stats */}
-              <Animated.View 
-                style={[
-                  styles.StatsContainer,
-                  {
-                    opacity: statsAnim,
-                    transform: [
-                      {
-                        translateY: statsAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [20, 0],
-                        }),
-                      },
-                    ],
-                  },
-                ]}
-              >
-                <View style={styles.StatItem}>
-                  <View style={styles.StatIconContainer}>
-                    <CustomIcon name="heart" size={16} color={COLORS.primaryOrangeHex} />
-                  </View>
-                  <Text style={styles.StatText}>Your favorites await</Text>
-                </View>
-                <View style={styles.StatItem}>
-                  <View style={styles.StatIconContainer}>
-                    <CustomIcon name="trophy" size={16} color={COLORS.primaryOrangeHex} />
-                  </View>
-                  <Text style={styles.StatText}>Loyalty rewards</Text>
-                </View>
-                <View style={styles.StatItem}>
-                  <View style={styles.StatIconContainer}>
-                    <CustomIcon name="time" size={16} color={COLORS.primaryOrangeHex} />
-                  </View>
-                  <Text style={styles.StatText}>Fast ordering</Text>
-                </View>
-              </Animated.View>
-            </View>
-
-            {/* Form Section */}
-            <View style={styles.FormContainer}>
-              {/* Email Input */}
-              <EnhancedInput
-                label="Email Address"
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                error={emailError}
-                icon="mail"
-                required
-                maxLength={254}
-                helpText="We'll keep your account secure and send important updates"
-                validationState={getEmailValidationState()}
-              />
-
-              {/* Password Input */}
-              <EnhancedInput
-                label="Password"
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Enter your password"
-                secureTextEntry
-                autoComplete="password"
-                error={passwordError}
-                icon="lock-closed"
-                required
-                helpText="Your password is encrypted and secure"
-                validationState={getPasswordValidationState()}
-              />
-
-              {/* Global Error Message */}
-              {authError && (
-                <Animated.View style={styles.GlobalErrorContainer}>
-                  <View style={styles.ErrorIconContainer}>
-                    <CustomIcon
-                      name="alert-circle"
-                      size={FONTSIZE.size_20}
-                      color={COLORS.primaryRedHex}
-                    />
-                  </View>
-                  <View style={styles.ErrorTextContainer}>
-                    <Text style={styles.GlobalErrorText}>
-                      {authError.includes('Firebase:') || authError.includes('auth/') 
-                        ? 'Incorrect email or password.' 
-                        : authError}
-                    </Text>
-                    <Text style={styles.ErrorHelpText}>
-                      Double-check your credentials or try resetting your password
-                    </Text>
-                  </View>
-                </Animated.View>
-              )}
-
-              {/* Forgot Password */}
-              <TouchableOpacity
-                style={styles.ForgotPasswordContainer}
-                onPress={navigateToForgotPassword}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.ForgotPasswordText}>Forgot Password?</Text>
-                <CustomIcon 
-                  name="chevron-forward" 
-                  size={FONTSIZE.size_16} 
-                  color={COLORS.primaryOrangeHex} 
-                />
-              </TouchableOpacity>
-
-              {/* Login Button */}
-              <TouchableOpacity
-                style={[
-                  styles.LoginButton,
-                  isButtonDisabled && styles.LoginButtonDisabled,
-                  isFormValid && styles.LoginButtonValid,
-                ]}
-                onPress={handleLogin}
-                disabled={isButtonDisabled}
-                activeOpacity={0.8}
-              >
-                <View style={styles.ButtonContent}>
-                  {isAuthLoading ? (
-                    <>
-                      <Animated.View style={[
-                        styles.LoadingSpinner,
-                        {
-                          transform: [
-                            {
-                              rotate: logoRotateAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: ['0deg', '360deg'],
-                              }),
-                            },
-                          ],
-                        },
-                      ]} />
-                      <Text style={styles.LoginButtonText}>Signing In...</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text style={styles.LoginButtonText}>Sign In</Text>
-                      <CustomIcon 
-                        name="arrow-forward" 
-                        size={FONTSIZE.size_18} 
-                        color={COLORS.primaryWhiteHex} 
+                    ]}
+                  >
+                    <LinearGradient
+                      colors={[COLORS.primaryOrangeHex, '#E67E22']}
+                      style={styles.LogoGradient}
+                    >
+                      <CustomIcon
+                        name="cafe"
+                        color={COLORS.primaryWhiteHex}
+                        size={FONTSIZE.size_28}
                       />
-                    </>
-                  )}
+                    </LinearGradient>
+                  </Animated.View>
+                  
+                  <View style={styles.WelcomeSection}>
+                    <Text style={styles.WelcomeText}>Welcome Back</Text>
+                    <Text style={styles.SubHeaderText}>
+                      Your coffee journey continues
+                    </Text>
+                  </View>
                 </View>
-              </TouchableOpacity>
 
-              {/* Divider */}
-              <View style={styles.DividerContainer}>
-                <View style={styles.DividerLine} />
-                <Text style={styles.DividerText}>or</Text>
-                <View style={styles.DividerLine} />
+                {/* Trust Indicators */}
+                <Animated.View 
+                  style={[
+                    styles.TrustIndicators,
+                    {
+                      opacity: statsAnim,
+                      transform: [
+                        {
+                          translateY: statsAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [20, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  <View style={styles.TrustItem}>
+                    <CustomIcon name="shield-checkmark" size={14} color={COLORS.primaryOrangeHex} />
+                    <Text style={styles.TrustText}>Secure Login</Text>
+                  </View>
+                  <View style={styles.TrustItem}>
+                    <CustomIcon name="time" size={14} color={COLORS.primaryOrangeHex} />
+                    <Text style={styles.TrustText}>Quick Access</Text>
+                  </View>
+                </Animated.View>
               </View>
 
-              {/* Register Link */}
-              <TouchableOpacity
-                style={styles.RegisterContainer}
-                onPress={navigateToRegister}
-                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-              >
-                <Text style={styles.RegisterText}>
-                  Don't have an account? 
-                </Text>
-                <Text style={styles.RegisterLink}> Create Account</Text>
-                <CustomIcon 
-                  name="person-add" 
-                  size={FONTSIZE.size_16} 
-                  color={COLORS.primaryOrangeHex} 
-                />
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+              {/* Main Form Card */}
+              <View style={styles.FormCard}>
+                {/* Global Error Message */}
+                {authError && (
+                  <Animated.View style={styles.GlobalErrorContainer}>
+                    <View style={styles.ErrorContent}>
+                      <CustomIcon
+                        name="alert-circle"
+                        size={FONTSIZE.size_18}
+                        color={COLORS.primaryRedHex}
+                      />
+                      <View style={styles.ErrorTextContainer}>
+                        <Text style={styles.GlobalErrorText}>
+                          {authError.includes('Firebase:') || authError.includes('auth/') 
+                            ? 'Incorrect email or password' 
+                            : authError}
+                        </Text>
+                        <Text style={styles.ErrorHelpText}>
+                          Please check your credentials and try again
+                        </Text>
+                      </View>
+                    </View>
+                  </Animated.View>
+                )}
+
+                {/* Form Fields */}
+                <View style={styles.FormFields}>
+                  <EnhancedInput
+                    label="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="your@email.com"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    error={emailError}
+                    icon="mail"
+                    required
+                    maxLength={254}
+                    validationState={getEmailValidationState()}
+                  />
+
+                  <EnhancedInput
+                    label="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    autoComplete="password"
+                    error={passwordError}
+                    icon="lock-closed"
+                    required
+                    validationState={getPasswordValidationState()}
+                  />
+                </View>
+
+                {/* Forgot Password Link */}
+                <TouchableOpacity
+                  style={styles.ForgotPasswordLink}
+                  onPress={navigateToForgotPassword}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                >
+                  <Text style={styles.ForgotPasswordText}>Forgot your password?</Text>
+                </TouchableOpacity>
+
+                {/* Sign In Button */}
+                <TouchableOpacity
+                  style={[
+                    styles.SignInButton,
+                    isButtonDisabled && styles.SignInButtonDisabled,
+                  ]}
+                  onPress={handleLogin}
+                  disabled={isButtonDisabled}
+                  activeOpacity={0.9}
+                >
+                  <LinearGradient
+                    colors={
+                      isButtonDisabled 
+                        ? [COLORS.primaryGreyHex, COLORS.primaryGreyHex]
+                        : [COLORS.primaryOrangeHex, '#E67E22']
+                    }
+                    style={styles.SignInButtonGradient}
+                  >
+                    <View style={styles.ButtonContent}>
+                      {isAuthLoading ? (
+                        <>
+                          <Animated.View style={[
+                            styles.LoadingSpinner,
+                            {
+                              transform: [
+                                {
+                                  rotate: logoRotateAnim.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: ['0deg', '360deg'],
+                                  }),
+                                },
+                              ],
+                            },
+                          ]} />
+                          <Text style={styles.SignInButtonText}>Signing In...</Text>
+                        </>
+                      ) : (
+                        <>
+                          <Text style={styles.SignInButtonText}>Sign In</Text>
+                          <CustomIcon 
+                            name="arrow-forward" 
+                            size={FONTSIZE.size_16} 
+                            color={COLORS.primaryWhiteHex} 
+                          />
+                        </>
+                      )}
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+
+              {/* Bottom Action */}
+              <View style={styles.BottomSection}>
+                <View style={styles.SignUpPrompt}>
+                  <Text style={styles.SignUpText}>New to our coffee community?</Text>
+                  <TouchableOpacity
+                    onPress={navigateToRegister}
+                    hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                  >
+                    <Text style={styles.SignUpLink}>Create Account</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Animated.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </SafeAreaView>
   );
 };
 
@@ -413,53 +409,67 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.primaryBlackHex,
   },
+  GradientBackground: {
+    flex: 1,
+  },
   KeyboardAvoidingView: {
     flex: 1,
   },
   ScrollViewFlex: {
     flexGrow: 1,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_24,
     justifyContent: 'center',
-    paddingHorizontal: SPACING.space_24,
-    paddingVertical: SPACING.space_40,
+    minHeight: height,
   },
   InnerViewContainer: {
     flex: 1,
     justifyContent: 'center',
+    gap: SPACING.space_24,
   },
-  HeaderContainer: {
-    alignItems: 'center',
-    marginBottom: SPACING.space_40,
-  },
-  LogoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: SPACING.space_20,
-    position: 'relative',
-  },
-  WelcomeRing: {
-    position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: `${COLORS.primaryOrangeHex}40`,
-    zIndex: -1,
-  },
-  WelcomeRingOuter: {
-    position: 'absolute',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  
+  // Header Card Styles
+  HeaderCard: {
+    backgroundColor: `${COLORS.secondaryDarkGreyHex}95`,
+    borderRadius: BORDERRADIUS.radius_25,
+    padding: SPACING.space_24,
+    marginBottom: SPACING.space_16,
     borderWidth: 1,
     borderColor: `${COLORS.primaryOrangeHex}20`,
-    zIndex: -2,
+    shadowColor: COLORS.primaryBlackHex,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  LogoSection: {
+    alignItems: 'center',
+    marginBottom: SPACING.space_20,
+  },
+  LogoContainer: {
+    marginBottom: SPACING.space_16,
+  },
+  LogoGradient: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.primaryOrangeHex,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  WelcomeSection: {
+    alignItems: 'center',
   },
   WelcomeText: {
     fontFamily: FONTFAMILY.poppins_bold,
-    fontSize: FONTSIZE.size_28,
+    fontSize: FONTSIZE.size_24,
     color: COLORS.primaryWhiteHex,
     textAlign: 'center',
-    marginBottom: SPACING.space_8,
+    marginBottom: SPACING.space_4,
   },
   SubHeaderText: {
     fontFamily: FONTFAMILY.poppins_regular,
@@ -467,50 +477,55 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     textAlign: 'center',
     lineHeight: 20,
-    marginBottom: SPACING.space_24,
-    paddingHorizontal: SPACING.space_20,
   },
-  StatsContainer: {
+  TrustIndicators: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    justifyContent: 'center',
+    gap: SPACING.space_24,
+    marginTop: SPACING.space_16,
+  },
+  TrustItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.space_8,
+  },
+  TrustText: {
+    fontFamily: FONTFAMILY.poppins_medium,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryLightGreyHex,
+  },
+
+  // Form Card Styles
+  FormCard: {
+    backgroundColor: `${COLORS.secondaryDarkGreyHex}95`,
+    borderRadius: BORDERRADIUS.radius_25,
+    padding: SPACING.space_24,
+    borderWidth: 1,
+    borderColor: `${COLORS.primaryOrangeHex}20`,
+    shadowColor: COLORS.primaryBlackHex,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  FormFields: {
+    gap: SPACING.space_16,
     marginBottom: SPACING.space_20,
   },
-  StatItem: {
-    alignItems: 'center',
-    flex: 1,
-    paddingHorizontal: SPACING.space_8,
-  },
-  StatIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: `${COLORS.primaryOrangeHex}20`,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: SPACING.space_8,
-  },
-  StatText: {
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_10,
-    color: COLORS.primaryLightGreyHex,
-    textAlign: 'center',
-  },
-  FormContainer: {
-    width: '100%',
-  },
+  
+  // Error Styles
   GlobalErrorContainer: {
-    flexDirection: 'row',
     backgroundColor: `${COLORS.primaryRedHex}15`,
     borderRadius: BORDERRADIUS.radius_15,
-    borderLeftWidth: 4,
+    borderLeftWidth: 3,
     borderLeftColor: COLORS.primaryRedHex,
     padding: SPACING.space_16,
     marginBottom: SPACING.space_20,
   },
-  ErrorIconContainer: {
-    marginRight: SPACING.space_12,
-    paddingTop: SPACING.space_2,
+  ErrorContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: SPACING.space_12,
   },
   ErrorTextContainer: {
     flex: 1,
@@ -527,10 +542,10 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     lineHeight: 16,
   },
-  ForgotPasswordContainer: {
-    flexDirection: 'row',
+
+  // Action Styles
+  ForgotPasswordLink: {
     alignItems: 'center',
-    justifyContent: 'center',
     paddingVertical: SPACING.space_12,
     marginBottom: SPACING.space_20,
   },
@@ -538,8 +553,69 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryOrangeHex,
-    marginRight: SPACING.space_8,
   },
+  
+  // Button Styles
+  SignInButton: {
+    borderRadius: BORDERRADIUS.radius_20,
+    overflow: 'hidden',
+    shadowColor: COLORS.primaryOrangeHex,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  SignInButtonDisabled: {
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  SignInButtonGradient: {
+    paddingVertical: SPACING.space_18,
+    paddingHorizontal: SPACING.space_24,
+  },
+  ButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.space_8,
+  },
+  SignInButtonText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryWhiteHex,
+  },
+  LoadingSpinner: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: COLORS.primaryWhiteHex,
+    borderTopColor: 'transparent',
+  },
+
+  // Bottom Section
+  BottomSection: {
+    alignItems: 'center',
+    paddingTop: SPACING.space_16,
+  },
+  SignUpPrompt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.space_4,
+  },
+  SignUpText: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryLightGreyHex,
+  },
+  SignUpLink: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+    textDecorationLine: 'underline',
+  },
+
+  // Legacy styles (keeping for compatibility)
   LoginButton: {
     backgroundColor: COLORS.primaryOrangeHex,
     borderRadius: BORDERRADIUS.radius_20,
@@ -557,61 +633,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
-  LoginButtonValid: {
-    shadowOpacity: 0.4,
-    elevation: 10,
-  },
-  ButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   LoginButtonText: {
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_16,
     color: COLORS.primaryWhiteHex,
-    marginRight: SPACING.space_8,
-  },
-  LoadingSpinner: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: COLORS.primaryWhiteHex,
-    borderTopColor: 'transparent',
-    marginRight: SPACING.space_8,
-  },
-  DividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.space_24,
-  },
-  DividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.primaryGreyHex,
-  },
-  DividerText: {
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_12,
-    color: COLORS.primaryLightGreyHex,
-    marginHorizontal: SPACING.space_16,
-  },
-  RegisterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: SPACING.space_16,
-  },
-  RegisterText: {
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryLightGreyHex,
-  },
-  RegisterLink: {
-    fontFamily: FONTFAMILY.poppins_semibold,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryOrangeHex,
     marginRight: SPACING.space_8,
   },
 });

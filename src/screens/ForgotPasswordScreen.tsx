@@ -11,7 +11,9 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING, BORDERRADIUS} from '../theme/theme';
 import GradientBGIcon from '../components/GradientBGIcon';
 import CustomIcon from '../components/CustomIcon';
@@ -152,235 +154,247 @@ const ForgotPasswordScreen = ({navigation}: any) => {
   const isButtonDisabled = !isFormValid || isAuthLoading || isEmailSent;
 
   return (
-    <View style={styles.ScreenContainer}>
-      <StatusBar 
-        backgroundColor={COLORS.primaryBlackHex} 
-        barStyle="light-content"
-        translucent={false}
-      />
+    <SafeAreaView style={styles.ScreenContainer}>
+      <StatusBar backgroundColor={COLORS.primaryBlackHex} barStyle="light-content" />
       
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.KeyboardAvoidingView}
+        style={styles.KeyboardContainer}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.ScrollViewFlex}
+          contentContainerStyle={styles.ScrollContainer}
           keyboardShouldPersistTaps="handled"
         >
+          {/* Animated Background Gradient */}
+          <LinearGradient
+            colors={[COLORS.primaryBlackHex, COLORS.primaryDarkGreyHex, COLORS.primaryBlackHex]}
+            style={styles.BackgroundGradient}
+          />
+
+          {/* Header Card */}
           <Animated.View 
             style={[
-              styles.InnerViewContainer,
+              styles.HeaderCard,
               {
                 opacity: fadeAnim,
-                transform: [
-                  { translateY: slideAnim },
-                  { scale: scaleAnim },
-                ],
+                transform: [{ translateY: slideAnim }],
               },
             ]}
           >
-            {/* Header Section */}
-            <View style={styles.HeaderContainer}>
+            <LinearGradient
+              colors={[COLORS.primaryGreyHex + '40', COLORS.primaryDarkGreyHex + '20']}
+              style={styles.HeaderCardGradient}
+            >
+              {/* Back Button */}
               <TouchableOpacity
                 style={styles.BackButton}
                 onPress={() => navigation.goBack()}
-                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                activeOpacity={0.7}
               >
-                <View style={styles.BackButtonContainer}>
-                  <CustomIcon
-                    name="arrow-back"
-                    color={COLORS.primaryWhiteHex}
-                    size={FONTSIZE.size_24}
-                  />
-                </View>
+                <LinearGradient
+                  colors={[COLORS.primaryGreyHex + '60', COLORS.primaryGreyHex + '40']}
+                  style={styles.BackButtonGradient}
+                >
+                  <CustomIcon name="arrow-back" color={COLORS.primaryWhiteHex} size={FONTSIZE.size_20} />
+                </LinearGradient>
               </TouchableOpacity>
-              
-              <View style={styles.LogoContainer}>
-                <GradientBGIcon
-                  name="lock-open"
-                  color={COLORS.primaryOrangeHex}
-                  size={FONTSIZE.size_30}
-                />
-                <View style={styles.IconRing} />
-                <View style={styles.IconRingOuter} />
+
+              <View style={styles.LogoSection}>
+                <View style={styles.LogoContainer}>
+                  <LinearGradient
+                    colors={[COLORS.primaryOrangeHex, COLORS.primaryOrangeHex + '80']}
+                    style={styles.LogoGradient}
+                  >
+                    <CustomIcon name="lock-open" size={FONTSIZE.size_30} color={COLORS.primaryWhiteHex} />
+                  </LinearGradient>
+                </View>
+                <Text style={styles.WelcomeTitle}>Reset Password</Text>
+                <Text style={styles.WelcomeSubtitle}>
+                  {isEmailSent 
+                    ? "Check your email for reset instructions"
+                    : "Enter your email to receive reset instructions"
+                  }
+                </Text>
               </View>
-              
-              <Text style={styles.HeaderText}>Reset Password</Text>
-              <Text style={styles.SubHeaderText}>
-                Don't worry! Enter your email address and we'll send you secure instructions to reset your password
-              </Text>
+            </LinearGradient>
+          </Animated.View>
 
-              {/* Security Badge */}
-              <Animated.View style={[
-                styles.SecurityBadge,
-                { transform: [{ scale: pulseAnim }] }
-              ]}>
-                <CustomIcon 
-                  name="shield-checkmark" 
-                  size={FONTSIZE.size_18} 
-                  color={COLORS.primaryOrangeHex} 
-                />
-                <Text style={styles.SecurityText}>256-bit encrypted recovery</Text>
-              </Animated.View>
-            </View>
-
-            {/* Main Content */}
-            <View style={styles.FormContainer}>
+          {/* Main Content Card */}
+          <Animated.View 
+            style={[
+              styles.ContentCard,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            <LinearGradient
+              colors={[COLORS.primaryGreyHex + '40', COLORS.primaryDarkGreyHex + '20']}
+              style={styles.ContentCardGradient}
+            >
               {!isEmailSent ? (
                 <>
-                  {/* Email Input */}
-                  <EnhancedInput
-                    label="Email Address"
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="Enter your registered email"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    error={emailError}
-                    icon="mail"
-                    required
-                    maxLength={254}
-                    helpText="We'll send reset instructions to this email address"
-                    validationState={getEmailValidationState()}
-                  />
+                  {/* Email Input Form */}
+                  <View style={styles.FormSection}>
+                    <EnhancedInput
+                      label="Email Address"
+                      value={email}
+                      onChangeText={setEmail}
+                      placeholder="your.email@example.com"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      error={emailError}
+                      icon="mail"
+                      required
+                      maxLength={254}
+                      helpText="Enter the email associated with your account"
+                      validationState={getEmailValidationState()}
+                    />
+                  </View>
 
-                  {/* Global Error Message */}
+                  {/* Global Error */}
                   {authError && (
-                    <Animated.View style={styles.GlobalErrorContainer}>
-                      <View style={styles.ErrorIconContainer}>
-                        <CustomIcon
-                          name="alert-circle"
-                          size={FONTSIZE.size_20}
-                          color={COLORS.primaryRedHex}
-                        />
-                      </View>
-                      <View style={styles.ErrorTextContainer}>
-                        <Text style={styles.GlobalErrorText}>{authError}</Text>
-                        <Text style={styles.ErrorHelpText}>
-                          Please verify your email address and try again
-                        </Text>
-                      </View>
+                    <Animated.View style={styles.ErrorCard}>
+                      <LinearGradient
+                        colors={[COLORS.primaryRedHex + '20', COLORS.primaryRedHex + '10']}
+                        style={styles.ErrorGradient}
+                      >
+                        <CustomIcon name="alert-circle" size={FONTSIZE.size_20} color={COLORS.primaryRedHex} />
+                        <View style={styles.ErrorContent}>
+                          <Text style={styles.ErrorTitle}>Reset Failed</Text>
+                          <Text style={styles.ErrorMessage}>{authError}</Text>
+                        </View>
+                      </LinearGradient>
                     </Animated.View>
                   )}
 
-                  {/* Information Cards */}
-                  <View style={styles.InfoCardsContainer}>
+                  {/* Info Cards */}
+                  <View style={styles.InfoSection}>
                     <View style={styles.InfoCard}>
-                      <CustomIcon 
-                        name="information-circle" 
-                        size={FONTSIZE.size_20} 
-                        color={COLORS.primaryOrangeHex} 
-                      />
-                      <View style={styles.InfoTextContainer}>
-                        <Text style={styles.InfoTitle}>What happens next?</Text>
-                        <Text style={styles.InfoText}>
-                          • We'll email you a secure reset link{'\n'}
-                          • Click the link to create a new password{'\n'}
-                          • The link expires in 1 hour for security{'\n'}
-                          • Sign in with your new password
-                        </Text>
-                      </View>
+                      <LinearGradient
+                        colors={[COLORS.primaryOrangeHex + '15', COLORS.primaryOrangeHex + '05']}
+                        style={styles.InfoGradient}
+                      >
+                        <CustomIcon name="mail" size={FONTSIZE.size_18} color={COLORS.primaryOrangeHex} />
+                        <View style={styles.InfoContent}>
+                          <Text style={styles.InfoTitle}>Check Your Email</Text>
+                          <Text style={styles.InfoText}>Instructions will be sent to your inbox</Text>
+                        </View>
+                      </LinearGradient>
                     </View>
 
                     <View style={styles.InfoCard}>
-                      <CustomIcon 
-                        name="time" 
-                        size={FONTSIZE.size_20} 
-                        color="#4ECDC4" 
-                      />
-                      <View style={styles.InfoTextContainer}>
-                        <Text style={styles.InfoTitle}>Can't find the email?</Text>
-                        <Text style={styles.InfoText}>
-                          • Check your spam/junk folder{'\n'}
-                          • Wait 2-3 minutes for delivery{'\n'}
-                          • Ensure you entered the correct email{'\n'}
-                          • Contact support if still missing
-                        </Text>
-                      </View>
+                      <LinearGradient
+                        colors={[COLORS.primaryOrangeHex + '15', COLORS.primaryOrangeHex + '05']}
+                        style={styles.InfoGradient}
+                      >
+                        <CustomIcon name="time" size={FONTSIZE.size_18} color={COLORS.primaryOrangeHex} />
+                        <View style={styles.InfoContent}>
+                          <Text style={styles.InfoTitle}>Reset Link Expires</Text>
+                          <Text style={styles.InfoText}>Link is valid for 24 hours</Text>
+                        </View>
+                      </LinearGradient>
                     </View>
                   </View>
 
-                  {/* Send Reset Button */}
+                  {/* Reset Button */}
                   <TouchableOpacity
-                    style={[
-                      styles.ResetButton,
-                      isButtonDisabled && styles.ResetButtonDisabled,
-                      isFormValid && styles.ResetButtonValid,
-                    ]}
+                    style={[styles.ResetButton, isButtonDisabled && styles.ResetButtonDisabled]}
                     onPress={handleSendResetEmail}
                     disabled={isButtonDisabled}
                     activeOpacity={0.8}
                   >
-                    <View style={styles.ButtonContent}>
-                      {isAuthLoading ? (
-                        <>
-                          <Animated.View style={styles.LoadingSpinner} />
-                          <Text style={styles.ResetButtonText}>Sending Email...</Text>
-                        </>
-                      ) : (
-                        <>
-                          <Text style={styles.ResetButtonText}>Send Reset Email</Text>
-                          <CustomIcon 
-                            name="mail" 
-                            size={FONTSIZE.size_18} 
-                            color={COLORS.primaryWhiteHex} 
-                          />
-                        </>
-                      )}
-                    </View>
+                    <LinearGradient
+                      colors={
+                        isButtonDisabled
+                          ? [COLORS.primaryGreyHex, COLORS.primaryDarkGreyHex]
+                          : [COLORS.primaryOrangeHex, COLORS.primaryOrangeHex + 'CC']
+                      }
+                      style={styles.ResetButtonGradient}
+                    >
+                      <Animated.View 
+                        style={[
+                          styles.ResetButtonContent,
+                          { transform: [{ scale: successAnim }] }
+                        ]}
+                      >
+                        {isAuthLoading ? (
+                          <>
+                            <Animated.View style={styles.LoadingIndicator} />
+                            <Text style={styles.ResetButtonText}>Sending...</Text>
+                          </>
+                        ) : (
+                          <>
+                            <Text style={styles.ResetButtonText}>Send Reset Email</Text>
+                            <CustomIcon name="mail" size={FONTSIZE.size_18} color={COLORS.primaryWhiteHex} />
+                          </>
+                        )}
+                      </Animated.View>
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* Sign In Link */}
+                  <TouchableOpacity
+                    style={styles.SignInButton}
+                    onPress={navigateToLogin}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.SignInText}>Remember your password? </Text>
+                    <Text style={styles.SignInLink}>Sign In</Text>
+                    <CustomIcon name="log-in" size={FONTSIZE.size_16} color={COLORS.primaryOrangeHex} />
                   </TouchableOpacity>
                 </>
               ) : (
-                // Success State
-                <Animated.View style={[
-                  styles.SuccessContainer,
-                  {
-                    opacity: successAnim,
-                    transform: [
-                      {
-                        scale: successAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0.8, 1],
-                        }),
-                      },
-                    ],
-                  },
-                ]}>
-                  <View style={styles.SuccessIconContainer}>
-                    <CustomIcon
-                      name="checkmark-circle"
-                      size={FONTSIZE.size_30 * 2}
-                      color="#4ECDC4"
-                    />
+                /* Success State */
+                <Animated.View 
+                  style={[
+                    styles.SuccessSection,
+                    {
+                      opacity: successAnim,
+                      transform: [{ scale: successAnim }],
+                    },
+                  ]}
+                >
+                  <View style={styles.SuccessIconWrapper}>
+                    <LinearGradient
+                      colors={['#4ECDC4', '#44A08D']}
+                      style={styles.SuccessIconGradient}
+                    >
+                      <CustomIcon name="checkmark-circle" size={FONTSIZE.size_30 * 2} color={COLORS.primaryWhiteHex} />
+                    </LinearGradient>
                   </View>
                   
-                  <Text style={styles.SuccessTitle}>Email Sent Successfully!</Text>
+                  <Text style={styles.SuccessTitle}>Email Sent!</Text>
                   <Text style={styles.SuccessMessage}>
-                    We've sent password reset instructions to:
+                    Password reset instructions have been sent to:
                   </Text>
                   <Text style={styles.SuccessEmail}>{email}</Text>
                   
-                  <View style={styles.SuccessStepsContainer}>
-                    <Text style={styles.SuccessStepsTitle}>Next Steps:</Text>
-                    <View style={styles.SuccessStep}>
+                  <View style={styles.StepsSection}>
+                    <Text style={styles.StepsTitle}>Next Steps:</Text>
+                    
+                    <View style={styles.StepItem}>
                       <View style={styles.StepNumber}>
                         <Text style={styles.StepNumberText}>1</Text>
                       </View>
                       <Text style={styles.StepText}>Check your email inbox</Text>
                     </View>
-                    <View style={styles.SuccessStep}>
+                    
+                    <View style={styles.StepItem}>
                       <View style={styles.StepNumber}>
                         <Text style={styles.StepNumberText}>2</Text>
                       </View>
                       <Text style={styles.StepText}>Click the reset link</Text>
                     </View>
-                    <View style={styles.SuccessStep}>
+                    
+                    <View style={styles.StepItem}>
                       <View style={styles.StepNumber}>
                         <Text style={styles.StepNumberText}>3</Text>
                       </View>
-                      <Text style={styles.StepText}>Create a new password</Text>
+                      <Text style={styles.StepText}>Create your new password</Text>
                     </View>
                   </View>
 
@@ -389,56 +403,51 @@ const ForgotPasswordScreen = ({navigation}: any) => {
                     onPress={() => navigation.navigate('Login')}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.BackToLoginText}>Back to Login</Text>
-                    <CustomIcon 
-                      name="arrow-forward" 
-                      size={FONTSIZE.size_16} 
-                      color={COLORS.primaryOrangeHex} 
-                    />
+                    <LinearGradient
+                      colors={[COLORS.primaryOrangeHex + '30', COLORS.primaryOrangeHex + '20']}
+                      style={styles.BackToLoginGradient}
+                    >
+                      <Text style={styles.BackToLoginText}>Back to Login</Text>
+                      <CustomIcon name="arrow-forward" size={FONTSIZE.size_16} color={COLORS.primaryWhiteHex} />
+                    </LinearGradient>
                   </TouchableOpacity>
                 </Animated.View>
               )}
 
-              {/* Support Information */}
+              {/* Support Section */}
               {!isEmailSent && (
-                <View style={styles.SupportContainer}>
-                  <CustomIcon 
-                    name="help-circle" 
-                    size={FONTSIZE.size_18} 
-                    color={COLORS.primaryLightGreyHex} 
-                  />
-                  <View style={styles.SupportTextContainer}>
-                    <Text style={styles.SupportTitle}>Need Help?</Text>
-                    <Text style={styles.SupportText}>
-                      Contact our support team if you're having trouble resetting your password
-                    </Text>
-                  </View>
+                <View style={styles.SupportSection}>
+                  <LinearGradient
+                    colors={[COLORS.primaryGreyHex + '30', COLORS.primaryGreyHex + '20']}
+                    style={styles.SupportGradient}
+                  >
+                    <CustomIcon name="help-circle" size={FONTSIZE.size_18} color={COLORS.primaryLightGreyHex} />
+                    <View style={styles.SupportContent}>
+                      <Text style={styles.SupportTitle}>Need Help?</Text>
+                      <Text style={styles.SupportText}>
+                        Contact support if you're having trouble
+                      </Text>
+                    </View>
+                  </LinearGradient>
                 </View>
               )}
-
-              {/* Bottom Navigation */}
-              {!isEmailSent && (
-                <TouchableOpacity
-                  style={styles.LoginLinkContainer}
-                  onPress={navigateToLogin}
-                  hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                >
-                  <Text style={styles.LoginLinkText}>
-                    Remember your password? 
-                  </Text>
-                  <Text style={styles.LoginLink}> Sign In</Text>
-                  <CustomIcon 
-                    name="log-in" 
-                    size={FONTSIZE.size_16} 
-                    color={COLORS.primaryOrangeHex} 
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
+            </LinearGradient>
           </Animated.View>
+
+          {/* Trust Indicators */}
+          <View style={styles.TrustSection}>
+            <View style={styles.TrustIndicator}>
+              <CustomIcon name="shield-checkmark" size={FONTSIZE.size_16} color={COLORS.primaryOrangeHex} />
+              <Text style={styles.TrustText}>Secure Reset Process</Text>
+            </View>
+            <View style={styles.TrustIndicator}>
+              <CustomIcon name="time" size={FONTSIZE.size_16} color={COLORS.primaryOrangeHex} />
+              <Text style={styles.TrustText}>24-Hour Valid Link</Text>
+            </View>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -447,137 +456,153 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.primaryBlackHex,
   },
-  KeyboardAvoidingView: {
+  KeyboardContainer: {
     flex: 1,
   },
-  ScrollViewFlex: {
+  ScrollContainer: {
     flexGrow: 1,
-    paddingHorizontal: SPACING.space_24,
-    paddingVertical: SPACING.space_20,
+    paddingHorizontal: SPACING.space_20,
+    paddingVertical: SPACING.space_16,
   },
-  InnerViewContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  HeaderContainer: {
-    alignItems: 'center',
-    marginBottom: SPACING.space_40,
-    position: 'relative',
-  },
-  BackButton: {
+  BackgroundGradient: {
     position: 'absolute',
     top: 0,
     left: 0,
-    zIndex: 1,
+    right: 0,
+    bottom: 0,
   },
-  BackButtonContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: `${COLORS.primaryOrangeHex}20`,
+  
+  // Header Card Styles
+  HeaderCard: {
+    marginBottom: SPACING.space_20,
+    borderRadius: BORDERRADIUS.radius_25,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: COLORS.primaryBlackHex,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  HeaderCardGradient: {
+    padding: SPACING.space_24,
+    borderWidth: 1,
+    borderColor: COLORS.primaryGreyHex + '30',
+  },
+  BackButton: {
+    position: 'absolute',
+    top: SPACING.space_16,
+    left: SPACING.space_16,
+    zIndex: 10,
+  },
+  BackButtonGradient: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  LogoSection: {
+    alignItems: 'center',
+    paddingTop: SPACING.space_20,
   },
   LogoContainer: {
+    marginBottom: SPACING.space_16,
+    elevation: 4,
+    shadowColor: COLORS.primaryOrangeHex,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  LogoGradient: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACING.space_20,
-    position: 'relative',
   },
-  IconRing: {
-    position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: `${COLORS.primaryOrangeHex}40`,
-    zIndex: -1,
-  },
-  IconRingOuter: {
-    position: 'absolute',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: `${COLORS.primaryOrangeHex}20`,
-    zIndex: -2,
-  },
-  HeaderText: {
+  WelcomeTitle: {
     fontFamily: FONTFAMILY.poppins_bold,
-    fontSize: FONTSIZE.size_28,
+    fontSize: FONTSIZE.size_24,
     color: COLORS.primaryWhiteHex,
     textAlign: 'center',
     marginBottom: SPACING.space_8,
   },
-  SubHeaderText: {
+  WelcomeSubtitle: {
     fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryLightGreyHex,
     textAlign: 'center',
     lineHeight: 20,
-    marginBottom: SPACING.space_24,
     paddingHorizontal: SPACING.space_16,
   },
-  SecurityBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: `${COLORS.primaryOrangeHex}15`,
-    borderRadius: BORDERRADIUS.radius_20,
-    paddingHorizontal: SPACING.space_16,
-    paddingVertical: SPACING.space_8,
+  
+  // Content Card Styles
+  ContentCard: {
+    marginBottom: SPACING.space_20,
+    borderRadius: BORDERRADIUS.radius_25,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: COLORS.primaryBlackHex,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  ContentCardGradient: {
+    padding: SPACING.space_24,
     borderWidth: 1,
-    borderColor: `${COLORS.primaryOrangeHex}30`,
+    borderColor: COLORS.primaryGreyHex + '30',
   },
-  SecurityText: {
-    fontFamily: FONTFAMILY.poppins_medium,
-    fontSize: FONTSIZE.size_12,
-    color: COLORS.primaryOrangeHex,
-    marginLeft: SPACING.space_8,
-  },
-  FormContainer: {
-    width: '100%',
-  },
-  GlobalErrorContainer: {
-    flexDirection: 'row',
-    backgroundColor: `${COLORS.primaryRedHex}15`,
-    borderRadius: BORDERRADIUS.radius_15,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primaryRedHex,
-    padding: SPACING.space_16,
+  
+  // Form Section
+  FormSection: {
     marginBottom: SPACING.space_20,
   },
-  ErrorIconContainer: {
-    marginRight: SPACING.space_12,
-    paddingTop: SPACING.space_2,
+  
+  // Error Card
+  ErrorCard: {
+    marginBottom: SPACING.space_20,
+    borderRadius: BORDERRADIUS.radius_15,
+    overflow: 'hidden',
   },
-  ErrorTextContainer: {
+  ErrorGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.space_16,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primaryRedHex,
+  },
+  ErrorContent: {
     flex: 1,
+    marginLeft: SPACING.space_12,
   },
-  GlobalErrorText: {
-    fontFamily: FONTFAMILY.poppins_medium,
+  ErrorTitle: {
+    fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryRedHex,
     marginBottom: SPACING.space_4,
   },
-  ErrorHelpText: {
+  ErrorMessage: {
     fontFamily: FONTFAMILY.poppins_regular,
     fontSize: FONTSIZE.size_12,
     color: COLORS.primaryLightGreyHex,
     lineHeight: 16,
   },
-  InfoCardsContainer: {
+  
+  // Info Section
+  InfoSection: {
     marginBottom: SPACING.space_24,
+    gap: SPACING.space_12,
   },
   InfoCard: {
-    flexDirection: 'row',
-    backgroundColor: `${COLORS.primaryOrangeHex}08`,
     borderRadius: BORDERRADIUS.radius_15,
-    padding: SPACING.space_16,
-    marginBottom: SPACING.space_12,
-    borderWidth: 1,
-    borderColor: `${COLORS.primaryOrangeHex}20`,
+    overflow: 'hidden',
   },
-  InfoTextContainer: {
+  InfoGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.space_16,
+  },
+  InfoContent: {
     flex: 1,
     marginLeft: SPACING.space_12,
   },
@@ -593,28 +618,27 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     lineHeight: 16,
   },
+  
+  // Reset Button
   ResetButton: {
-    backgroundColor: COLORS.primaryOrangeHex,
+    marginBottom: SPACING.space_20,
     borderRadius: BORDERRADIUS.radius_20,
-    paddingVertical: SPACING.space_18,
-    paddingHorizontal: SPACING.space_24,
-    marginBottom: SPACING.space_24,
+    overflow: 'hidden',
+    elevation: 8,
     shadowColor: COLORS.primaryOrangeHex,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 8,
   },
   ResetButtonDisabled: {
-    backgroundColor: COLORS.primaryGreyHex,
-    shadowOpacity: 0,
-    elevation: 0,
+    elevation: 2,
+    shadowOpacity: 0.1,
   },
-  ResetButtonValid: {
-    shadowOpacity: 0.4,
-    elevation: 10,
+  ResetButtonGradient: {
+    paddingVertical: SPACING.space_18,
+    paddingHorizontal: SPACING.space_24,
   },
-  ButtonContent: {
+  ResetButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -625,7 +649,7 @@ const styles = StyleSheet.create({
     color: COLORS.primaryWhiteHex,
     marginRight: SPACING.space_8,
   },
-  LoadingSpinner: {
+  LoadingIndicator: {
     width: 20,
     height: 20,
     borderRadius: 10,
@@ -634,16 +658,50 @@ const styles = StyleSheet.create({
     borderTopColor: 'transparent',
     marginRight: SPACING.space_8,
   },
-  SuccessContainer: {
+  
+  // Sign In Button
+  SignInButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: SPACING.space_32,
+    justifyContent: 'center',
+    paddingVertical: SPACING.space_16,
+    marginBottom: SPACING.space_16,
   },
-  SuccessIconContainer: {
-    marginBottom: SPACING.space_24,
+  SignInText: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryLightGreyHex,
+  },
+  SignInLink: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+    marginRight: SPACING.space_8,
+  },
+  
+  // Success Section
+  SuccessSection: {
+    alignItems: 'center',
+    paddingVertical: SPACING.space_20,
+  },
+  SuccessIconWrapper: {
+    marginBottom: SPACING.space_20,
+    elevation: 4,
+    shadowColor: '#4ECDC4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  SuccessIconGradient: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   SuccessTitle: {
     fontFamily: FONTFAMILY.poppins_bold,
-    fontSize: FONTSIZE.size_24,
+    fontSize: FONTSIZE.size_20,
     color: COLORS.primaryWhiteHex,
     textAlign: 'center',
     marginBottom: SPACING.space_8,
@@ -662,26 +720,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: SPACING.space_24,
   },
-  SuccessStepsContainer: {
+  
+  // Steps Section
+  StepsSection: {
     width: '100%',
-    marginBottom: SPACING.space_32,
+    marginBottom: SPACING.space_24,
   },
-  SuccessStepsTitle: {
+  StepsTitle: {
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_16,
     color: COLORS.primaryWhiteHex,
     marginBottom: SPACING.space_16,
     textAlign: 'center',
   },
-  SuccessStep: {
+  StepItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: SPACING.space_12,
   },
   StepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: COLORS.primaryOrangeHex,
     alignItems: 'center',
     justifyContent: 'center',
@@ -698,15 +758,21 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     flex: 1,
   },
+  
+  // Back to Login Button
   BackToLoginButton: {
+    borderRadius: BORDERRADIUS.radius_15,
+    overflow: 'hidden',
+    alignSelf: 'stretch',
+  },
+  BackToLoginGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: `${COLORS.primaryOrangeHex}20`,
-    borderRadius: BORDERRADIUS.radius_15,
+    justifyContent: 'center',
     paddingVertical: SPACING.space_12,
     paddingHorizontal: SPACING.space_20,
     borderWidth: 1,
-    borderColor: `${COLORS.primaryOrangeHex}40`,
+    borderColor: COLORS.primaryOrangeHex + '40',
   },
   BackToLoginText: {
     fontFamily: FONTFAMILY.poppins_semibold,
@@ -714,15 +780,19 @@ const styles = StyleSheet.create({
     color: COLORS.primaryOrangeHex,
     marginRight: SPACING.space_8,
   },
-  SupportContainer: {
+  
+  // Support Section
+  SupportSection: {
+    marginBottom: SPACING.space_16,
+    borderRadius: BORDERRADIUS.radius_15,
+    overflow: 'hidden',
+  },
+  SupportGradient: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: `${COLORS.primaryOrangeHex}08`,
-    borderRadius: BORDERRADIUS.radius_15,
     padding: SPACING.space_16,
-    marginBottom: SPACING.space_24,
   },
-  SupportTextContainer: {
+  SupportContent: {
     flex: 1,
     marginLeft: SPACING.space_12,
   },
@@ -738,22 +808,23 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightGreyHex,
     lineHeight: 16,
   },
-  LoginLinkContainer: {
+  
+  // Trust Section
+  TrustSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: SPACING.space_24,
+    paddingVertical: SPACING.space_12,
+  },
+  TrustIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: SPACING.space_16,
+    gap: SPACING.space_8,
   },
-  LoginLinkText: {
+  TrustText: {
     fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_14,
+    fontSize: FONTSIZE.size_10,
     color: COLORS.primaryLightGreyHex,
-  },
-  LoginLink: {
-    fontFamily: FONTFAMILY.poppins_semibold,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryOrangeHex,
-    marginRight: SPACING.space_8,
   },
 });
 
