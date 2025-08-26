@@ -29,8 +29,8 @@ export interface ImageAnalysisResponse {
 }
 
 class ImageSearchService {
-  private readonly GEMINI_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-  private readonly GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY || 'AIzaSyA15I39YBZwpHWeNWfDdIGULYRtWRzxh28';
+  private readonly GEMINI_API_ENDPOINT = process.env.GEMINI_API_ENDPOINT;
+  private readonly GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
   /**
    * Request camera permissions

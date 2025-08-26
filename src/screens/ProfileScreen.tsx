@@ -22,9 +22,12 @@ import {BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/them
 import HeaderBar from '../components/HeaderBar';
 import UserAvatar from '../components/UserAvatar';
 import CustomIcon from '../components/CustomIcon';
+import ChatbotModal from '../components/ChatbotModal';
 import {useStore} from '../store/firebaseStore';
 import authService from '../services/authService';
 import locationService, {DetailedAddress} from '../services/locationService';
+import {UserContext} from '../services/chatbotService';
+import {CHATBOT_CONFIG} from '../config/chatbotConfig';
 
 interface AnimatedCardProps {
   children: React.ReactNode;
@@ -109,6 +112,9 @@ const ProfileScreen = ({navigation}: any) => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<DetailedAddress | null>(null);
   const [locationPermissionGranted, setLocationPermissionGranted] = useState<boolean | null>(null);
+  
+  // Chatbot states
+  const [showChatbot, setShowChatbot] = useState(false);
 
   const buttonPressAnim = useRef(new Animated.Value(1)).current;
   const toggleAnim = useRef(new Animated.Value(0)).current;
@@ -530,6 +536,23 @@ const ProfileScreen = ({navigation}: any) => {
     setRefreshing(true);
     // Add any refresh logic here if needed
     setTimeout(() => setRefreshing(false), 1000);
+  };
+
+  // Get user context for chatbot
+  const getUserContext = (): UserContext => {
+    return {
+      firstName: userProfile?.firstName,
+      lastName: userProfile?.lastName,
+      email: user?.email || '',
+      // You can add more context here when you have order history and favorites
+      orderHistory: [], // TODO: Get from store when available
+      favorites: [], // TODO: Get from store when available
+      recentSearches: [], // TODO: Get from search history when available
+    };
+  };
+
+  const handleOpenChatbot = () => {
+    setShowChatbot(true);
   };
 
   if (!isAuthenticated) {
@@ -1078,8 +1101,118 @@ const ProfileScreen = ({navigation}: any) => {
             </View>
           </AnimatedCard>
 
-          {/* Enhanced Sign Out Button */}
+          {/* Enhanced Support Section */}
           <AnimatedCard delay={400}>
+            <View style={styles.SupportCard}>
+              <View style={styles.SectionHeader}>
+                <CustomIcon
+                  name="help-circle"
+                  color={COLORS.primaryOrangeHex}
+                  size={FONTSIZE.size_20}
+                />
+                <Text style={styles.SectionTitle}>Support & Help</Text>
+              </View>
+
+              {/* Coffee Bot Support */}
+              <TouchableOpacity
+                style={styles.SupportOption}
+                onPress={handleOpenChatbot}
+                activeOpacity={0.8}>
+                <View style={styles.SupportOptionLeft}>
+                  <View style={styles.SupportIconContainer}>
+                    <CustomIcon
+                      name="cafe"
+                      color={COLORS.primaryOrangeHex}
+                      size={FONTSIZE.size_18}
+                    />
+                  </View>
+                  <View style={styles.SupportTextContainer}>
+                    <Text style={styles.SupportOptionText}>Coffee Bot Support</Text>
+                    <Text style={styles.SupportOptionSubtext}>
+                      Get instant help with orders, coffee recommendations, and app features
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.SupportBadge}>
+                  <Text style={styles.SupportBadgeText}>AI</Text>
+                </View>
+                <CustomIcon
+                  name="chevron-forward"
+                  color={COLORS.primaryLightGreyHex}
+                  size={FONTSIZE.size_16}
+                />
+              </TouchableOpacity>
+
+              {/* FAQ Option */}
+              <TouchableOpacity
+                style={styles.SupportOption}
+                onPress={() => {
+                  // Navigate to FAQ or show FAQ modal
+                  ToastAndroid.show('FAQ coming soon!', ToastAndroid.SHORT);
+                }}
+                activeOpacity={0.8}>
+                <View style={styles.SupportOptionLeft}>
+                  <View style={styles.SupportIconContainer}>
+                    <CustomIcon
+                      name="help"
+                      color={COLORS.primaryOrangeHex}
+                      size={FONTSIZE.size_18}
+                    />
+                  </View>
+                  <View style={styles.SupportTextContainer}>
+                    <Text style={styles.SupportOptionText}>FAQ</Text>
+                    <Text style={styles.SupportOptionSubtext}>
+                      Common questions and answers
+                    </Text>
+                  </View>
+                </View>
+                <CustomIcon
+                  name="chevron-forward"
+                  color={COLORS.primaryLightGreyHex}
+                  size={FONTSIZE.size_16}
+                />
+              </TouchableOpacity>
+
+              {/* Contact Support */}
+              <TouchableOpacity
+                style={styles.SupportOption}
+                onPress={() => {
+                  Alert.alert(
+                    '📧 Contact Support',
+                    'Send us an email at support@thecoffee.app or use our AI Coffee Bot for instant help!',
+                    [
+                      { text: 'Use Coffee Bot', onPress: handleOpenChatbot },
+                      { text: 'OK', style: 'cancel' },
+                    ]
+                  );
+                }}
+                activeOpacity={0.8}>
+                <View style={styles.SupportOptionLeft}>
+                  <View style={styles.SupportIconContainer}>
+                    <CustomIcon
+                      name="mail"
+                      color={COLORS.primaryOrangeHex}
+                      size={FONTSIZE.size_18}
+                    />
+                  </View>
+                  <View style={styles.SupportTextContainer}>
+                    <Text style={styles.SupportOptionText}>Contact Support</Text>
+                    <Text style={styles.SupportOptionSubtext}>
+                      Get personalized help from our team
+                    </Text>
+                  </View>
+                </View>
+                <CustomIcon
+                  name="chevron-forward"
+                  color={COLORS.primaryLightGreyHex}
+                  size={FONTSIZE.size_16}
+                />
+              </TouchableOpacity>
+            </View>
+          </AnimatedCard>
+
+          {/* Enhanced Sign Out Button */}
+          <AnimatedCard delay={500}>
             <TouchableOpacity
               style={styles.SignOutButton}
               onPress={handleSignOut}
@@ -1096,6 +1229,14 @@ const ProfileScreen = ({navigation}: any) => {
           </AnimatedCard>
         </View>
       </ScrollView>
+
+      {/* Chatbot Modal */}
+      <ChatbotModal
+        visible={showChatbot}
+        onClose={() => setShowChatbot(false)}
+        userContext={getUserContext()}
+        apiKey={CHATBOT_CONFIG.GEMINI_API_KEY}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -1655,6 +1796,76 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_10,
     color: COLORS.primaryLightGreyHex,
     fontStyle: 'italic',
+  },
+
+  // Support section styles
+  SupportCard: {
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: SPACING.space_20,
+    padding: SPACING.space_24,
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.primaryBlackHex,
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  SupportOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: SPACING.space_16,
+    paddingHorizontal: SPACING.space_4,
+    borderRadius: SPACING.space_12,
+    marginBottom: SPACING.space_8,
+  },
+  SupportOptionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  SupportIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.primaryBlackHex,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.space_16,
+    borderWidth: 1,
+    borderColor: COLORS.primaryOrangeHex,
+  },
+  SupportTextContainer: {
+    flex: 1,
+  },
+  SupportOptionText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryWhiteHex,
+    marginBottom: SPACING.space_4,
+  },
+  SupportOptionSubtext: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_12,
+    color: COLORS.primaryLightGreyHex,
+    lineHeight: 16,
+  },
+  SupportBadge: {
+    backgroundColor: COLORS.primaryOrangeHex,
+    paddingHorizontal: SPACING.space_8,
+    paddingVertical: SPACING.space_4,
+    borderRadius: BORDERRADIUS.radius_10,
+    marginRight: SPACING.space_12,
+  },
+  SupportBadgeText: {
+    fontFamily: FONTFAMILY.poppins_bold,
+    fontSize: FONTSIZE.size_10,
+    color: COLORS.primaryWhiteHex,
   },
 });
 
