@@ -12,6 +12,7 @@ import {
   searchProductsWithAI,
   searchProductsByTerms,
   searchProductsBySuggestedNames,
+  getFirebaseImageUrl,
   Product,
   CartItem,
   Order,
@@ -213,12 +214,25 @@ export const useStore = create<Store>()(
         set({isLoadingProducts: true, error: null});
         try {
           const products = await fetchProducts(); // fetch from 'products' collection
-          const CoffeeList = products.filter(p => p.type === 'Coffee');
-          const BeanList = products.filter(p => p.type === 'Bean');
+          
+          // Update products with Firebase image URLs if they don't have them
+          const updatedProducts = products.map(product => {
+            if (!product.imageUrlSquare || !product.imageUrlPortrait) {
+              return {
+                ...product,
+                imageUrlSquare: product.imageUrlSquare || getFirebaseImageUrl(product.id!, 'square'),
+                imageUrlPortrait: product.imageUrlPortrait || getFirebaseImageUrl(product.id!, 'portrait')
+              };
+            }
+            return product;
+          });
+          
+          const CoffeeList = updatedProducts.filter(p => p.type === 'Coffee');
+          const BeanList = updatedProducts.filter(p => p.type === 'Bean');
           set({
             CoffeeList,
             BeanList,
-            ProductsList: products,
+            ProductsList: updatedProducts,
             isLoadingProducts: false,
             error: null,
           });

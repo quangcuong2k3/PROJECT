@@ -18,6 +18,7 @@ import {
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
 import BGIcon from './BGIcon';
+import { getFirebaseImageUrl } from '../services/firebaseServices';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.32;
 
@@ -26,7 +27,8 @@ interface CoffeeCardProps {
   index: number;
   type: string;
   roasted: string;
-  imagelink_square: ImageProps;
+  imagelink_square?: ImageProps; // Legacy local asset
+  imageUrlSquare?: string; // Firebase URL
   name: string;
   special_ingredient: string;
   average_rating: number;
@@ -41,6 +43,7 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
   type,
   roasted,
   imagelink_square,
+  imageUrlSquare,
   name,
   special_ingredient,
   average_rating,
@@ -48,6 +51,21 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
   buttonPressHandler,
   relevanceScore,
 }) => {
+  // Determine which image source to use
+  const getImageSource = () => {
+    // Priority: Firebase URL from props > Firebase URL from function > Local asset
+    if (imageUrlSquare) {
+      return { uri: imageUrlSquare };
+    }
+    
+    const firebaseUrl = getFirebaseImageUrl(id, 'square');
+    if (firebaseUrl) {
+      return { uri: firebaseUrl };
+    }
+    
+    // Fallback to local asset
+    return imagelink_square;
+  };
   return (
     <LinearGradient
       start={{x: 0, y: 0}}
@@ -55,7 +73,7 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
       style={styles.CardLinearGradientContainer}
       colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}>
       <ImageBackground
-        source={imagelink_square}
+        source={getImageSource()}
         style={styles.CardImageBG}
         resizeMode="cover">
         <View style={styles.CardRatingContainer}>
@@ -90,6 +108,7 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
               type,
               roasted,
               imagelink_square,
+              imageUrlSquare,
               name,
               special_ingredient,
               prices: [{...price, quantity: 1}],

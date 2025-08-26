@@ -526,7 +526,77 @@ export const batchAddProducts = async (
 };
 
 // ======================
-// ENHANCED SEARCH OPERATIONS
+// FIREBASE STORAGE IMAGE OPERATIONS
+// ======================
+
+// Get Firebase Storage URL for a product image
+export const getFirebaseImageUrl = (productId: string, imageType: 'square' | 'portrait'): string => {
+  const productType = productId.startsWith('C') ? 'coffee' : 'bean';
+  const baseUrl = 'https://storage.googleapis.com/thecoffee-b780f.firebasestorage.app/products';
+  
+  // Generate the path based on the uploaded structure
+  let imagePath: string;
+  
+  if (productType === 'coffee') {
+    // For coffee products, we need to map the product IDs to their actual image names
+    const coffeeImageMapping: { [key: string]: string } = {
+      'C1': 'americano_pic_1',
+      'C2': 'americano_pic_2', 
+      'C3': 'americano_pic_3',
+      'C4': 'black_coffee_pic_1',
+      'C5': 'black_coffee_pic_2',
+      'C6': 'black_coffee_pic_3',
+      'C7': 'cappuccino_pic_1',
+      'C8': 'cappuccino_pic_2',
+      'C9': 'cappuccino_pic_3',
+      'C10': 'espresso_pic_1',
+      'C11': 'espresso_pic_2',
+      'C12': 'espresso_pic_3',
+      'C13': 'latte_pic_1',
+      'C14': 'latte_pic_2',
+      'C15': 'latte_pic_3',
+      'C16': 'macchiato_pic_1',
+      'C17': 'macchiato_pic_2',
+      'C18': 'macchiato_pic_3'
+    };
+    
+    const imageName = coffeeImageMapping[productId];
+    if (imageName) {
+      imagePath = `${productType}/${productId}/${imageType}/${imageName}_${imageType}.png`;
+    } else {
+      return '';
+    }
+  } else {
+    // For bean products
+    const beanImageMapping: { [key: string]: string } = {
+      'B1': 'robusta_coffee_beans',
+      'B2': 'arabica_coffee_beans',
+      'B3': 'liberica_coffee_beans',
+      'B4': 'excelsa_coffee_beans'
+    };
+    
+    const imageName = beanImageMapping[productId];
+    if (imageName) {
+      imagePath = `${productType}/${productId}/${imageType}/${imageName}_${imageType}.png`;
+    } else {
+      return '';
+    }
+  }
+  
+  return `${baseUrl}/${imagePath}`;
+};
+
+// Update products with Firebase image URLs
+export const updateProductWithFirebaseImages = (product: Product): Product => {
+  return {
+    ...product,
+    imageUrlSquare: getFirebaseImageUrl(product.id!, 'square'),
+    imageUrlPortrait: getFirebaseImageUrl(product.id!, 'portrait')
+  };
+};
+
+// ======================
+// ENHANCED PRODUCT OPERATIONS WITH FIREBASE IMAGES
 // ======================
 
 // Search products with relevance scoring based on multiple terms
