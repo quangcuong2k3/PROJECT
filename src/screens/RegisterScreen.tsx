@@ -51,7 +51,7 @@ const RegisterScreen = ({navigation}: any) => {
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
   const avatarAnim = useRef(new Animated.Value(0)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const successAnim = useRef(new Animated.Value(0)).current;
+  const successAnim = useRef(new Animated.Value(1)).current;
 
   const {registerUser, isAuthLoading, authError} = useStore();
 
@@ -535,12 +535,7 @@ const RegisterScreen = ({navigation}: any) => {
                   }
                   style={styles.RegisterButtonGradient}
                 >
-                  <Animated.View 
-                    style={[
-                      styles.RegisterButtonContent,
-                      { transform: [{ scale: successAnim }] }
-                    ]}
-                  >
+                  <View style={styles.RegisterButtonContent}>
                     {isAuthLoading ? (
                       <>
                         <Animated.View style={styles.LoadingIndicator} />
@@ -552,7 +547,7 @@ const RegisterScreen = ({navigation}: any) => {
                         <CustomIcon name="chevron-forward" size={FONTSIZE.size_18} color={COLORS.primaryWhiteHex} />
                       </>
                     )}
-                  </Animated.View>
+                  </View>
                 </LinearGradient>
               </TouchableOpacity>
 

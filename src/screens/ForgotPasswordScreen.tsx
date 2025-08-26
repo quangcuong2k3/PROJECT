@@ -33,7 +33,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
-  const successAnim = useRef(new Animated.Value(0)).current;
+  const successAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const {sendPasswordReset, isAuthLoading, authError} = useStore();
@@ -315,12 +315,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
                       }
                       style={styles.ResetButtonGradient}
                     >
-                      <Animated.View 
-                        style={[
-                          styles.ResetButtonContent,
-                          { transform: [{ scale: successAnim }] }
-                        ]}
-                      >
+                      <View style={styles.ResetButtonContent}>
                         {isAuthLoading ? (
                           <>
                             <Animated.View style={styles.LoadingIndicator} />
@@ -332,7 +327,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
                             <CustomIcon name="mail" size={FONTSIZE.size_18} color={COLORS.primaryWhiteHex} />
                           </>
                         )}
-                      </Animated.View>
+                      </View>
                     </LinearGradient>
                   </TouchableOpacity>
 
