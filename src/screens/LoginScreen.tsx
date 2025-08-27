@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   FormFields: {
-    gap: SPACING.space_16,
+    gap: SPACING.space_10,
     marginBottom: SPACING.space_20,
   },
   
