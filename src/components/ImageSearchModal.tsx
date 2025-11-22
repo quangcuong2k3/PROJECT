@@ -20,6 +20,7 @@ import {
   BORDERRADIUS,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
+import CustomToast from './CustomToast';
 import imageSearchService, {ImageSearchResult} from '../services/imageSearchService';
 import {LinearGradient} from 'expo-linear-gradient';
 
@@ -41,6 +42,11 @@ const ImageSearchModal: React.FC<ImageSearchModalProps> = ({
   const [analysisResults, setAnalysisResults] = useState<ImageSearchResult[] | null>(null);
   const [selectedResultIndex, setSelectedResultIndex] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState<'select' | 'preview' | 'results'>('select');
+  
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('info');
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -128,10 +134,10 @@ const ImageSearchModal: React.FC<ImageSearchModalProps> = ({
     } catch (error) {
       console.error('Error selecting image:', error);
       Alert.alert(
-        'Image Search Unavailable', 
-        'Image picker is not available on this device. This feature requires:\n\n• Camera/gallery permissions\n• Physical device for camera\n• Image picker service',
+        'Tìm kiếm bằng hình ảnh không khả dụng', 
+        'Tính năng chọn hình ảnh không khả dụng trên thiết bị này. Tính năng này yêu cầu:\n\n• Quyền truy cập camera/thư viện\n• Thiết bị vật lý cho camera\n• Dịch vụ chọn hình ảnh',
         [
-          { text: 'Use Text Search Instead', onPress: handleClose },
+          { text: 'Dùng tìm kiếm văn bản', onPress: handleClose },
           { text: 'OK' }
         ]
       );
@@ -145,14 +151,16 @@ const ImageSearchModal: React.FC<ImageSearchModalProps> = ({
       
       if (response.success) {
         if (response.isCoffeeRelated === false) {
-          Alert.alert(
-            'Not Coffee Related', 
-            response.error || 'This image does not appear to contain coffee, coffee beans, or coffee beverages. Please try with a coffee-related image.',
-            [
-              { text: 'Try Another Image', onPress: handleRetakePhoto },
-              { text: 'Cancel', onPress: handleClose }
-            ]
-          );
+          // Show custom toast instead of alert
+          setToastMessage('Hình ảnh không liên quan đến các sản phẩm cà phê. Vui lòng chọn hình ảnh khác.');
+          setToastType('warning');
+          setShowToast(true);
+          
+          // Auto retry after showing toast
+          setTimeout(() => {
+            handleRetakePhoto();
+          }, 2000);
+          
           setAnalysisResults(null);
         } else if (response.results && response.results.length > 0) {
           setAnalysisResults(response.results);
@@ -161,24 +169,64 @@ const ImageSearchModal: React.FC<ImageSearchModalProps> = ({
           if (response.results.length === 1) {
             setSelectedResultIndex(0);
           }
+          
+          // Show success toast
+          setToastMessage(`Phân tích thành công! Tìm thấy ${response.results.length} kết quả phù hợp.`);
+          setToastType('success');
+          setShowToast(true);
         } else {
-          Alert.alert(
-            'Analysis Incomplete', 
-            'Could not identify specific coffee types in this image. Please try with a clearer image of coffee or coffee beans.',
-            [
-              { text: 'Try Another Image', onPress: handleRetakePhoto },
-              { text: 'Cancel', onPress: handleClose }
-            ]
-          );
+          // Show warning toast instead of alert
+          setToastMessage('Không thể nhận diện loại cà phê cụ thể. Vui lòng thử với hình ảnh rõ nét hơn.');
+          setToastType('warning');
+          setShowToast(true);
+          
+          // Auto retry after showing toast
+          setTimeout(() => {
+            handleRetakePhoto();
+          }, 2500);
+          
           setAnalysisResults(null);
         }
       } else {
-        Alert.alert('Analysis Failed', response.error || 'Could not analyze the image.');
+        // Check if it's an AI service unavailable error
+        if (response.error?.includes('không khả dụng') || response.error?.includes('dịch vụ AI')) {
+          Alert.alert(
+            'AI không khả dụng', 
+            response.error + '\n\nBạn có muốn tìm kiếm thủ công không?',
+            [
+              { text: 'Hủy', onPress: handleClose },
+              { 
+                text: 'Tìm kiếm thủ công', 
+                onPress: async () => {
+                  const searchTerm = await imageSearchService.showManualSearchDialog();
+                  if (searchTerm && searchTerm.trim()) {
+                    // Create manual search results
+                    const manualResults = [{
+                      confidence: 0.8,
+                      productType: 'coffee' as const,
+                      suggestedNames: [searchTerm.trim()],
+                      characteristics: {},
+                    }];
+                    onSearchResults([searchTerm.trim()], selectedImage || undefined, manualResults);
+                    handleClose();
+                  }
+                }
+              }
+            ]
+          );
+        } else {
+          // Show error toast instead of alert
+          setToastMessage(response.error || 'Không thể phân tích hình ảnh. Vui lòng thử lại.');
+          setToastType('error');
+          setShowToast(true);
+        }
         setAnalysisResults(null);
       }
     } catch (error) {
       console.error('Error analyzing image:', error);
-      Alert.alert('Error', 'Failed to analyze image. Please try again.');
+      setToastMessage('Lỗi kết nối. Không thể phân tích hình ảnh. Vui lòng thử lại.');
+      setToastType('error');
+      setShowToast(true);
       setAnalysisResults(null);
     } finally {
       setIsAnalyzing(false);
@@ -556,6 +604,15 @@ const ImageSearchModal: React.FC<ImageSearchModalProps> = ({
           {currentStep === 'preview' && renderImagePreview()}
           {currentStep === 'results' && renderResults()}
         </View>
+
+        {/* Custom Toast */}
+        <CustomToast
+          visible={showToast}
+          message={toastMessage}
+          type={toastType}
+          duration={3000}
+          onHide={() => setShowToast(false)}
+        />
       </View>
     </Modal>
   );

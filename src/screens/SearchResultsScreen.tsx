@@ -10,6 +10,7 @@ import {
   Dimensions,
   BackHandler,
   ToastAndroid,
+  TextInput,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -87,9 +88,11 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   const [showImageSearch, setShowImageSearch] = useState(false);
   const [showVoiceSearch, setShowVoiceSearch] = useState(false);
   
+  
   // Animation values
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(-50));
+  const [spinAnim] = useState(new Animated.Value(0));
 
   const searchInputRef = useRef<any>(null);
   const hasFiltersActive = checkHasActiveFilters(searchFilters);
@@ -135,6 +138,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
     return () => backHandler.remove();
   }, []);
 
+
   // Handle auto-opening of search modals from navigation params
   useFocusEffect(
     React.useCallback(() => {
@@ -160,19 +164,19 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   );
 
   // Apply search and filters
-  const applySearch = async () => {
-    const results = applyAdvancedFilters(allProducts, searchFilters, searchText);
+  const applySearch = async (searchQuery: string = searchText) => {
+    const results = applyAdvancedFilters(allProducts, searchFilters, searchQuery);
     setFilteredResults(results);
     
     // Save to persistent search history if text exists
-    if (searchText.trim()) {
-      await saveSearchToHistory(searchText.trim());
+    if (searchQuery.trim()) {
+      await saveSearchToHistory(searchQuery.trim());
       const updatedHistory = await getSearchHistory();
       setRecentSearches(updatedHistory);
     }
   };
 
-  // Handle search text change with suggestions
+  // Handle search text change with suggestions (no immediate search)
   const handleSearchTextChange = (text: string) => {
     setSearchText(text);
     
@@ -184,10 +188,12 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       setSuggestions([]);
       setShowSuggestions(false);
     }
+  };
 
-    // Apply search in real-time
-    const results = applyAdvancedFilters(allProducts, searchFilters, text);
-    setFilteredResults(results);
+  // Handle search submission (when user presses search button)
+  const handleSearchSubmit = () => {
+    setShowSuggestions(false);
+    applySearch(searchText);
   };
 
   // Handle suggestion selection
@@ -225,7 +231,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       
       // Check if we have valid search terms
       if (!searchTerms || searchTerms.length === 0) {
-        ToastAndroid.show('No search terms generated from image', ToastAndroid.SHORT);
+        ToastAndroid.show('Không tạo được từ khóa tìm kiếm từ hình ảnh', ToastAndroid.SHORT);
         setIsSearching(false);
         return;
       }
@@ -246,7 +252,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
         
         // Show user what we're searching for
         ToastAndroid.show(
-          `Searching for: ${displaySearchText}`,
+          `Đang tìm kiếm: ${displaySearchText}`,
           ToastAndroid.SHORT
         );
         
@@ -307,12 +313,12 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       // Show appropriate message based on results
       if (products.length === 0) {
         ToastAndroid.show(
-          'No matching coffee products found. Try with a different coffee image.',
+          'Không tìm thấy sản phẩm cà phê phù hợp. Thử với hình ảnh cà phê khác.',
           ToastAndroid.LONG
         );
       } else {
         ToastAndroid.show(
-          `Found ${products.length} products matching your image`,
+          `Tìm thấy ${products.length} sản phẩm phù hợp với hình ảnh của bạn`,
           ToastAndroid.SHORT
         );
       }
@@ -325,7 +331,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       }
     } catch (error) {
       console.error('Error processing image search results:', error);
-      ToastAndroid.show('Failed to search products. Please try again.', ToastAndroid.SHORT);
+      ToastAndroid.show('Không thể tìm kiếm sản phẩm. Vui lòng thử lại.', ToastAndroid.SHORT);
       
       // Fallback to local search
       const results = applyAdvancedFilters(allProducts, searchFilters, searchTerms[0] || '');
@@ -364,7 +370,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       if (!searchTerms || searchTerms.length === 0) {
         console.log('❌ No search terms provided');
         clearTimeout(searchTimeout);
-        ToastAndroid.show('No search terms generated from voice input', ToastAndroid.SHORT);
+        ToastAndroid.show('Không tạo được từ khóa tìm kiếm từ giọng nói', ToastAndroid.SHORT);
         setIsSearching(false);
         
         // Fallback to simple local search with transcript
@@ -448,7 +454,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
       
       // Show success message
       ToastAndroid.show(
-        `Found ${products.length} products for "${transcript}"`,
+        `Tìm thấy ${products.length} sản phẩm cho "${transcript}"`,
         ToastAndroid.SHORT
       );
       
@@ -461,7 +467,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
     } catch (error) {
       console.error('Error processing voice search results:', error);
       clearTimeout(searchTimeout);
-      ToastAndroid.show('Search failed. Showing local results.', ToastAndroid.SHORT);
+      ToastAndroid.show('Tìm kiếm thất bại. Hiển thị kết quả cục bộ.', ToastAndroid.SHORT);
       
       // Fallback to local search
       const results = applyAdvancedFilters(allProducts, searchFilters, transcript);
@@ -556,13 +562,18 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
             style={styles.searchIcon}
           />
           
-          <Text
+          <TextInput
             ref={searchInputRef}
             style={styles.searchInput}
-            onPress={() => setShowSuggestions(true)}
-          >
-            {searchText || 'Search coffee, beans...'}
-          </Text>
+            value={searchText}
+            onChangeText={handleSearchTextChange}
+            onSubmitEditing={handleSearchSubmit}
+            onFocus={() => setShowSuggestions(searchText.trim().length > 0)}
+            placeholder="Search coffee, beans..."
+            placeholderTextColor={COLORS.primaryLightGreyHex}
+            returnKeyType="search"
+            blurOnSubmit={false}
+          />
 
           {searchText.length > 0 && (
             <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
@@ -574,7 +585,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
             </TouchableOpacity>
           )}
 
-          {/* Voice Search Button */}
+          {/* Voice Search Button
           <TouchableOpacity
             onPress={() => {
               setShowVoiceSearch(true);
@@ -586,7 +597,7 @@ const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
               size={FONTSIZE.size_16}
               color={COLORS.primaryLightGreyHex}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Image Search Button */}
           <TouchableOpacity

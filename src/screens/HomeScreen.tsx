@@ -331,25 +331,6 @@ const HomeScreen = ({navigation}: any) => {
             
             {/* Quick Action Buttons */}
             <View style={styles.quickActionsContainer}>
-              {/* Voice Search Button */}
-              <TouchableOpacity
-                onPress={(e) => {
-                  e.stopPropagation(); // Prevent parent TouchableOpacity from firing
-                  navigation.navigate('SearchResults', {
-                    initialSearchText: searchText,
-                    initialFilters: searchFilters,
-                    openVoiceSearch: true,
-                  });
-                }}
-                style={styles.quickActionButton}
-              >
-                <CustomIcon
-                  name="mic"
-                  size={FONTSIZE.size_14}
-                  color={COLORS.primaryLightGreyHex}
-                />
-              </TouchableOpacity>
-              
               {/* Image Search Button */}
               <TouchableOpacity
                 onPress={(e) => {

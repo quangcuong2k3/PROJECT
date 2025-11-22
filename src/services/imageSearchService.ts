@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+//import { GeminiModelTester } from '../utils/geminiModelTester';
 
 // Optional imports with error handling
 let ImagePicker: any = null;
@@ -29,8 +30,10 @@ export interface ImageAnalysisResponse {
 }
 
 class ImageSearchService {
-  private readonly GEMINI_API_ENDPOINT = process.env.GEMINI_API_ENDPOINT;
+  // Updated to use the latest Gemini 2.0 model
+  private readonly GEMINI_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
   private readonly GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+  //private modelTester: GeminiModelTester | null = null;
 
   /**
    * Request camera permissions
@@ -45,8 +48,8 @@ class ImageSearchService {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert(
-          'Camera Permission Required',
-          'Please grant camera permission to use image search feature.',
+          'Cần quyền truy cập camera',
+          'Vui lòng cấp quyền truy cập camera để sử dụng tính năng tìm kiếm bằng hình ảnh.',
           [{ text: 'OK' }]
         );
         return false;
@@ -71,8 +74,8 @@ class ImageSearchService {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert(
-          'Media Library Permission Required',
-          'Please grant media library permission to select images.',
+          'Cần quyền truy cập thư viện',
+          'Vui lòng cấp quyền truy cập thư viện để chọn hình ảnh.',
           [{ text: 'OK' }]
         );
         return false;
@@ -90,7 +93,7 @@ class ImageSearchService {
   async takePhoto(): Promise<string | null> {
     try {
       if (!ImagePicker) {
-        Alert.alert('Error', 'Image picker not available on this device.');
+        Alert.alert('Lỗi', 'Tính năng chọn hình ảnh không khả dụng trên thiết bị này.');
         return null;
       }
       
@@ -111,7 +114,7 @@ class ImageSearchService {
       return null;
     } catch (error) {
       console.error('Error taking photo:', error);
-      Alert.alert('Error', 'Failed to take photo. Please try again.');
+      Alert.alert('Lỗi', 'Không thể chụp ảnh. Vui lòng thử lại.');
       return null;
     }
   }
@@ -122,7 +125,7 @@ class ImageSearchService {
   async pickImage(): Promise<string | null> {
     try {
       if (!ImagePicker) {
-        Alert.alert('Error', 'Image picker not available on this device.');
+        Alert.alert('Lỗi', 'Tính năng chọn hình ảnh không khả dụng trên thiết bị này.');
         return null;
       }
       
@@ -143,7 +146,7 @@ class ImageSearchService {
       return null;
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'Failed to select image. Please try again.');
+      Alert.alert('Lỗi', 'Không thể chọn hình ảnh. Vui lòng thử lại.');
       return null;
     }
   }
@@ -178,9 +181,17 @@ class ImageSearchService {
       console.log('🤖 Starting Gemini AI image analysis...');
       
       if (!this.GEMINI_API_KEY || this.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-        console.warn('Gemini API key not configured, using mock analysis');
-        return this.mockImageAnalysis(imageUri);
+        console.error('❌ Gemini API key not configured');
+        return {
+          success: false,
+          error: 'Chức năng tìm kiếm bằng hình ảnh chưa được cấu hình. Vui lòng sử dụng tìm kiếm văn bản.',
+        };
       }
+
+      // Initialize model tester if not already done
+      // if (!this.modelTester) {
+      //   //this.modelTester = new GeminiModelTester(this.GEMINI_API_KEY);
+      // }
 
       // Convert image to base64
       const base64Image = await this.imageToBase64(imageUri);
@@ -240,18 +251,46 @@ Analyze the image now:`;
       };
 
       console.log('🌐 Sending request to Gemini API...');
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      
       const response = await fetch(`${this.GEMINI_API_ENDPOINT}?key=${this.GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Gemini API error:', response.status, errorText);
-        throw new Error(`Gemini API error: ${response.status}`);
+        
+        let errorMessage = 'Không thể phân tích hình ảnh. Vui lòng thử lại.';
+        
+        if (response.status === 401) {
+          errorMessage = 'API key không hợp lệ. Vui lòng kiểm tra cấu hình.';
+        } else if (response.status === 403) {
+          errorMessage = 'Không có quyền truy cập API. Vui lòng kiểm tra API key.';
+        } else if (response.status === 404) {
+          errorMessage = 'Model AI không khả dụng. Đang tìm model khả dụng...';
+          // Try to find an available model dynamically
+          // return this.tryDynamicModelSelection(imageUri);
+        } else if (response.status === 429) {
+          errorMessage = 'Đã vượt quá giới hạn API. Vui lòng thử lại sau.';
+        } else if (response.status >= 500) {
+          errorMessage = 'Lỗi server AI. Vui lòng thử lại sau.';
+        }
+        
+        return {
+          success: false,
+          error: errorMessage,
+        };
       }
 
       const data = await response.json();
@@ -261,10 +300,162 @@ Analyze the image now:`;
     } catch (error) {
       console.error('Error analyzing image with Gemini:', error);
       
-      // Fallback to mock analysis
-      console.log('🔄 Falling back to mock analysis...');
-      return this.mockImageAnalysis(imageUri);
+      let errorMessage = 'Không thể kết nối đến dịch vụ AI. Vui lòng kiểm tra kết nối mạng.';
+      
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = 'Phân tích hình ảnh mất quá nhiều thời gian. Vui lòng thử lại.';
+        } else if (error.message.includes('Network request failed')) {
+          errorMessage = 'Lỗi kết nối mạng. Vui lòng kiểm tra internet và thử lại.';
+        } else if (error.message.includes('JSON')) {
+          errorMessage = 'Lỗi xử lý dữ liệu từ AI. Vui lòng thử lại.';
+        }
+      }
+      
+      return {
+        success: false,
+        error: errorMessage,
+      };
     }
+  }
+
+  /**
+   * Dynamically find and use an available model
+   */
+  // private async tryDynamicModelSelection(imageUri: string): Promise<ImageAnalysisResponse> {
+  //   try {
+  //     console.log('🔍 Searching for available Gemini models...');
+      
+  //     // if (!this.modelTester) {
+  //     //   this.modelTester = new GeminiModelTester(this.GEMINI_API_KEY);
+  //     // }
+
+  //     // const availableEndpoint = await this.modelTester.getFirstAvailableImageModel();
+      
+  //     // if (!availableEndpoint) {
+  //     //   console.log('❌ No available models found');
+  //     //   return {
+  //     //     success: false,
+  //     //     error: 'Dịch vụ AI hiện tại không khả dụng. Vui lòng thử lại sau hoặc sử dụng tìm kiếm văn bản.',
+  //     //   };
+  //     // }
+
+  //     console.log('✅ Found available model, attempting analysis...');
+  //     // return this.analyzeWithEndpoint(imageUri, availableEndpoint);
+  //   } catch (error) {
+  //     console.error('Dynamic model selection failed:', error);
+  //     return this.tryFallbackModel(imageUri);
+  //   }
+  // }
+
+  /**
+   * Try multiple fallback models when primary model is not available
+   */
+  private async tryFallbackModel(imageUri: string): Promise<ImageAnalysisResponse> {
+    const fallbackModels = [
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-exp-1206:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+    ];
+
+    for (let i = 0; i < fallbackModels.length; i++) {
+      const endpoint = fallbackModels[i];
+      const modelName = endpoint.split('/').pop()?.split(':')[0] || 'unknown';
+      
+      try {
+        console.log(`🔄 Trying fallback model ${i + 1}/${fallbackModels.length}: ${modelName}...`);
+        
+        const base64Image = await this.imageToBase64(imageUri);
+        
+        const prompt = `Analyze this image and determine if it shows coffee, coffee beans, or coffee-related beverages. 
+
+IMPORTANT: Only respond with coffee-related analysis if the image actually contains:
+- Coffee drinks (espresso, latte, cappuccino, americano, macchiato, black coffee, etc.)
+- Coffee beans (arabica, robusta, liberica, excelsa)
+- Coffee-making equipment with coffee visible
+
+If the image does NOT contain coffee, coffee beans, or coffee beverages, respond with: "NOT_COFFEE_RELATED"
+
+If it IS coffee-related, provide a JSON response with this exact structure:
+{
+  "isCoffeeRelated": true,
+  "results": [
+    {
+      "confidence": 0.85,
+      "productType": "coffee" or "bean",
+      "suggestedNames": ["Cappuccino", "Latte"],
+      "characteristics": {
+        "roastLevel": "Light" or "Medium" or "Dark" (for beans only),
+        "beanType": "Arabica" or "Robusta" or "Liberica" or "Excelsa" (for beans only),
+        "brewMethod": "description of brewing method" (for drinks only),
+        "color": "description of color"
+      }
+    }
+  ]
+}
+
+Analyze the image now:`;
+
+        const requestBody = {
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                },
+                {
+                  inline_data: {
+                    mime_type: "image/jpeg",
+                    data: base64Image
+                  }
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.4,
+            topK: 32,
+            topP: 1,
+            maxOutputTokens: 1000,
+          }
+        };
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const response = await fetch(`${endpoint}?key=${this.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`✅ Fallback model ${modelName} succeeded!`);
+          return this.parseGeminiResponse(data);
+        } else {
+          const errorText = await response.text();
+          console.log(`❌ Fallback model ${modelName} failed: ${response.status}`);
+          // Continue to next model
+        }
+      } catch (error) {
+        console.log(`❌ Fallback model ${modelName} error:`, error);
+        // Continue to next model
+      }
+    }
+
+    // If all models fail, return a user-friendly error
+    console.error('🚫 All Gemini models failed');
+    return {
+      success: false,
+      error: 'Dịch vụ AI hiện tại không khả dụng. Vui lòng thử lại sau hoặc sử dụng tìm kiếm văn bản.',
+    };
   }
 
   /**
@@ -286,7 +477,7 @@ Analyze the image now:`;
           success: true,
           isCoffeeRelated: false,
           results: [],
-          error: 'This image does not appear to contain coffee, coffee beans, or coffee beverages. Please try with a coffee-related image.',
+          error: 'Hình ảnh này không có liên quan đến cà phê, hạt cà phê hoặc đồ uống cà phê. Vui lòng chọn hình ảnh khác có chứa cà phê, hạt cà phê hoặc đồ uống cà phê.',
         };
       }
 
@@ -310,7 +501,7 @@ Analyze the image now:`;
       console.error('Error parsing Gemini response:', error);
       return {
         success: false,
-        error: 'Failed to parse AI response. Please try again.',
+        error: 'Không thể xử lý kết quả từ AI. Vui lòng thử lại với hình ảnh khác.',
       };
     }
   }
@@ -330,7 +521,7 @@ Analyze the image now:`;
         success: true,
         isCoffeeRelated: false,
         results: [],
-        error: 'This image does not appear to contain coffee-related content. Please try with a coffee or coffee bean image.',
+        error: 'Hình ảnh này không có liên quan đến cà phê. Vui lòng chọn hình ảnh có chứa cà phê hoặc hạt cà phê.',
       };
     }
 
@@ -359,89 +550,6 @@ Analyze the image now:`;
       success: true,
       isCoffeeRelated: true,
       results: [result],
-    };
-  }
-
-  /**
-   * Mock image analysis for demo purposes (fallback)
-   */
-  private async mockImageAnalysis(imageUri: string): Promise<ImageAnalysisResponse> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // More realistic mock analysis results based on your database structure
-    const mockAnalysisOptions = [
-      // Coffee drinks
-      {
-        confidence: 0.92,
-        productType: 'coffee' as const,
-        suggestedNames: ['Cappuccino', 'Latte', 'Macchiato'],
-        characteristics: {
-          brewMethod: 'Espresso-based',
-          color: 'Light brown with foam',
-        },
-      },
-      {
-        confidence: 0.88,
-        productType: 'coffee' as const,
-        suggestedNames: ['Americano', 'Black Coffee'],
-        characteristics: {
-          brewMethod: 'Espresso with hot water',
-          color: 'Dark brown',
-        },
-      },
-      {
-        confidence: 0.85,
-        productType: 'coffee' as const,
-        suggestedNames: ['Espresso', 'Strong Coffee'],
-        characteristics: {
-          brewMethod: 'Espresso',
-          color: 'Very dark brown',
-        },
-      },
-      // Coffee beans
-      {
-        confidence: 0.90,
-        productType: 'bean' as const,
-        suggestedNames: ['Arabica Beans', 'Medium Roast'],
-        characteristics: {
-          roastLevel: 'Medium' as const,
-          beanType: 'Arabica' as const,
-          color: 'Medium brown',
-        },
-      },
-      {
-        confidence: 0.87,
-        productType: 'bean' as const,
-        suggestedNames: ['Robusta Beans', 'Dark Roast'],
-        characteristics: {
-          roastLevel: 'Dark' as const,
-          beanType: 'Robusta' as const,
-          color: 'Dark brown',
-        },
-      },
-      {
-        confidence: 0.83,
-        productType: 'bean' as const,
-        suggestedNames: ['Liberica Beans', 'Light Roast'],
-        characteristics: {
-          roastLevel: 'Light' as const,
-          beanType: 'Liberica' as const,
-          color: 'Light brown',
-        },
-      },
-    ];
-
-    // Randomly select 1-2 analysis results to simulate real AI behavior
-    const numResults = Math.random() > 0.6 ? 2 : 1;
-    const selectedResults = mockAnalysisOptions
-      .sort(() => Math.random() - 0.5)
-      .slice(0, numResults);
-
-    return {
-      success: true,
-      isCoffeeRelated: true,
-      results: selectedResults,
     };
   }
 
@@ -543,19 +651,19 @@ Analyze the image now:`;
   showImageSourceDialog(): Promise<'camera' | 'gallery' | null> {
     return new Promise((resolve) => {
       Alert.alert(
-        'Select Image Source',
-        'Choose how you want to add an image for search',
+        'Chọn nguồn hình ảnh',
+        'Chọn cách bạn muốn thêm hình ảnh để tìm kiếm',
         [
           {
             text: 'Camera',
             onPress: () => resolve('camera'),
           },
           {
-            text: 'Gallery',
+            text: 'Thư viện',
             onPress: () => resolve('gallery'),
           },
           {
-            text: 'Cancel',
+            text: 'Hủy',
             style: 'cancel',
             onPress: () => resolve(null),
           },
@@ -582,6 +690,174 @@ Analyze the image now:`;
     console.log('🎯 Extracted suggested names for database search:', uniqueNames);
     return uniqueNames;
   }
+
+  /**
+   * Show manual search input dialog when AI fails
+   */
+  showManualSearchDialog(): Promise<string | null> {
+    return new Promise((resolve) => {
+      Alert.prompt(
+        'Tìm kiếm thủ công',
+        'AI không khả dụng. Vui lòng nhập từ khóa tìm kiếm (ví dụ: cappuccino, arabica, dark roast):',
+        [
+          {
+            text: 'Hủy',
+            style: 'cancel',
+            onPress: () => resolve(null),
+          },
+          {
+            text: 'Tìm kiếm',
+            onPress: (text) => resolve(text || null),
+          },
+        ],
+        'plain-text',
+        '',
+        'default'
+      );
+    });
+  }
+
+  /**
+   * Test which Gemini models are currently available
+   */
+  async testAvailableModels(): Promise<string[]> {
+    const testModels = [
+      'gemini-2.0-flash-exp',
+      'gemini-exp-1206', 
+      'gemini-2.0-flash-thinking-exp',
+      'gemini-1.5-pro',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro-latest',
+      'gemini-1.5-flash-latest'
+    ];
+
+    const availableModels: string[] = [];
+
+    for (const model of testModels) {
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        
+        const response = await fetch(`${endpoint}?key=${this.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: "Test"
+                  }
+                ]
+              }
+            ]
+          }),
+        });
+
+        if (response.status !== 404) {
+          availableModels.push(model);
+          console.log(`✅ Model available: ${model}`);
+        } else {
+          console.log(`❌ Model not found: ${model}`);
+        }
+      } catch (error) {
+        console.log(`❌ Model test failed: ${model}`, error);
+      }
+    }
+
+    return availableModels;
+  }
+
+  /**
+   * Analyze image with a specific endpoint
+   */
+  private async analyzeWithEndpoint(imageUri: string, endpoint: string): Promise<ImageAnalysisResponse> {
+    try {
+      const base64Image = await this.imageToBase64(imageUri);
+      
+      const prompt = `Analyze this image and determine if it shows coffee, coffee beans, or coffee-related beverages. 
+
+IMPORTANT: Only respond with coffee-related analysis if the image actually contains:
+- Coffee drinks (espresso, latte, cappuccino, americano, macchiato, black coffee, etc.)
+- Coffee beans (arabica, robusta, liberica, excelsa)
+- Coffee-making equipment with coffee visible
+
+If the image does NOT contain coffee, coffee beans, or coffee beverages, respond with: "NOT_COFFEE_RELATED"
+
+If it IS coffee-related, provide a JSON response with this exact structure:
+{
+  "isCoffeeRelated": true,
+  "results": [
+    {
+      "confidence": 0.85,
+      "productType": "coffee" or "bean",
+      "suggestedNames": ["Cappuccino", "Latte"],
+      "characteristics": {
+        "roastLevel": "Light" or "Medium" or "Dark" (for beans only),
+        "beanType": "Arabica" or "Robusta" or "Liberica" or "Excelsa" (for beans only),
+        "brewMethod": "description of brewing method" (for drinks only),
+        "color": "description of color"
+      }
+    }
+  ]
 }
 
-export default new ImageSearchService(); 
+Analyze the image now:`;
+
+      const requestBody = {
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt
+              },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: base64Image
+                }
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.4,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 1000,
+        }
+      };
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
+      const response = await fetch(`${endpoint}?key=${this.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Endpoint ${endpoint} failed:`, response.status, errorText);
+        throw new Error(`API call failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Dynamic model analysis successful');
+      
+      return this.parseGeminiResponse(data);
+    } catch (error) {
+      console.error('Endpoint analysis failed:', error);
+      throw error;
+    }
+  }
+}
+
+export default new ImageSearchService();

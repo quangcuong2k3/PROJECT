@@ -9,7 +9,7 @@ import authService from './authService';
 
 // Constants for payment configuration
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RX1WA7wRtne0I6D93hoCGp1Rc7TCyTSpEPociAUft1Jpb3CW7xcGPgyxcbm3HU08UJqhdDgqBlV0VMlMlXWbQjE003TZH52Cg';
-export const BACKEND_URL = 'http://192.168.90.33:3000'; // Local development server
+export const BACKEND_URL = 'http://192.168.1.7:3000'; // Local development server
 
 export interface PaymentDetails {
   paymentMethod: 'stripe' | 'momo' | 'cash';
